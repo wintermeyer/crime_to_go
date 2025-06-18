@@ -13,38 +13,106 @@ defmodule CrimeToGoWeb.Layouts do
 
   def app(assigns) do
     ~H"""
-    <header class="navbar px-4 sm:px-6 lg:px-8">
-      <div class="flex-1">
-        <a href="/" class="flex-1 flex items-center gap-2">
-          <img src={~p"/images/logo.svg"} width="36" />
-          <span class="text-sm font-semibold">v{Application.spec(:phoenix, :vsn)}</span>
+    <!-- Navigation Bar -->
+    <header class="navbar bg-base-100 shadow-sm border-b border-base-300 px-4 sm:px-6 lg:px-8">
+      <div class="navbar-start">
+        <!-- Mobile menu button -->
+        <div class="dropdown lg:hidden">
+          <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
+            <.icon name="hero-bars-3" class="w-5 h-5" />
+          </div>
+          <ul
+            tabindex="0"
+            class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+          >
+            <li>
+              <a href="/" class="flex items-center gap-2">
+                <.icon name="hero-home" class="w-4 h-4" /> Home
+              </a>
+            </li>
+            <li>
+              <a href="/games" class="flex items-center gap-2">
+                <.icon name="hero-play" class="w-4 h-4" /> Games
+              </a>
+            </li>
+          </ul>
+        </div>
+        
+    <!-- Logo and Brand -->
+        <a href="/" class="flex items-center gap-2">
+          <img src={~p"/images/logo.svg"} width="32" height="32" alt="CrimeToGo" />
+          <span class="text-lg font-bold hidden sm:block">CrimeToGo</span>
         </a>
       </div>
-      <div class="flex-none">
-        <ul class="flex flex-column px-1 space-x-4 items-center">
+
+      <div class="navbar-center hidden lg:flex">
+        <ul class="menu menu-horizontal px-1">
           <li>
-            <a href="https://phoenixframework.org/" class="btn btn-ghost">Website</a>
+            <a href="/" class="flex items-center gap-2">
+              <.icon name="hero-home" class="w-4 h-4" /> Home
+            </a>
           </li>
           <li>
-            <a href="https://github.com/phoenixframework/phoenix" class="btn btn-ghost">GitHub</a>
-          </li>
-          <li>
-            <.theme_toggle />
-          </li>
-          <li>
-            <a href="https://hexdocs.pm/phoenix/overview.html" class="btn btn-primary">
-              Get Started <span aria-hidden="true">&rarr;</span>
+            <a href="/games" class="flex items-center gap-2">
+              <.icon name="hero-play" class="w-4 h-4" /> Games
             </a>
           </li>
         </ul>
       </div>
+
+      <div class="navbar-end">
+        <div class="flex items-center gap-2">
+          <!-- Language Selector -->
+          <div class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="btn btn-ghost btn-sm">
+              <.icon name="hero-language" class="w-4 h-4" />
+              <span class="hidden sm:inline ml-1">EN</span>
+            </div>
+            <ul
+              tabindex="0"
+              class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
+            >
+              <li><a href="#" phx-click="set_language" phx-value-lang="en">English</a></li>
+              <li><a href="#" phx-click="set_language" phx-value-lang="de">Deutsch</a></li>
+              <li><a href="#" phx-click="set_language" phx-value-lang="fr">Français</a></li>
+              <li><a href="#" phx-click="set_language" phx-value-lang="es">Español</a></li>
+              <li><a href="#" phx-click="set_language" phx-value-lang="tr">Türkçe</a></li>
+              <li><a href="#" phx-click="set_language" phx-value-lang="ru">Русский</a></li>
+              <li><a href="#" phx-click="set_language" phx-value-lang="uk">Українська</a></li>
+            </ul>
+          </div>
+          
+    <!-- Notification Bell -->
+          <button class="btn btn-ghost btn-sm btn-circle relative">
+            <.icon name="hero-bell" class="w-4 h-4" />
+            <span class="absolute -top-1 -right-1 badge badge-xs badge-error hidden">3</span>
+          </button>
+        </div>
+      </div>
     </header>
 
-    <main class="px-4 py-20 sm:px-6 lg:px-8">
-      <div class="mx-auto max-w-2xl space-y-4">
-        {render_slot(@inner_block)}
+    <!-- Main Content -->
+    <main class="min-h-screen bg-base-50">
+      <div class="container mx-auto px-4 py-6 sm:px-6 lg:px-8">
+        {@inner_content}
       </div>
     </main>
+
+    <!-- Footer -->
+    <footer class="footer footer-center p-6 bg-base-200 text-base-content border-t border-base-300">
+      <div>
+        <div class="flex items-center gap-2 mb-2">
+          <img src={~p"/images/logo.svg"} width="24" height="24" alt="CrimeToGo" />
+          <span class="font-semibold">CrimeToGo</span>
+        </div>
+        <p class="text-sm text-base-content/70">
+          © 2024 CrimeToGo. All rights reserved.
+        </p>
+        <p class="text-xs text-base-content/50 mt-1">
+          A multiplayer detective game built with Phoenix LiveView
+        </p>
+      </div>
+    </footer>
 
     <.flash_group flash={@flash} />
     """

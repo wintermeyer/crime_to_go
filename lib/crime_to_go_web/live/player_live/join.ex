@@ -9,9 +9,10 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
   def mount(%{"game_id" => game_id}, _session, socket) do
     case Game.get_game!(game_id) do
       %{state: "pre_game"} = game ->
-        changeset = 
+        changeset =
           Player.change_player(%Player.Player{game_id: game_id})
           |> Map.put(:action, :validate)
+
         IO.inspect({:mount, changeset.valid?}, label: "[DEBUG] mount changeset valid?")
 
         {:ok,
@@ -46,13 +47,18 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
   def handle_event("validate", %{"player" => player_params}, socket) do
     merged_params = Map.merge(socket.assigns.form_params, player_params)
     merged_params = Map.put(merged_params, "game_id", socket.assigns.game.id)
+
     changeset =
       %Player.Player{}
       |> Player.Player.changeset(merged_params)
       |> Map.put(:action, :validate)
-    IO.inspect({:validate, merged_params, changeset.valid?}, label: "[DEBUG] validate changeset valid?")
 
-    {:noreply, assign(socket, changeset: changeset, form: to_form(changeset), form_params: merged_params)}
+    IO.inspect({:validate, merged_params, changeset.valid?},
+      label: "[DEBUG] validate changeset valid?"
+    )
+
+    {:noreply,
+     assign(socket, changeset: changeset, form: to_form(changeset), form_params: merged_params)}
   end
 
   @impl true

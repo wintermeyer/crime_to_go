@@ -1,97 +1,97 @@
-<div class="max-w-4xl mx-auto px-4 py-8">
-  <div class="bg-base-200 rounded-lg shadow-lg p-8">
-    <h1 class="text-3xl font-bold text-center mb-8">Game Created!</h1>
-
-    <div class="grid md:grid-cols-2 gap-8">
-      <!-- Game Code Section -->
-      <div class="text-center">
-        <h2 class="text-xl font-semibold mb-4">Game Code</h2>
-        <div class="bg-base-100 rounded-lg p-6">
-          <p class="text-4xl font-mono font-bold tracking-wider">
-            <span style="white-space:nowrap">
-              <%= @game.game_code
-                |> String.graphemes()
-                |> Enum.chunk_every(4)
-                |> Enum.map(&Enum.join/1)
-                |> Enum.join("&thinsp;")
-                |> Phoenix.HTML.raw() %>
-            </span>
+<div class="min-h-screen bg-gradient-to-br from-base-50 to-base-100 px-4 py-6">
+  <div class="max-w-xl mx-auto">
+    <div class="bg-base-100 rounded-xl shadow-xl p-6 sm:p-8">
+      <h1 class="text-2xl sm:text-3xl font-bold text-center mb-8">Game Created!</h1>
+      
+<!-- Game Code Section -->
+      <div class="bg-base-200 rounded-lg p-6 mb-6">
+        <h2 class="text-lg font-semibold text-center mb-4">Game Code</h2>
+        <div class="bg-base-100 rounded-lg p-4 mb-4">
+          <p class="text-3xl sm:text-4xl font-mono font-bold text-center tracking-wider">
+            {@game.game_code
+            |> String.graphemes()
+            |> Enum.chunk_every(4)
+            |> Enum.map(&Enum.join/1)
+            |> Enum.join(" ")
+            |> Phoenix.HTML.raw()}
           </p>
         </div>
-        <p class="text-sm text-base-content/70 mt-2">
+        <p class="text-sm text-base-content/70 text-center mb-4">
           Share this code with other players
         </p>
-        <!-- Join URL (for sharing) -->
-        <div class="mt-4 flex flex-col items-center gap-2">
-          <div class="flex items-center gap-2">
-            <input id="join-url" type="text" readonly value={@join_url} class="input input-bordered w-72 text-xs font-mono" />
-            <button id="copy-btn" class="btn btn-sm btn-outline" phx-hook="CopyToClipboard" data-clipboard-target="#join-url">
-              Copy
-            </button>
-          </div>
-          <span id="copy-feedback" class="text-xs text-success hidden">Copied!</span>
+        
+<!-- Join URL with Copy -->
+        <div class="space-y-2">
+          <input
+            id="join-url"
+            type="text"
+            readonly
+            value={@join_url}
+            class="input input-bordered w-full text-xs sm:text-sm font-mono"
+          />
+          <button
+            id="copy-btn"
+            class="btn btn-primary w-full"
+            onclick="navigator.clipboard.writeText(document.getElementById('join-url').value).then(() => {
+              document.getElementById('copy-feedback').classList.remove('hidden');
+              setTimeout(() => document.getElementById('copy-feedback').classList.add('hidden'), 2000);
+            })"
+          >
+            Copy Link
+          </button>
+          <p id="copy-feedback" class="text-sm text-success text-center hidden">
+            Copied to clipboard!
+          </p>
         </div>
       </div>
       
 <!-- QR Code Section -->
-      <div class="text-center">
-        <h2 class="text-xl font-semibold mb-4">Scan to Join</h2>
-        <div class="bg-white rounded-lg p-4 inline-block">
-          {Phoenix.HTML.raw(@qr_svg)}
+      <div class="bg-base-200 rounded-lg p-6 mb-6">
+        <h2 class="text-lg font-semibold text-center mb-4">Scan to Join</h2>
+        <div class="flex justify-center">
+          <div class="bg-white p-4 rounded-lg">
+            <div style="width: 200px; height: 200px;">
+              {Phoenix.HTML.raw(@qr_svg)}
+            </div>
+          </div>
         </div>
-        <p class="text-sm text-base-content/70 mt-2">
+        <p class="text-sm text-base-content/70 text-center mt-4">
           Players can scan this QR code to join directly
         </p>
       </div>
-    </div>
-    
+      
 <!-- Players Section -->
-    <div class="mt-8">
-      <h2 class="text-xl font-semibold mb-4">Players ({length(@players)})</h2>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <%= for player <- @players do %>
-          <div class="flex items-center space-x-2 bg-base-100 rounded-lg p-3">
-            <img
-              src={~p"/images/avatars/#{player.avatar_file_name}"}
-              alt={player.nickname}
-              class="w-10 h-10 rounded-full"
-            />
-            <div>
-              <p class="font-medium text-sm">{player.nickname}</p>
-              <%= if player.game_host do %>
-                <p class="text-xs text-primary">Host</p>
-              <% end %>
+      <div class="mb-6">
+        <h2 class="text-lg font-semibold mb-4">Players ({length(@players)})</h2>
+        <div class="space-y-2">
+          <%= for player <- @players do %>
+            <div class="flex items-center gap-3 bg-base-200 rounded-lg p-3">
+              <img
+                src={~p"/images/avatars/#{player.avatar_file_name}"}
+                alt={player.nickname}
+                class="w-10 h-10 rounded-full"
+              />
+              <div class="flex-1">
+                <p class="font-medium">{player.nickname}</p>
+                <%= if player.game_host do %>
+                  <span class="text-xs text-primary">Host</span>
+                <% end %>
+              </div>
             </div>
-          </div>
+          <% end %>
+        </div>
+      </div>
+      
+<!-- Start Game Button -->
+      <div class="text-center">
+        <%= if length(@players) >= 2 do %>
+          <button phx-click="start_game" class="btn btn-primary btn-lg w-full sm:w-auto sm:px-8">
+            Start Game
+          </button>
+        <% else %>
+          <p class="text-base-content/70">Waiting for more players to join...</p>
         <% end %>
       </div>
     </div>
-    
-<!-- Start Game Button -->
-    <div class="mt-8 text-center">
-      <%= if length(@players) >= 2 do %>
-        <button phx-click="start_game" class="btn btn-primary btn-lg">
-          Start Game
-        </button>
-      <% else %>
-        <p class="text-base-content/70">Waiting for more players to join...</p>
-      <% end %>
-    </div>
   </div>
 </div>
-
-<script>
-window.addEventListener("phx:page-loading-stop", () => {
-  const btn = document.getElementById("copy-btn");
-  const input = document.getElementById("join-url");
-  const feedback = document.getElementById("copy-feedback");
-  if (btn && input && feedback) {
-    btn.onclick = function() {
-      navigator.clipboard.writeText(input.value).then(function() {
-        feedback.classList.remove("hidden");
-        setTimeout(() => feedback.classList.add("hidden"), 1200);
-      });
-    };
-  }
-});
-</script>

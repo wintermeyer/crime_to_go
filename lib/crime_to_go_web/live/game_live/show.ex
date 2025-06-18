@@ -59,6 +59,8 @@ defmodule CrimeToGoWeb.GameLive.Show do
 
   defp generate_qr_code_svg(url) do
     # Generate QR code using EQRCode library
-    url |> EQRCode.encode() |> EQRCode.svg()
+    url
+    |> EQRCode.encode()
+    |> EQRCode.svg(width: 200, viewbox: true)
   end
 end

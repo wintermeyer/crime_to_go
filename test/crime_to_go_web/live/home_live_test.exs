@@ -84,22 +84,28 @@ defmodule CrimeToGoWeb.HomeLiveTest do
       assert html =~ "Evidence Analysis"
     end
 
-    test "responsive design elements are present", %{conn: conn} do
+    test "mobile-first responsive design elements are present", %{conn: conn} do
       {:ok, _index_live, html} = live(conn, ~p"/")
 
       # Check for mobile-first responsive classes
-      assert html =~ "md:grid-cols-2"
-      assert html =~ "md:grid-cols-3"
+      assert html =~ "grid-cols-1"
+      assert html =~ "lg:grid-cols-2"
+      assert html =~ "sm:grid-cols-2"
+      assert html =~ "lg:grid-cols-3"
       assert html =~ "max-w-4xl"
+      assert html =~ "sm:text-"
+      assert html =~ "lg:text-"
     end
 
-    test "dark mode classes are present", %{conn: conn} do
+    test "DaisyUI theme classes are present", %{conn: conn} do
       {:ok, _index_live, html} = live(conn, ~p"/")
 
-      # Check for dark mode classes
-      assert html =~ "dark:from-gray-900"
-      assert html =~ "dark:text-white"
-      assert html =~ "dark:bg-gray-800"
+      # Check for DaisyUI theme classes
+      assert html =~ "from-base-50"
+      assert html =~ "to-base-100"
+      assert html =~ "bg-base-100"
+      assert html =~ "text-base-content"
+      assert html =~ "border-base-300"
     end
   end
 
