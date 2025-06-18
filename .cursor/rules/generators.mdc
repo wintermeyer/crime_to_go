@@ -1,0 +1,10 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Always use generators if possible. Don't try to reinvent the wheel!
+
+- `mix phx.gen.schema Blog.Post blog_posts title:string views:integer` to generate a new model (see https://hexdocs.pm/phoenix/1.8.0-rc.3/Mix.Tasks.Phx.Gen.Schema.html )
+- `mix phx.gen.live Accounts User users name:string age:integer` Generates LiveView, templates, and context for a resource.
+

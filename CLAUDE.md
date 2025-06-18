@@ -16,6 +16,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `mix test` - Run all tests (automatically creates test DB and runs migrations)
 - `mix test test/specific_test.exs` - Run a specific test file
 
+### Use Generators
+- `mix phx.gen.schema Blog.Post blog_posts title:string views:integer` to generate a new model (see https://hexdocs.pm/phoenix/1.8.0-rc.3/Mix.Tasks.Phx.Gen.Schema.html )
+- `mix phx.gen.live Accounts User users name:string age:integer` Generates LiveView, templates, and context for a resource.
+
+Always use generators if possible.
+
 ### Database
 - `mix ecto.create` - Create database
 - `mix ecto.migrate` - Run database migrations
