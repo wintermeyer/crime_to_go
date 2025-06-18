@@ -17,7 +17,24 @@ defmodule CrimeToGoWeb.Router do
   scope "/", CrimeToGoWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live "/", HomeLive.Index, :index
+
+    # Game management routes
+    live "/games", GameLive.Index, :index
+    live "/games/new", GameLive.Index, :new
+    live "/games/:id", GameLive.Show, :show
+    live "/games/:id/lobby", GameLive.Lobby, :lobby
+    live "/games/:id/play", GameLive.Show, :play
+
+    # Player routes
+    live "/games/:game_id/join", PlayerLive.Join, :join
+    live "/games/:game_id/players", PlayerLive.Index, :index
+    live "/games/:game_id/players/new", PlayerLive.Index, :new
+    live "/games/:game_id/players/:id", PlayerLive.Show, :show
+
+    # Chat routes
+    live "/games/:game_id/chat", ChatLive.Index, :index
+    live "/games/:game_id/chat_rooms/:id", ChatLive.Room, :show
   end
 
   # Other scopes may use custom stacks.
