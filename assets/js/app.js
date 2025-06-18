@@ -25,15 +25,39 @@ import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
 
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
-const liveSocket = new LiveSocket("/live", Socket, {
-  longPollFallbackMs: 2500,
-  params: {_csrf_token: csrfToken}
-})
 
 // Show progress bar on live navigation and form submits
 topbar.config({barColors: {0: "#29d"}, shadowColor: "rgba(0, 0, 0, .3)"})
 window.addEventListener("phx:page-loading-start", _info => topbar.show(300))
-window.addEventListener("phx:page-loading-stop", _info => topbar.hide())
+window.addEventListener("phx:page-loading-stop", _info => topbar.delayedHide(200))
+
+// Hook for auto-dismissing flash messages
+let Hooks = {}
+Hooks.AutoDismissFlash = {
+  mounted() {
+    // Auto-dismiss the flash message after 10 seconds
+    this.timer = setTimeout(() => {
+      this.pushEvent("lv:clear-flash", {key: this.el.id.replace("flash-", "")})
+      this.el.style.transition = "opacity 0.5s ease-out"
+      this.el.style.opacity = "0"
+      setTimeout(() => {
+        this.el.style.display = "none"
+      }, 500)
+    }, 10000)
+  },
+  destroyed() {
+    // Clear the timer if the element is destroyed before 10 seconds
+    if (this.timer) {
+      clearTimeout(this.timer)
+    }
+  }
+}
+
+let liveSocket = new LiveSocket("/live", Socket, {
+  longPollFallbackMs: 2500,
+  params: {_csrf_token: csrfToken},
+  hooks: Hooks
+})
 
 // connect if there are any LiveViews on the page
 liveSocket.connect()

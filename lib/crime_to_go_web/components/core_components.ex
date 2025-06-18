@@ -55,12 +55,13 @@ defmodule CrimeToGoWeb.CoreComponents do
       :if={msg = render_slot(@inner_block) || Phoenix.Flash.get(@flash, @kind)}
       id={@id}
       phx-click={JS.push("lv:clear-flash", value: %{key: @kind}) |> hide("##{@id}")}
+      phx-hook="AutoDismissFlash"
       role="alert"
-      class="toast toast-top toast-end z-50"
+      class="w-full"
       {@rest}
     >
       <div class={[
-        "alert w-80 sm:w-96 max-w-80 sm:max-w-96 text-wrap",
+        "alert w-full text-wrap rounded-none border-x-0",
         @kind == :info && "alert-info",
         @kind == :error && "alert-error"
       ]}>

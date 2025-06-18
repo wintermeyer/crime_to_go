@@ -91,6 +91,11 @@ defmodule CrimeToGoWeb.Layouts do
       </div>
     </header>
 
+    <!-- Flash Messages Area -->
+    <div class="sticky top-0 z-40">
+      <.flash_group flash={@flash} />
+    </div>
+
     <!-- Main Content -->
     <main class="min-h-screen bg-base-50">
       <div class="container mx-auto px-4 py-6 sm:px-6 lg:px-8">
@@ -113,8 +118,6 @@ defmodule CrimeToGoWeb.Layouts do
         </p>
       </div>
     </footer>
-
-    <.flash_group flash={@flash} />
     """
   end
 
@@ -130,7 +133,7 @@ defmodule CrimeToGoWeb.Layouts do
 
   def flash_group(assigns) do
     ~H"""
-    <div id={@id} aria-live="polite">
+    <div id={@id} aria-live="polite" class="space-y-0">
       <.flash kind={:info} flash={@flash} />
       <.flash kind={:error} flash={@flash} />
 
