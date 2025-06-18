@@ -10,6 +10,27 @@ CrimeToGo is a multiplayer online detective game where players collaborate to so
 
 # Web Interface & User Experience
 
+## Root Page (Home)
+
+The root page (`/`) is implemented as a **Phoenix LiveView** page, consistent with all pages in the application. This page serves as the main entry point and provides users with two primary actions:
+
+### Game Description
+The page prominently displays information about CrimeToGo as a multiplayer crime-solving game, emphasizing the collaborative detective experience where players work together to solve mysteries.
+
+### Game Actions
+
+**Create New Game:**
+- Players can initiate a new game session
+- Generates a unique game code (12 random digits but without 0, 1 and 7) for sharing with other players
+- Sets up the game in `pre_game` state, ready for player registration
+
+**Join Existing Game:**
+- Players can join an existing game by entering a valid game code
+- Validates the game code against active games
+- Redirects to the game lobby upon successful validation
+
+The interface is designed with a clean, intuitive layout that clearly separates these two primary actions while maintaining the application's responsive design principles.
+
 ## Design & Styling
 
 The interface uses **Tailwind CSS** exclusively, ensuring a lightweight, consistent design system that's easy to maintain and optimize.
@@ -110,6 +131,7 @@ A fixed flash message area displays important notifications and updates:
 - `start_at` (timestamp)
 - `end_at` (timestamp)
 - `state` (enum: `pre_game`, `active`, `post_game`)
+- `game_code` (string, max 20 characters, required, unique)
 
 **Relationships:**
 - Has many players
