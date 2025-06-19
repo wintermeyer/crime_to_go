@@ -10,33 +10,52 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
     handle_resource_not_found(socket, fn ->
       game = Game.get_game!(game_id)
 
-      case validate_game_state(
-             socket,
-             game,
-             "pre_game",
-             gettext("This game is no longer accepting new players")
-           ) do
-        {:ok, socket} ->
-          existing_players = Player.list_players_for_game(game_id)
-          default_nickname = generate_default_nickname(existing_players, game.lang)
+      # Check if player already has a cookie for this game
+      cookie_name = "player_#{game_id}"
+      existing_player = check_existing_player(socket, cookie_name, game_id)
 
-          changeset =
-            Player.change_player(%Player.Player{game_id: game_id}, %{
-              "nickname" => default_nickname
-            })
-            |> Map.put(:action, :validate)
+      if existing_player do
+        # Player already joined this game - redirect to appropriate page
+        redirect_path =
+          if existing_player.game_host do
+            ~p"/games/#{game_id}"
+          else
+            ~p"/games/#{game_id}/lobby"
+          end
 
-          {:ok,
-           assign(socket,
-             game: game,
-             changeset: changeset,
-             form: to_form(changeset),
-             existing_players: existing_players,
-             form_params: %{"nickname" => default_nickname}
-           )}
+        {:ok,
+         socket
+         |> put_flash(:info, gettext("You have already joined this game"))
+         |> push_navigate(to: redirect_path)}
+      else
+        case validate_game_state(
+               socket,
+               game,
+               "pre_game",
+               gettext("This game is no longer accepting new players")
+             ) do
+          {:ok, socket} ->
+            existing_players = Player.list_players_for_game(game_id)
+            default_nickname = generate_default_nickname(existing_players, game.lang)
 
-        error_result ->
-          error_result
+            changeset =
+              Player.change_player(%Player.Player{game_id: game_id}, %{
+                "nickname" => default_nickname
+              })
+              |> Map.put(:action, :validate)
+
+            {:ok,
+             assign(socket,
+               game: game,
+               changeset: changeset,
+               form: to_form(changeset),
+               existing_players: existing_players,
+               form_params: %{"nickname" => default_nickname}
+             )}
+
+          error_result ->
+            error_result
+        end
       end
     end)
   end
@@ -213,6 +232,25 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
             gettext("This detective name is already taken")
           )
         end
+    end
+  end
+
+  # Helper function to check if player already exists for this game in cookies
+  defp check_existing_player(socket, cookie_name, game_id) do
+    case get_connect_params(socket) do
+      %{} = connect_params ->
+        player_id = Map.get(connect_params, cookie_name)
+        
+        if player_id do
+          # Verify the player exists and belongs to this game
+          players = Player.list_players_for_game(game_id)
+          Enum.find(players, &(&1.id == player_id))
+        else
+          nil
+        end
+
+      _ ->
+        nil
     end
   end
 end

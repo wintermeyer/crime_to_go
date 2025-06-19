@@ -105,6 +105,85 @@
           </div>
         </div>
       <% end %>
+
+<!-- My Player Games Section -->
+      <%= if @show_my_player_games do %>
+        <div class="mb-8 sm:mb-12">
+          <div class="card bg-base-100 shadow-xl border border-base-300">
+            <div class="card-body p-4 sm:p-6">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg sm:text-xl font-bold text-base-content">
+                  {gettext("Games I'm Playing")}
+                </h3>
+                <div class="badge badge-info badge-sm">
+                  {gettext("Player")}
+                </div>
+              </div>
+              <p class="text-base-content/70 mb-4 text-sm">
+                {gettext(
+                  "These are games where you are currently a player. Click to continue playing."
+                )}
+              </p>
+
+              <div class="space-y-3">
+                <%= for game <- @my_player_games do %>
+                  <div class="bg-base-200 rounded-lg p-3 sm:p-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-2">
+                          <div class="text-sm font-mono font-bold text-primary">
+                            {Phoenix.HTML.raw(
+                              CrimeToGoWeb.GameComponents.format_game_code(game.game_code)
+                            )}
+                          </div>
+                          <div class="badge badge-sm">
+                            {case game.lang do
+                              "en" -> "English"
+                              "de" -> "Deutsch"
+                              "fr" -> "Français"
+                              "es" -> "Español"
+                              "it" -> "Italiano"
+                              "pt" -> "Português"
+                              "nl" -> "Nederlands"
+                              "pl" -> "Polski"
+                              _ -> game.lang
+                            end}
+                          </div>
+                          <div class="badge badge-info badge-xs">
+                            {gettext("Player")}
+                          </div>
+                        </div>
+                        <div class="flex items-center gap-4 text-xs text-base-content/60">
+                          <span class="flex items-center gap-1">
+                            <.icon name="hero-users" class="w-3 h-3" />
+                            {length(game.players)} {if length(game.players) == 1,
+                              do: gettext("player"),
+                              else: gettext("players")}
+                          </span>
+                          <span class="flex items-center gap-1">
+                            <.icon name="hero-clock" class="w-3 h-3" />
+                            {format_relative_time(game.inserted_at)}
+                          </span>
+                        </div>
+                      </div>
+                      <div class="flex gap-2">
+                        <button
+                          phx-click="rejoin_player_game"
+                          phx-value-game_id={game.id}
+                          class="btn btn-info btn-sm"
+                        >
+                          <.icon name="hero-arrow-right-on-rectangle" class="w-4 h-4" />
+                          {gettext("Rejoin Game")}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
       
 <!-- Action Cards -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:grid-cols-2 max-w-full mx-auto mb-8 sm:mb-12 lg:mb-16">
