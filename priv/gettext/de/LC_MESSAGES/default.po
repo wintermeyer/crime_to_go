@@ -201,7 +201,7 @@ msgid "Game not found"
 msgstr "Spielcode nicht gefunden"
 
 #: lib/crime_to_go_web/components/game_components.ex:48
-#: lib/crime_to_go_web/live/game_live/lobby.html.heex:35
+#: lib/crime_to_go_web/live/game_live/lobby.html.heex:80
 #: lib/crime_to_go_web/live/player_live/join.html.heex:139
 #, elixir-autogen, elixir-format
 msgid "Host"
@@ -359,22 +359,24 @@ msgstr "Spiel-Lobby"
 msgid "Game Ready!"
 msgstr "Spiel bereit!"
 
-#: lib/crime_to_go_web/live/game_live/lobby.html.heex:60
+#: lib/crime_to_go_web/live/game_live/lobby.html.heex:105
 #, elixir-autogen, elixir-format
 msgid "Get ready for an exciting detective game!"
 msgstr "Bereitet euch auf ein spannendes Detektivspiel vor!"
 
-#: lib/crime_to_go_web/live/game_live/lobby.html.heex:55
+#: lib/crime_to_go_web/live/game_live/lobby.html.heex:100
 #, elixir-autogen, elixir-format
 msgid "Host will start soon..."
 msgstr "Spielleiter startet bald..."
 
 #: lib/crime_to_go_web/components/game_components.ex:141
+#: lib/crime_to_go_web/live/game_live/lobby.html.heex:32
 #, elixir-autogen, elixir-format
 msgid "Join Link"
 msgstr "Beitritts-Link"
 
 #: lib/crime_to_go_web/components/game_components.ex:162
+#: lib/crime_to_go_web/live/game_live/lobby.html.heex:53
 #, elixir-autogen, elixir-format
 msgid "Link copied!"
 msgstr "Link kopiert!"
@@ -390,7 +392,7 @@ msgid "Need at least 2 players to start"
 msgstr "Mindestens 2 Spieler erforderlich"
 
 #: lib/crime_to_go_web/components/game_components.ex:27
-#: lib/crime_to_go_web/live/game_live/lobby.html.heex:18
+#: lib/crime_to_go_web/live/game_live/lobby.html.heex:63
 #, elixir-autogen, elixir-format
 msgid "Players"
 msgstr "Spieler"
@@ -406,6 +408,7 @@ msgid "Ready"
 msgstr "Bereit"
 
 #: lib/crime_to_go_web/components/game_components.ex:175
+#: lib/crime_to_go_web/live/game_live/lobby.html.heex:27
 #, elixir-autogen, elixir-format
 msgid "Scan to join instantly"
 msgstr "Scannen für sofortigen Beitritt"
@@ -416,7 +419,7 @@ msgid "Share with friends to start playing"
 msgstr "Mit Freunden teilen, um zu spielen"
 
 #: lib/crime_to_go_web/components/game_components.ex:33
-#: lib/crime_to_go_web/live/game_live/lobby.html.heex:21
+#: lib/crime_to_go_web/live/game_live/lobby.html.heex:66
 #, elixir-autogen, elixir-format
 msgid "Waiting"
 msgstr "Warten"
@@ -431,7 +434,12 @@ msgstr "Warten auf Spielleiter"
 msgid "Waiting for players..."
 msgstr "Warten auf Spieler..."
 
-#: lib/crime_to_go_web/live/game_live/lobby.html.heex:53
+#: lib/crime_to_go_web/live/game_live/lobby.html.heex:98
 #, elixir-autogen, elixir-format
 msgid "You can start when ready"
 msgstr "Du kannst starten, wenn du bereit bist"
+
+#: lib/crime_to_go_web/live/game_live/lobby.html.heex:16
+#, elixir-autogen, elixir-format
+msgid "Invite More Players"
+msgstr "Weitere Spieler einladen"
