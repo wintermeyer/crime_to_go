@@ -82,16 +82,6 @@ defmodule CrimeToGoWeb.GameLive.Show do
   end
 
   @impl true
-  def handle_event("copy_game_code", _params, socket) do
-    {:noreply, push_event(socket, "phx:copy_to_clipboard", %{text: socket.assigns.game.game_code})}
-  end
-
-  @impl true
-  def handle_event("copy_join_url", _params, socket) do
-    {:noreply, push_event(socket, "phx:copy_to_clipboard", %{text: socket.assigns.join_url})}
-  end
-
-  @impl true
   def handle_info({:player_joined, _player}, socket) do
     # Refresh players list when a new player joins
     players = Player.list_players_for_game(socket.assigns.game.id)
@@ -101,6 +91,13 @@ defmodule CrimeToGoWeb.GameLive.Show do
   @impl true
   def handle_info({:player_status_changed, _player, _status}, socket) do
     # Refresh players list when player status changes
+    players = Player.list_players_for_game(socket.assigns.game.id)
+    {:noreply, assign(socket, players: players)}
+  end
+
+  @impl true
+  def handle_info({:status_changed, _player, _status}, socket) do
+    # Handle player-specific status changes (same as above)
     players = Player.list_players_for_game(socket.assigns.game.id)
     {:noreply, assign(socket, players: players)}
   end

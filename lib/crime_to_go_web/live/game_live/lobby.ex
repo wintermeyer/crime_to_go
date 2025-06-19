@@ -79,14 +79,10 @@ defmodule CrimeToGoWeb.GameLive.Lobby do
   end
 
   @impl true
-  def handle_event("copy_game_code", _params, socket) do
-    {:noreply, push_event(socket, "phx:copy_to_clipboard", %{text: socket.assigns.game.game_code})}
-  end
-
-  @impl true
-  def handle_event("copy_join_url", _params, socket) do
-    url = CrimeToGoWeb.Endpoint.url() <> "/games/#{socket.assigns.game.id}/join"
-    {:noreply, push_event(socket, "phx:copy_to_clipboard", %{text: url})}
+  def handle_info({:status_changed, _player, _status}, socket) do
+    # Handle player-specific status changes (same as above)
+    players = Player.list_players_for_game(socket.assigns.game.id)
+    {:noreply, assign(socket, players: players)}
   end
 
   @impl true

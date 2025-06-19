@@ -50,6 +50,59 @@ Hooks.AutoDismissFlash = {
   }
 }
 
+// Hook for copying to clipboard - preserves user gesture context
+Hooks.CopyToClipboard = {
+  mounted() {
+    this.el.addEventListener("click", (e) => {
+      e.preventDefault()
+      const text = this.el.dataset.clipboardText
+      
+      // Try modern clipboard API first
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => {
+          this.showSuccess()
+        }).catch(err => {
+          this.fallbackCopy(text)
+        })
+      } else {
+        this.fallbackCopy(text)
+      }
+    })
+  },
+  
+  fallbackCopy(text) {
+    const textArea = document.createElement("textarea")
+    textArea.value = text
+    textArea.style.position = "fixed"
+    textArea.style.left = "-999999px"
+    textArea.style.top = "-999999px"
+    document.body.appendChild(textArea)
+    textArea.focus()
+    textArea.select()
+    
+    try {
+      const successful = document.execCommand('copy')
+      document.body.removeChild(textArea)
+      if (successful) {
+        this.showSuccess()
+      }
+    } catch (err) {
+      document.body.removeChild(textArea)
+    }
+  },
+  
+  showSuccess() {
+    // Show temporary success feedback
+    const originalText = this.el.textContent
+    this.el.textContent = "Copied!"
+    this.el.classList.add("btn-success")
+    setTimeout(() => {
+      this.el.textContent = originalText
+      this.el.classList.remove("btn-success")
+    }, 2000)
+  }
+}
+
 
 // Helper function to get all cookies
 function getCookies() {
@@ -72,17 +125,6 @@ let liveSocket = new LiveSocket("/live", Socket, {
   hooks: Hooks
 })
 
-// Handle copy to clipboard event
-window.addEventListener("phx:copy_to_clipboard", (e) => {
-  if(navigator.clipboard) {
-    navigator.clipboard.writeText(e.detail.text).then(() => {
-      // You could show a toast notification here
-      console.log("Copied to clipboard:", e.detail.text)
-    }).catch(err => {
-      console.error("Failed to copy:", err)
-    })
-  }
-})
 
 // Handle setting cookies
 window.addEventListener("phx:set_cookie", (e) => {
