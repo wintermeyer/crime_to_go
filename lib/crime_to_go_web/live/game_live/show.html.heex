@@ -1,99 +1,47 @@
-<div class="min-h-screen bg-gradient-to-br from-base-50 to-base-100 px-4 py-6">
-  <div class="max-w-xl mx-auto">
-    <div class="bg-base-100 rounded-xl shadow-xl p-6 sm:p-8">
-      <h1 class="text-2xl sm:text-3xl font-bold text-center mb-8">{gettext("Game Created!")}</h1>
-      
-<!-- Game Code Section -->
-      <div class="bg-base-200 rounded-lg p-6 mb-6">
-        <h2 class="text-lg font-semibold text-center mb-4">{gettext("Game Code")}</h2>
-        <div class="bg-base-100 rounded-lg p-4 mb-4">
-          <p class="text-3xl sm:text-4xl font-mono font-bold text-center tracking-wider">
-            {@game.game_code
-            |> String.graphemes()
-            |> Enum.chunk_every(4)
-            |> Enum.map(&Enum.join/1)
-            |> Enum.join(" ")
-            |> Phoenix.HTML.raw()}
-          </p>
-        </div>
-        <p class="text-sm text-base-content/70 text-center mb-4">
-          {gettext("Share this code with other players")}
-        </p>
-        
-<!-- Join URL with Copy -->
-        <div class="space-y-2">
-          <input
-            id="join-url"
-            type="text"
-            readonly
-            value={@join_url}
-            class="input input-bordered w-full text-xs sm:text-sm font-mono"
-          />
-          <button
-            id="copy-btn"
-            class="btn btn-primary w-full"
-            onclick="navigator.clipboard.writeText(document.getElementById('join-url').value).then(() => {
-              document.getElementById('copy-feedback').classList.remove('hidden');
-              setTimeout(() => document.getElementById('copy-feedback').classList.add('hidden'), 2000);
-            })"
-          >
-            {gettext("Copy Link")}
-          </button>
-          <p id="copy-feedback" class="text-sm text-success text-center hidden">
-            {gettext("Copied to clipboard!")}
-          </p>
-        </div>
-      </div>
-      
-<!-- QR Code Section -->
-      <div class="bg-base-200 rounded-lg p-6 mb-6">
-        <h2 class="text-lg font-semibold text-center mb-4">{gettext("Scan to Join")}</h2>
-        <div class="flex justify-center">
-          <div class="bg-white p-4 rounded-lg">
-            <div style="width: 200px; height: 200px;">
-              {Phoenix.HTML.raw(@qr_svg)}
-            </div>
-          </div>
-        </div>
-        <p class="text-sm text-base-content/70 text-center mt-4">
-          {gettext("Players can scan this QR code to join directly")}
-        </p>
-      </div>
-      
-<!-- Players Section -->
-      <div class="mb-6">
-        <h2 class="text-lg font-semibold mb-4">
-          {gettext("Players (%{count})", count: length(@players))}
-        </h2>
-        <div class="space-y-2">
-          <%= for player <- @players do %>
-            <div class="flex items-center gap-3 bg-base-200 rounded-lg p-3">
-              <img
-                src={~p"/images/avatars/#{player.avatar_file_name}"}
-                alt={player.nickname}
-                class="w-10 h-10 rounded-full"
-              />
-              <div class="flex-1">
-                <p class="font-medium">{player.nickname}</p>
-                <%= if player.game_host do %>
-                  <span class="text-xs text-primary">{gettext("Host")}</span>
-                <% end %>
-              </div>
-            </div>
-          <% end %>
-        </div>
-      </div>
-      
-<!-- Start Game Button -->
-      <div class="text-center">
+<div class="min-h-screen bg-gradient-to-br from-base-50 to-base-100">
+  <div class="w-full max-w-sm mx-auto px-3 py-4">
+    <!-- Header -->
+    <div class="text-center mb-4">
+      <h1 class="text-xl font-bold text-base-content">{gettext("Game Ready!")}</h1>
+      <p class="text-sm text-base-content/70">{gettext("Share with friends to start playing")}</p>
+    </div>
+
+    <!-- Game Code - Most Important, Always Visible -->
+    <.mobile_game_code code={@game.game_code} primary={true} />
+
+    <!-- Players Section - Compact -->
+    <.mobile_player_list players={@players} show_status={true} />
+
+    <!-- Expandable Sharing Options -->
+    <.mobile_sharing_options join_url={@join_url} />
+    <!-- Start Game Button - Fixed at Bottom -->
+    <div class="card bg-base-100">
+      <div class="card-body p-4">
         <%= if length(@players) >= 2 do %>
-          <button phx-click="start_game" class="btn btn-primary btn-lg w-full sm:w-auto sm:px-8">
+          <button phx-click="start_game" class="btn btn-primary w-full">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6-4h8a2 2 0 012 2v8a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2z" />
+            </svg>
             {gettext("Start Game")}
           </button>
+          <p class="text-xs text-center text-base-content/60 mt-2">
+            {gettext("All players are ready!")}
+          </p>
         <% else %>
-          <p class="text-base-content/70">{gettext("Waiting for more players to join...")}</p>
+          <div class="text-center">
+            <div class="flex items-center justify-center gap-2 mb-2">
+              <div class="loading loading-spinner loading-sm"></div>
+              <span class="text-sm text-base-content/70">{gettext("Waiting for players...")}</span>
+            </div>
+            <p class="text-xs text-base-content/60">
+              {gettext("Need at least 2 players to start")}
+            </p>
+          </div>
         <% end %>
       </div>
     </div>
+    
+    <!-- Bottom Spacing -->
+    <div class="h-4"></div>
   </div>
 </div>

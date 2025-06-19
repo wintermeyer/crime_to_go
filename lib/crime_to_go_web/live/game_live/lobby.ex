@@ -2,6 +2,8 @@ defmodule CrimeToGoWeb.GameLive.Lobby do
   use CrimeToGoWeb, :live_view
   use CrimeToGoWeb.BaseLive
 
+  import CrimeToGoWeb.GameComponents
+  
   alias CrimeToGo.Game
   alias CrimeToGo.Player
 

@@ -1,55 +1,68 @@
-<div class="w-full max-w-lg mx-auto px-2 py-4 sm:px-4 sm:py-8">
-  <div class="card bg-base-200 shadow-xl">
-    <div class="card-body p-4 sm:p-6">
-      <h1 class="text-xl sm:text-2xl font-bold text-center mb-4 sm:mb-6">
-        {gettext("Waiting for Game to Start")}
-      </h1>
+<div class="min-h-screen bg-gradient-to-br from-base-50 to-base-100">
+  <div class="w-full max-w-sm mx-auto px-3 py-4">
+    <!-- Header -->
+    <div class="text-center mb-4">
+      <h1 class="text-xl font-bold text-base-content">{gettext("Game Lobby")}</h1>
+      <p class="text-sm text-base-content/70">{gettext("Waiting for host to start")}</p>
+    </div>
 
-      <div class="text-center mb-4 sm:mb-6">
-        <%= if @current_player && @current_player.game_host do %>
-          <h2 class="text-base sm:text-lg font-semibold mb-1 sm:mb-2">{gettext("Game Code")}</h2>
-          <p class="text-lg sm:text-2xl font-mono font-bold tracking-wider bg-base-100 p-2 sm:p-4 rounded-lg">
-            {@game.game_code}
-          </p>
-        <% end %>
-      </div>
-      
-<!-- Players Section -->
-      <div>
-        <h2 class="text-base sm:text-lg font-semibold mb-2 sm:mb-4">
-          {gettext("Players (%{count})", count: length(@players))}
-        </h2>
-        <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4">
+    <!-- Game Code (Host Only) -->
+    <%= if @current_player && @current_player.game_host do %>
+      <.mobile_game_code code={@game.game_code} primary={true} />
+    <% end %>
+
+    <!-- Players Section with Online Indicators -->
+    <div class="card bg-base-100 mb-4">
+      <div class="card-body p-4">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-sm font-semibold">{gettext("Players")} ({length(@players)})</h2>
+          <div class="flex items-center gap-2">
+            <div class="loading loading-spinner loading-sm"></div>
+            <div class="badge badge-warning badge-sm">{gettext("Waiting")}</div>
+          </div>
+        </div>
+        <div class="space-y-2">
           <%= for player <- @players do %>
-            <div class="card bg-base-100 shadow-sm">
-              <div class="card-body p-2 sm:p-4">
-                <div class="flex items-center gap-2 sm:gap-3">
-                  <img
-                    src={~p"/images/avatars/#{player.avatar_file_name}"}
-                    alt={player.nickname}
-                    class="w-10 h-10 sm:w-12 sm:h-12 rounded-full"
-                  />
-                  <div class="flex-1">
-                    <p class="font-medium text-xs sm:text-base">{player.nickname}</p>
-                    <%= if player.game_host do %>
-                      <p class="text-xs sm:text-sm text-primary">{gettext("Game Host")}</p>
-                    <% end %>
-                  </div>
-                </div>
+            <div class="flex items-center gap-2 p-2 bg-base-200 rounded-lg">
+              <img
+                src={~p"/images/avatars/#{player.avatar_file_name}"}
+                alt={player.nickname}
+                class="w-8 h-8 rounded-full"
+              />
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium truncate">{player.nickname}</p>
+                <%= if player.game_host do %>
+                  <p class="text-xs text-primary">{gettext("Host")}</p>
+                <% end %>
               </div>
+              <!-- Online indicator -->
+              <div class="w-2 h-2 bg-success rounded-full"></div>
             </div>
           <% end %>
         </div>
       </div>
+    </div>
 
-      <div class="mt-4 sm:mt-6 text-center">
-        <div class="flex items-center justify-center gap-2">
-          <div class="loading loading-spinner loading-md"></div>
-          <p class="text-base-content/70 text-xs sm:text-base">
-            {gettext("Waiting for the host to start the game...")}
-          </p>
+    <!-- Waiting Message -->
+    <div class="card bg-base-100">
+      <div class="card-body p-4 text-center">
+        <div class="flex items-center justify-center gap-2 mb-2">
+          <div class="loading loading-dots loading-sm"></div>
+          <span class="text-sm text-base-content/70">
+            <%= if @current_player && @current_player.game_host do %>
+              {gettext("You can start when ready")}
+            <% else %>
+              {gettext("Host will start soon...")}
+            <% end %>
+          </span>
         </div>
+        <p class="text-xs text-base-content/60">
+          {gettext("Get ready for an exciting detective game!")}
+        </p>
       </div>
     </div>
+
+    <!-- Bottom Spacing -->
+    <div class="h-4"></div>
   </div>
 </div>

@@ -2,6 +2,8 @@ defmodule CrimeToGoWeb.GameLive.Show do
   use CrimeToGoWeb, :live_view
   use CrimeToGoWeb.BaseLive
 
+  import CrimeToGoWeb.GameComponents
+  
   alias CrimeToGo.Game
   alias CrimeToGo.Player
 
@@ -17,14 +19,10 @@ defmodule CrimeToGoWeb.GameLive.Show do
     # Generate the join URL for the QR code
     join_url = CrimeToGoWeb.Endpoint.url() <> "/games/#{game_id}/join"
 
-    # Generate QR code as SVG
-    qr_svg = generate_qr_code_svg(join_url)
-
     {:ok,
      assign(socket,
        game: game,
        join_url: join_url,
-       qr_svg: qr_svg,
        players: Player.list_players_for_game(game_id)
      )}
   rescue
@@ -58,10 +56,4 @@ defmodule CrimeToGoWeb.GameLive.Show do
     {:noreply, assign(socket, players: players)}
   end
 
-  defp generate_qr_code_svg(url) do
-    # Generate QR code using EQRCode library
-    url
-    |> EQRCode.encode()
-    |> EQRCode.svg(width: 200, viewbox: true)
-  end
 end
