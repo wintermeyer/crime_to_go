@@ -23,6 +23,7 @@ defmodule CrimeToGoWeb.LocaleHelpers do
       "en" => "English",
       "fr" => "Français",
       "es" => "Español",
+      "it" => "Italiano",
       "tr" => "Türkçe",
       "ru" => "Русский",
       "uk" => "Українська"
@@ -37,6 +38,7 @@ defmodule CrimeToGoWeb.LocaleHelpers do
       "en" -> "🇬🇧"
       "fr" -> "🇫🇷"
       "es" -> "🇪🇸"
+      "it" -> "🇮🇹"
       "tr" -> "🇹🇷"
       "ru" -> "🇷🇺"
       "uk" -> "🇺🇦"

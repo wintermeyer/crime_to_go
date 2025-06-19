@@ -159,12 +159,12 @@ msgstr ""
 msgid "Game code not found"
 msgstr ""
 
-#: lib/crime_to_go_web/live/player_live/join.html.heex:91
+#: lib/crime_to_go_web/live/player_live/join.html.heex:92
 #, elixir-autogen, elixir-format
 msgid "All avatars have been taken."
 msgstr ""
 
-#: lib/crime_to_go_web/live/player_live/join.html.heex:34
+#: lib/crime_to_go_web/live/player_live/join.html.heex:35
 #, elixir-autogen, elixir-format
 msgid "Choose Your Avatar"
 msgstr ""
@@ -174,7 +174,7 @@ msgstr ""
 msgid "Choose Your Detective Name"
 msgstr ""
 
-#: lib/crime_to_go_web/live/player_live/join.html.heex:53
+#: lib/crime_to_go_web/live/player_live/join.html.heex:54
 #, elixir-autogen, elixir-format
 msgid "Click another to change"
 msgstr ""
@@ -189,7 +189,7 @@ msgstr ""
 msgid "Copy Link"
 msgstr ""
 
-#: lib/crime_to_go_web/live/player_live/join.html.heex:119
+#: lib/crime_to_go_web/live/player_live/join.html.heex:120
 #, elixir-autogen, elixir-format
 msgid "Current Detectives"
 msgstr ""
@@ -217,18 +217,18 @@ msgstr ""
 
 #: lib/crime_to_go_web/live/game_live/lobby.ex:33
 #: lib/crime_to_go_web/live/game_live/show.ex:34
-#: lib/crime_to_go_web/live/player_live/join.ex:36
+#: lib/crime_to_go_web/live/player_live/join.ex:39
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Game not found"
 msgstr ""
 
 #: lib/crime_to_go_web/live/game_live/show.html.heex:79
-#: lib/crime_to_go_web/live/player_live/join.html.heex:138
+#: lib/crime_to_go_web/live/player_live/join.html.heex:139
 #, elixir-autogen, elixir-format
 msgid "Host"
 msgstr ""
 
-#: lib/crime_to_go_web/live/player_live/join.html.heex:107
+#: lib/crime_to_go_web/live/player_live/join.html.heex:108
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Join Game as Detective"
 msgstr ""
@@ -249,7 +249,7 @@ msgstr ""
 msgid "Scan to Join"
 msgstr ""
 
-#: lib/crime_to_go_web/live/player_live/join.html.heex:50
+#: lib/crime_to_go_web/live/player_live/join.html.heex:51
 #, elixir-autogen, elixir-format
 msgid "Selected Avatar"
 msgstr ""
@@ -264,17 +264,17 @@ msgstr ""
 msgid "Start Game"
 msgstr ""
 
-#: lib/crime_to_go_web/live/player_live/join.ex:98
+#: lib/crime_to_go_web/live/player_live/join.ex:112
 #, elixir-autogen, elixir-format
 msgid "Successfully joined the game!"
 msgstr ""
 
-#: lib/crime_to_go_web/live/player_live/join.ex:29
+#: lib/crime_to_go_web/live/player_live/join.ex:32
 #, elixir-autogen, elixir-format
 msgid "This game is no longer accepting new players"
 msgstr ""
 
-#: lib/crime_to_go_web/live/player_live/join.html.heex:27
+#: lib/crime_to_go_web/live/player_live/join.html.heex:28
 #, elixir-autogen, elixir-format
 msgid "This name will be visible to other players"
 msgstr ""
@@ -299,12 +299,12 @@ msgstr ""
 msgid "Waiting for the host to start the game..."
 msgstr ""
 
-#: lib/crime_to_go_web/live/player_live/join.ex:97
+#: lib/crime_to_go_web/live/player_live/join.ex:111
 #, elixir-autogen, elixir-format
 msgid "Welcome! You are the game host."
 msgstr ""
 
-#: lib/crime_to_go_web/live/player_live/join.ex:144
+#: lib/crime_to_go_web/live/player_live/join.ex:159
 #, elixir-autogen, elixir-format
 msgid "Avatar %{number}"
 msgstr "Avatar %{number}"
@@ -368,3 +368,8 @@ msgstr ""
 #, elixir-autogen, elixir-format
 msgid "Source Code"
 msgstr ""
+
+#: lib/crime_to_go_web/live/player_live/join.ex:183
+#, elixir-autogen, elixir-format
+msgid "This detective name is already taken"
+msgstr "This detective name is already taken"

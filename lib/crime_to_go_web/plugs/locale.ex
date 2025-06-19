@@ -2,11 +2,11 @@ defmodule CrimeToGoWeb.Plugs.Locale do
   @moduledoc """
   Plug to handle locale detection and switching.
 
-  Supports: German (default), English, French, Spanish, Turkish, Russian, Ukrainian
+  Supports: German (default), English, French, Spanish, Italian, Turkish, Russian, Ukrainian
   """
   import Plug.Conn
 
-  @supported_locales ~w(de en fr es tr ru uk)
+  @supported_locales ~w(de en fr es it tr ru uk)
   @default_locale "en"
 
   def init(opts), do: opts
