@@ -33,6 +33,8 @@ defmodule CrimeToGo.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:tidewave, "~> 0.1", only: [:dev]},
+      {:igniter, "~> 0.6", only: [:dev, :test]},
       {:phoenix, "~> 1.8.0-rc.3", override: true},
       {:phoenix_ecto, "~> 4.5"},
       {:ecto_sql, "~> 3.10"},
@@ -59,7 +61,7 @@ defmodule CrimeToGo.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
-      {:eqrcode, "~> 0.1.10"}
+      {:eqrcode, "~> 0.2.1"}
     ]
   end
 
