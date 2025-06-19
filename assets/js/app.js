@@ -51,9 +51,24 @@ Hooks.AutoDismissFlash = {
 }
 
 
+// Helper function to get all cookies
+function getCookies() {
+  const cookies = {}
+  document.cookie.split(';').forEach(cookie => {
+    const [name, value] = cookie.trim().split('=')
+    if (name && value) {
+      cookies[name] = decodeURIComponent(value)
+    }
+  })
+  return cookies
+}
+
 let liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
-  params: {_csrf_token: csrfToken},
+  params: () => ({
+    _csrf_token: csrfToken,
+    ...getCookies()
+  }),
   hooks: Hooks
 })
 
@@ -67,6 +82,14 @@ window.addEventListener("phx:copy_to_clipboard", (e) => {
       console.error("Failed to copy:", err)
     })
   }
+})
+
+// Handle setting cookies
+window.addEventListener("phx:set_cookie", (e) => {
+  const { name, value, max_age } = e.detail
+  const expires = new Date(Date.now() + max_age * 1000).toUTCString()
+  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`
+  console.log("Cookie set:", name, value)
 })
 
 // connect if there are any LiveViews on the page

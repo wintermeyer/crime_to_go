@@ -6,18 +6,15 @@ defmodule CrimeToGoWeb.GameLive.Lobby do
   alias CrimeToGo.Player
 
   @impl true
-  def mount(%{"id" => game_id} = params, _session, socket) do
+  def mount(%{"id" => game_id}, _session, socket) do
     game = Game.get_game!(game_id)
     players = Player.list_players_for_game(game_id)
 
-    # Check if this user is accessing with a valid player_id parameter
-    current_player =
-      case Map.get(params, "player_id") do
-        nil -> nil
-        player_id -> Enum.find(players, &(&1.id == player_id))
-      end
+    # Check if this user has a player cookie for this game
+    cookie_name = "player_#{game_id}"
+    current_player = get_player_from_cookies(socket, cookie_name, players)
 
-    # If no valid player_id is provided, redirect to join page
+    # If no valid player found, redirect to join page
     if is_nil(current_player) do
       {:ok,
        socket
@@ -42,6 +39,18 @@ defmodule CrimeToGoWeb.GameLive.Lobby do
        socket
        |> put_flash(:error, gettext("Game not found"))
        |> push_navigate(to: ~p"/")}
+  end
+
+  # Helper function to get player from cookies
+  defp get_player_from_cookies(socket, cookie_name, players) do
+    case get_connect_params(socket) do
+      %{} = connect_params ->
+        player_id = Map.get(connect_params, cookie_name)
+        if player_id, do: Enum.find(players, &(&1.id == player_id))
+
+      _ ->
+        nil
+    end
   end
 
   @impl true

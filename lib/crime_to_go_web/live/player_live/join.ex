@@ -97,16 +97,25 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
             # Broadcast that a player joined
             safe_broadcast("game:#{game.id}", {:player_joined, player})
 
+            # Set player cookie for this game using JavaScript
+            cookie_name = "player_#{game.id}"
+            cookie_value = player.id
+
             # Redirect host to game show page, other players to lobby
             redirect_path =
               if is_host do
-                ~p"/games/#{game.id}?player_id=#{player.id}"
+                ~p"/games/#{game.id}"
               else
-                ~p"/games/#{game.id}/lobby?player_id=#{player.id}"
+                ~p"/games/#{game.id}/lobby"
               end
 
             {:noreply,
              socket
+             |> push_event("set_cookie", %{
+               name: cookie_name,
+               value: cookie_value,
+               max_age: 24 * 60 * 60
+             })
              |> put_flash(
                :info,
                if(is_host,
