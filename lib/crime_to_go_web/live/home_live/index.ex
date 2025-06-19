@@ -1,5 +1,6 @@
 defmodule CrimeToGoWeb.HomeLive.Index do
   use CrimeToGoWeb, :live_view
+  use CrimeToGoWeb.BaseLive
 
   alias CrimeToGo.Game
   alias CrimeToGo.Chat
@@ -29,7 +30,7 @@ defmodule CrimeToGoWeb.HomeLive.Index do
         {:noreply, push_navigate(socket, to: ~p"/games/#{game.id}/join")}
 
       {:error, _changeset} ->
-        {:noreply, put_flash(socket, :error, "Failed to create game. Please try again.")}
+        {:noreply, put_flash(socket, :error, gettext("Failed to create game. Please try again."))}
     end
   end
 
@@ -37,7 +38,7 @@ defmodule CrimeToGoWeb.HomeLive.Index do
   def handle_event("join_game", %{"game_code" => game_code}, socket) do
     case Game.get_game_by_code(game_code) do
       nil ->
-        {:noreply, assign(socket, join_error: "Game code not found")}
+        {:noreply, assign(socket, join_error: gettext("Game code not found"))}
 
       game ->
         {:noreply, push_navigate(socket, to: ~p"/games/#{game.id}/join")}

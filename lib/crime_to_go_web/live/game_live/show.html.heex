@@ -1,11 +1,11 @@
 <div class="min-h-screen bg-gradient-to-br from-base-50 to-base-100 px-4 py-6">
   <div class="max-w-xl mx-auto">
     <div class="bg-base-100 rounded-xl shadow-xl p-6 sm:p-8">
-      <h1 class="text-2xl sm:text-3xl font-bold text-center mb-8">Game Created!</h1>
+      <h1 class="text-2xl sm:text-3xl font-bold text-center mb-8">{gettext("Game Created!")}</h1>
       
 <!-- Game Code Section -->
       <div class="bg-base-200 rounded-lg p-6 mb-6">
-        <h2 class="text-lg font-semibold text-center mb-4">Game Code</h2>
+        <h2 class="text-lg font-semibold text-center mb-4">{gettext("Game Code")}</h2>
         <div class="bg-base-100 rounded-lg p-4 mb-4">
           <p class="text-3xl sm:text-4xl font-mono font-bold text-center tracking-wider">
             {@game.game_code
@@ -17,7 +17,7 @@
           </p>
         </div>
         <p class="text-sm text-base-content/70 text-center mb-4">
-          Share this code with other players
+          {gettext("Share this code with other players")}
         </p>
         
 <!-- Join URL with Copy -->
@@ -37,17 +37,17 @@
               setTimeout(() => document.getElementById('copy-feedback').classList.add('hidden'), 2000);
             })"
           >
-            Copy Link
+            {gettext("Copy Link")}
           </button>
           <p id="copy-feedback" class="text-sm text-success text-center hidden">
-            Copied to clipboard!
+            {gettext("Copied to clipboard!")}
           </p>
         </div>
       </div>
       
 <!-- QR Code Section -->
       <div class="bg-base-200 rounded-lg p-6 mb-6">
-        <h2 class="text-lg font-semibold text-center mb-4">Scan to Join</h2>
+        <h2 class="text-lg font-semibold text-center mb-4">{gettext("Scan to Join")}</h2>
         <div class="flex justify-center">
           <div class="bg-white p-4 rounded-lg">
             <div style="width: 200px; height: 200px;">
@@ -56,13 +56,15 @@
           </div>
         </div>
         <p class="text-sm text-base-content/70 text-center mt-4">
-          Players can scan this QR code to join directly
+          {gettext("Players can scan this QR code to join directly")}
         </p>
       </div>
       
 <!-- Players Section -->
       <div class="mb-6">
-        <h2 class="text-lg font-semibold mb-4">Players ({length(@players)})</h2>
+        <h2 class="text-lg font-semibold mb-4">
+          {gettext("Players (%{count})", count: length(@players))}
+        </h2>
         <div class="space-y-2">
           <%= for player <- @players do %>
             <div class="flex items-center gap-3 bg-base-200 rounded-lg p-3">
@@ -74,7 +76,7 @@
               <div class="flex-1">
                 <p class="font-medium">{player.nickname}</p>
                 <%= if player.game_host do %>
-                  <span class="text-xs text-primary">Host</span>
+                  <span class="text-xs text-primary">{gettext("Host")}</span>
                 <% end %>
               </div>
             </div>
@@ -86,10 +88,10 @@
       <div class="text-center">
         <%= if length(@players) >= 2 do %>
           <button phx-click="start_game" class="btn btn-primary btn-lg w-full sm:w-auto sm:px-8">
-            Start Game
+            {gettext("Start Game")}
           </button>
         <% else %>
-          <p class="text-base-content/70">Waiting for more players to join...</p>
+          <p class="text-base-content/70">{gettext("Waiting for more players to join...")}</p>
         <% end %>
       </div>
     </div>

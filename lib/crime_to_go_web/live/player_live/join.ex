@@ -1,5 +1,6 @@
 defmodule CrimeToGoWeb.PlayerLive.Join do
   use CrimeToGoWeb, :live_view
+  use CrimeToGoWeb.BaseLive
 
   alias CrimeToGo.Game
   alias CrimeToGo.Player
@@ -13,8 +14,6 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
           Player.change_player(%Player.Player{game_id: game_id})
           |> Map.put(:action, :validate)
 
-        IO.inspect({:mount, changeset.valid?}, label: "[DEBUG] mount changeset valid?")
-
         {:ok,
          assign(socket,
            game: game,
@@ -27,14 +26,14 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
       _game ->
         {:ok,
          socket
-         |> put_flash(:error, "This game is no longer accepting new players")
+         |> put_flash(:error, gettext("This game is no longer accepting new players"))
          |> push_navigate(to: ~p"/")}
     end
   rescue
     Ecto.NoResultsError ->
       {:ok,
        socket
-       |> put_flash(:error, "Game not found")
+       |> put_flash(:error, gettext("Game not found"))
        |> push_navigate(to: ~p"/")}
   end
 
@@ -52,10 +51,6 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
       %Player.Player{}
       |> Player.Player.changeset(merged_params)
       |> Map.put(:action, :validate)
-
-    IO.inspect({:validate, merged_params, changeset.valid?},
-      label: "[DEBUG] validate changeset valid?"
-    )
 
     {:noreply,
      assign(socket, changeset: changeset, form: to_form(changeset), form_params: merged_params)}
@@ -99,8 +94,8 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
          |> put_flash(
            :info,
            if(is_host,
-             do: "Welcome! You are the game host.",
-             else: "Successfully joined the game!"
+             do: gettext("Welcome! You are the game host."),
+             else: gettext("Successfully joined the game!")
            )
          )
          |> push_navigate(to: redirect_path)}
@@ -139,5 +134,13 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
 
   defp avatar_available?(game_id, avatar_filename) do
     Player.avatar_available?(game_id, avatar_filename)
+  end
+
+  defp format_avatar_name(avatar_filename) do
+    avatar_filename
+    |> String.replace("adventurer_avatar_", "")
+    |> String.replace(".webp", "")
+    |> String.to_integer()
+    |> then(&gettext("Avatar %{number}", number: &1))
   end
 end

@@ -8,10 +8,14 @@ defmodule CrimeToGoWeb.Layouts do
   in regular views and live views.
   """
   use CrimeToGoWeb, :html
+  import CrimeToGoWeb.LocaleHelpers
 
   embed_templates "layouts/*"
 
   def app(assigns) do
+    # Default locale if not set
+    assigns = assign_new(assigns, :locale, fn -> "en" end)
+
     ~H"""
     <!-- Navigation Bar -->
     <header class="navbar bg-base-100 shadow-sm border-b border-base-300 px-4 sm:px-6 lg:px-8">
@@ -27,12 +31,12 @@ defmodule CrimeToGoWeb.Layouts do
           >
             <li>
               <a href="/" class="flex items-center gap-2">
-                <.icon name="hero-home" class="w-4 h-4" /> Home
+                <.icon name="hero-home" class="w-4 h-4" /> {gettext("Home")}
               </a>
             </li>
             <li>
               <a href="/games" class="flex items-center gap-2">
-                <.icon name="hero-play" class="w-4 h-4" /> Games
+                <.icon name="hero-play" class="w-4 h-4" /> {gettext("Games")}
               </a>
             </li>
           </ul>
@@ -40,8 +44,8 @@ defmodule CrimeToGoWeb.Layouts do
         
     <!-- Logo and Brand -->
         <a href="/" class="flex items-center gap-2">
-          <img src={~p"/images/logo.svg"} width="32" height="32" alt="CrimeToGo" />
-          <span class="text-lg font-bold hidden sm:block">CrimeToGo</span>
+          <img src={~p"/images/logo.svg"} width="32" height="32" alt={gettext("CrimeToGo")} />
+          <span class="text-lg font-bold hidden sm:block">{gettext("CrimeToGo")}</span>
         </a>
       </div>
 
@@ -49,12 +53,12 @@ defmodule CrimeToGoWeb.Layouts do
         <ul class="menu menu-horizontal px-1">
           <li>
             <a href="/" class="flex items-center gap-2">
-              <.icon name="hero-home" class="w-4 h-4" /> Home
+              <.icon name="hero-home" class="w-4 h-4" /> {gettext("Home")}
             </a>
           </li>
           <li>
             <a href="/games" class="flex items-center gap-2">
-              <.icon name="hero-play" class="w-4 h-4" /> Games
+              <.icon name="hero-play" class="w-4 h-4" /> {gettext("Games")}
             </a>
           </li>
         </ul>
@@ -66,19 +70,30 @@ defmodule CrimeToGoWeb.Layouts do
           <div class="dropdown dropdown-end">
             <div tabindex="0" role="button" class="btn btn-ghost btn-sm">
               <.icon name="hero-language" class="w-4 h-4" />
-              <span class="hidden sm:inline ml-1">EN</span>
+              <span class="hidden sm:inline ml-1">
+                {locale_flag(@locale)} {String.upcase(@locale)}
+              </span>
             </div>
             <ul
               tabindex="0"
               class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
             >
-              <li><a href="#" phx-click="set_language" phx-value-lang="en">English</a></li>
-              <li><a href="#" phx-click="set_language" phx-value-lang="de">Deutsch</a></li>
-              <li><a href="#" phx-click="set_language" phx-value-lang="fr">Français</a></li>
-              <li><a href="#" phx-click="set_language" phx-value-lang="es">Español</a></li>
-              <li><a href="#" phx-click="set_language" phx-value-lang="tr">Türkçe</a></li>
-              <li><a href="#" phx-click="set_language" phx-value-lang="ru">Русский</a></li>
-              <li><a href="#" phx-click="set_language" phx-value-lang="uk">Українська</a></li>
+              <li :for={{code, name} <- locale_names()}>
+                <form method="post" action="/set_locale" style="display: inline;">
+                  <input type="hidden" name="_csrf_token" value={Phoenix.Controller.get_csrf_token()} />
+                  <input type="hidden" name="locale" value={code} />
+                  <button
+                    type="submit"
+                    class={[
+                      "w-full text-left flex items-center gap-2 p-2 hover:bg-base-200 rounded",
+                      @locale == code && "bg-base-200 font-medium"
+                    ]}
+                  >
+                    <span class="text-lg">{locale_flag(code)}</span>
+                    {name}
+                  </button>
+                </form>
+              </li>
             </ul>
           </div>
           
@@ -107,8 +122,8 @@ defmodule CrimeToGoWeb.Layouts do
     <footer class="footer footer-center p-6 bg-base-200 text-base-content border-t border-base-300">
       <div>
         <div class="flex items-center gap-2 mb-2">
-          <img src={~p"/images/logo.svg"} width="24" height="24" alt="CrimeToGo" />
-          <span class="font-semibold">CrimeToGo</span>
+          <img src={~p"/images/logo.svg"} width="24" height="24" alt={gettext("CrimeToGo")} />
+          <span class="font-semibold">{gettext("CrimeToGo")}</span>
         </div>
         <p class="text-sm text-base-content/70">
           © 2024 CrimeToGo. All rights reserved.

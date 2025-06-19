@@ -1,5 +1,6 @@
 defmodule CrimeToGoWeb.ChatLive.Index do
   use CrimeToGoWeb, :live_view
+  use CrimeToGoWeb.BaseLive
 
   @impl true
   def mount(_params, _session, socket) do

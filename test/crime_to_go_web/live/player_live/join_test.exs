@@ -13,21 +13,21 @@ defmodule CrimeToGoWeb.PlayerLive.JoinTest do
     conn: conn,
     game: game
   } do
-    {:ok, view, html} = live(conn, "/games/#{game.id}/join")
-    IO.puts(html)
-    render(view)
+    {:ok, view, _html} = live(conn, "/games/#{game.id}/join")
 
     # Button should be disabled initially
     assert render(view) =~ ~r/<button[^>]*disabled[^>]*>/
 
     # Fill in nickname only
-    html = view |> form("form", player: %{nickname: "Sherlock"}) |> render_change()
+    html =
+      view |> form("form[phx-submit='join']", player: %{nickname: "Sherlock"}) |> render_change()
+
     assert html =~ ~r/<button[^>]*disabled[^>]*>/
 
     # Fill in avatar only
     html =
       view
-      |> form("form", player: %{avatar_file_name: "adventurer_avatar_01.webp"})
+      |> form("form[phx-submit='join']", player: %{avatar_file_name: "adventurer_avatar_01.webp"})
       |> render_change()
 
     assert html =~ ~r/<button[^>]*disabled[^>]*>/
@@ -35,18 +35,25 @@ defmodule CrimeToGoWeb.PlayerLive.JoinTest do
     # Fill in both nickname and avatar (simulate user input)
     html =
       view
-      |> form("form",
+      |> form("form[phx-submit='join']",
         player: %{nickname: "Sherlock", avatar_file_name: "adventurer_avatar_01.webp"}
       )
       |> render_change()
 
     tree = Floki.parse_document!(html)
-    [button] = Floki.find(tree, "button[type=submit]")
-    refute Floki.attribute(button, "disabled") != []
+    # Find the button that contains "Join Game as Detective" text
+    buttons = Floki.find(tree, "button[type=submit]")
+
+    join_button =
+      Enum.find(buttons, fn button ->
+        Floki.text(button) =~ "Join Game as Detective"
+      end)
+
+    refute Floki.attribute(join_button, "disabled") != []
 
     # Submit the form
     view
-    |> form("form",
+    |> form("form[phx-submit='join']",
       player: %{nickname: "Sherlock", avatar_file_name: "adventurer_avatar_01.webp"}
     )
     |> render_submit()

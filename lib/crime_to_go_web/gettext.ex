@@ -21,5 +21,5 @@ defmodule CrimeToGoWeb.Gettext do
 
   See the [Gettext Docs](https://hexdocs.pm/gettext) for detailed usage.
   """
-  use Gettext.Backend, otp_app: :crime_to_go
+  use Gettext.Backend, otp_app: :crime_to_go, priv: "priv/gettext"
 end

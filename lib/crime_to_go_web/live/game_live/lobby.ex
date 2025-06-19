@@ -1,5 +1,6 @@
 defmodule CrimeToGoWeb.GameLive.Lobby do
   use CrimeToGoWeb, :live_view
+  use CrimeToGoWeb.BaseLive
 
   alias CrimeToGo.Game
   alias CrimeToGo.Player
@@ -29,7 +30,7 @@ defmodule CrimeToGoWeb.GameLive.Lobby do
     Ecto.NoResultsError ->
       {:ok,
        socket
-       |> put_flash(:error, "Game not found")
+       |> put_flash(:error, gettext("Game not found"))
        |> push_navigate(to: ~p"/")}
   end
 

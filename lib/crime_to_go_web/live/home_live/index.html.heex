@@ -7,18 +7,22 @@
           CrimeToGo
         </h1>
         <p class="text-base sm:text-lg text-base-content/70 mb-4 sm:mb-6 max-w-full mx-auto px-2">
-          A multiplayer online detective game where players collaborate to solve crimes.
-          Work together to gather clues, analyze evidence, and identify the culprit.
+          {gettext(
+            "A multiplayer online detective game where players collaborate to solve crimes."
+          )}
+          {gettext("Work together to gather clues, analyze evidence, and identify the culprit.")}
         </p>
         <div class="flex flex-wrap justify-center gap-2 sm:gap-4 text-xs sm:text-sm text-base-content/60 px-2">
           <span class="flex items-center gap-1">
-            <.icon name="hero-users" class="w-4 h-4" /> Multiplayer
+            <.icon name="hero-users" class="w-4 h-4" /> {gettext("Multiplayer")}
           </span>
           <span class="flex items-center gap-1">
-            <.icon name="hero-chat-bubble-left-right" class="w-4 h-4" /> Real-time Chat
+            <.icon name="hero-chat-bubble-left-right" class="w-4 h-4" /> {gettext(
+              "Real-time Chat"
+            )}
           </span>
           <span class="flex items-center gap-1">
-            <.icon name="hero-magnifying-glass" class="w-4 h-4" /> Detective Work
+            <.icon name="hero-magnifying-glass" class="w-4 h-4" /> {gettext("Detective Work")}
           </span>
         </div>
       </div>
@@ -33,13 +37,15 @@
                 <.icon name="hero-plus" class="w-7 h-7 sm:w-8 sm:h-8 text-primary" />
               </div>
               <h2 class="text-lg sm:text-xl font-bold text-base-content mb-2 sm:mb-3">
-                Create New Game
+                {gettext("Create New Game")}
               </h2>
               <p class="text-base-content/70 mb-4 sm:mb-6 text-xs sm:text-base">
-                Start a new detective game and invite friends to join you in solving mysteries.
+                {gettext(
+                  "Start a new detective game and invite friends to join you in solving mysteries."
+                )}
               </p>
               <button phx-click="create_game" class="btn btn-primary w-full">
-                Create Game
+                {gettext("Create Game")}
               </button>
             </div>
           </div>
@@ -56,10 +62,10 @@
                 />
               </div>
               <h2 class="text-lg sm:text-xl font-bold text-base-content mb-2 sm:mb-3">
-                Join Existing Game
+                {gettext("Join Existing Game")}
               </h2>
               <p class="text-base-content/70 mb-4 sm:mb-6 text-xs sm:text-base">
-                Enter a game code to join an ongoing detective investigation.
+                {gettext("Enter a game code to join an ongoing detective investigation.")}
               </p>
 
               <form phx-submit="join_game" phx-change="validate_join" class="space-y-3">
@@ -68,7 +74,7 @@
                     type="text"
                     name="game_code"
                     value={@game_code}
-                    placeholder="Enter game code (12 digits)"
+                    placeholder={gettext("Enter game code (12 digits)")}
                     maxlength="12"
                     pattern="[2-9]{12}"
                     class="input input-bordered w-full"
@@ -82,7 +88,7 @@
                   disabled={String.length(@game_code) != 12}
                   class="btn btn-success w-full disabled:btn-disabled"
                 >
-                  Join Game
+                  {gettext("Join Game")}
                 </button>
               </form>
             </div>
@@ -93,7 +99,7 @@
 <!-- Features Section -->
       <div class="text-center">
         <h3 class="text-xl sm:text-2xl font-bold text-base-content mb-6 sm:mb-10">
-          Game Features
+          {gettext("Game Features")}
         </h3>
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-6">
           <div class="card bg-base-100 shadow-lg border border-base-300">
@@ -102,10 +108,10 @@
                 <.icon name="hero-users" class="w-6 h-6 text-info" />
               </div>
               <h4 class="font-semibold text-base-content mb-1">
-                Collaborative Gameplay
+                {gettext("Collaborative Gameplay")}
               </h4>
               <p class="text-base-content/70 text-xs sm:text-sm">
-                Work together with other players to solve complex criminal cases
+                {gettext("Work together with other players to solve complex criminal cases")}
               </p>
             </div>
           </div>
@@ -116,10 +122,10 @@
                 <.icon name="hero-chat-bubble-left-right" class="w-6 h-6 text-secondary" />
               </div>
               <h4 class="font-semibold text-base-content mb-1">
-                Real-time Communication
+                {gettext("Real-time Communication")}
               </h4>
               <p class="text-base-content/70 text-xs sm:text-sm">
-                Communicate with team members through public and private chat rooms
+                {gettext("Communicate with team members through public and private chat rooms")}
               </p>
             </div>
           </div>
@@ -129,9 +135,9 @@
               <div class="bg-warning/10 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center mx-auto mb-3">
                 <.icon name="hero-magnifying-glass" class="w-6 h-6 text-warning" />
               </div>
-              <h4 class="font-semibold text-base-content mb-1">Evidence Analysis</h4>
+              <h4 class="font-semibold text-base-content mb-1">{gettext("Evidence Analysis")}</h4>
               <p class="text-base-content/70 text-xs sm:text-sm">
-                Gather and analyze clues to piece together the mystery
+                {gettext("Gather and analyze clues to piece together the mystery")}
               </p>
             </div>
           </div>

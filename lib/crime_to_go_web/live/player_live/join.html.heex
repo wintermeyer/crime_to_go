@@ -5,7 +5,7 @@
       <!-- Header -->
       <div class="text-center mb-4 sm:mb-8">
         <h1 class="text-2xl sm:text-3xl font-bold text-base-content mb-2 sm:mb-4">
-          Join Game
+          {gettext("Join Game")}
         </h1>
       </div>
       
@@ -18,20 +18,20 @@
               <.input
                 field={form[:nickname]}
                 type="text"
-                label="Choose Your Detective Name"
-                placeholder="Enter your detective name"
+                label={gettext("Choose Your Detective Name")}
+                placeholder={gettext("Enter your detective name")}
                 maxlength="140"
                 required
               />
               <p class="text-xs sm:text-sm text-base-content/60 mt-1">
-                This name will be visible to other players
+                {gettext("This name will be visible to other players")}
               </p>
             </div>
             
 <!-- Avatar Selection -->
             <div>
               <label class="block text-base sm:text-lg font-semibold text-base-content mb-1 sm:mb-2">
-                Choose Your Avatar
+                {gettext("Choose Your Avatar")}
               </label>
               <div class="mt-1 sm:mt-2">
                 <%= if form[:avatar_file_name].value do %>
@@ -47,10 +47,10 @@
                         />
                         <div class="flex-1 overflow-hidden">
                           <p class="font-medium text-base-content truncate max-w-xs">
-                            Selected Avatar
+                            {gettext("Selected Avatar")}
                           </p>
                           <p class="text-xs sm:text-sm text-base-content/60">
-                            Click another to change
+                            {gettext("Click another to change")}
                           </p>
                         </div>
                       </div>
@@ -88,7 +88,7 @@
                       <% end %>
                       <%= if Enum.all?(available_avatars(), fn a -> not avatar_available?(@game.id, a) end) do %>
                         <p class="col-span-full text-xs sm:text-sm text-base-content/60 text-center">
-                          All avatars have been taken.
+                          {gettext("All avatars have been taken.")}
                         </p>
                       <% end %>
                     </div>
@@ -104,7 +104,7 @@
                 disabled={not @changeset.valid?}
                 class="btn btn-primary w-full disabled:btn-disabled"
               >
-                Join Game as Detective
+                {gettext("Join Game as Detective")}
               </button>
             </div>
           </.form>
@@ -116,7 +116,7 @@
         <div class="card bg-base-100 shadow-xl border border-base-300 mt-4 sm:mt-6">
           <div class="card-body p-4 sm:p-6">
             <h3 class="text-base sm:text-lg font-semibold text-base-content mb-2 sm:mb-4">
-              Current Detectives
+              {gettext("Current Detectives")}
             </h3>
             <div class="space-y-2 sm:space-y-3">
               <%= for player <- @existing_players do %>
@@ -135,12 +135,12 @@
                           {player.nickname}
                           <%= if player.game_host do %>
                             <span class="badge badge-warning badge-xs sm:badge-sm ml-1 sm:ml-2">
-                              Host
+                              {gettext("Host")}
                             </span>
                           <% end %>
                         </p>
                         <p class="text-xs sm:text-sm text-base-content/60">
-                          {player.avatar_file_name}
+                          {format_avatar_name(player.avatar_file_name)}
                         </p>
                       </div>
                     </div>

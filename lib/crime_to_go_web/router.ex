@@ -8,6 +8,7 @@ defmodule CrimeToGoWeb.Router do
     plug :put_root_layout, html: {CrimeToGoWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug CrimeToGoWeb.Plugs.Locale
   end
 
   pipeline :api do
@@ -17,24 +18,31 @@ defmodule CrimeToGoWeb.Router do
   scope "/", CrimeToGoWeb do
     pipe_through :browser
 
-    live "/", HomeLive.Index, :index
+    # Route for setting locale
+    post "/set_locale", PageController, :set_locale
 
-    # Game management routes
-    live "/games", GameLive.Index, :index
-    live "/games/new", GameLive.Index, :new
-    live "/games/:id", GameLive.Show, :show
-    live "/games/:id/lobby", GameLive.Lobby, :lobby
-    live "/games/:id/play", GameLive.Show, :play
+    # Wrap all LiveViews in a live_session with locale mount
+    live_session :default,
+      on_mount: {CrimeToGoWeb.LocaleHelpers, :default} do
+      live "/", HomeLive.Index, :index
 
-    # Player routes
-    live "/games/:game_id/join", PlayerLive.Join, :join
-    live "/games/:game_id/players", PlayerLive.Index, :index
-    live "/games/:game_id/players/new", PlayerLive.Index, :new
-    live "/games/:game_id/players/:id", PlayerLive.Show, :show
+      # Game management routes
+      live "/games", GameLive.Index, :index
+      live "/games/new", GameLive.Index, :new
+      live "/games/:id", GameLive.Show, :show
+      live "/games/:id/lobby", GameLive.Lobby, :lobby
+      live "/games/:id/play", GameLive.Show, :play
 
-    # Chat routes
-    live "/games/:game_id/chat", ChatLive.Index, :index
-    live "/games/:game_id/chat_rooms/:id", ChatLive.Room, :show
+      # Player routes
+      live "/games/:game_id/join", PlayerLive.Join, :join
+      live "/games/:game_id/players", PlayerLive.Index, :index
+      live "/games/:game_id/players/new", PlayerLive.Index, :new
+      live "/games/:game_id/players/:id", PlayerLive.Show, :show
+
+      # Chat routes
+      live "/games/:game_id/chat", ChatLive.Index, :index
+      live "/games/:game_id/chat_rooms/:id", ChatLive.Room, :show
+    end
   end
 
   # Other scopes may use custom stacks.
