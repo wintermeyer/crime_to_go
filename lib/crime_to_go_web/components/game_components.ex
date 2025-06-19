@@ -86,10 +86,10 @@ defmodule CrimeToGoWeb.GameComponents do
           {gettext("Game Code")}
         </div>
         <div class={[
-          "font-mono font-bold tracking-widest mb-2",
+          "font-mono font-bold mb-2 game-code-display",
           if(@primary, do: "text-2xl text-primary", else: "text-xl text-base-content")
         ]}>
-          {@formatted_code}
+          {Phoenix.HTML.raw(@formatted_code)}
         </div>
         <button
           class={[
@@ -187,6 +187,7 @@ defmodule CrimeToGoWeb.GameComponents do
     |> String.graphemes()
     |> Enum.chunk_every(4)
     |> Enum.map(&Enum.join/1)
-    |> Enum.join("\u2009")  # Thin space - smaller than regular space for better readability
+    |> Enum.join(~s(<span class="text-sm"> </span>))
+    |> Phoenix.HTML.raw()
   end
 end
