@@ -48,9 +48,14 @@ defmodule CrimeToGoWeb.GameComponents do
                   <p class="text-xs text-primary">{gettext("Host")}</p>
                 <% end %>
               </div>
-              <!-- Online indicator for lobby -->
+              <!-- Online/Offline status indicator -->
               <%= if @show_status do %>
-                <div class="w-2 h-2 bg-success rounded-full"></div>
+                <div class={[
+                  "w-2 h-2 rounded-full",
+                  if(player.status == "online", do: "bg-success", else: "bg-error")
+                ]} title={
+                  if(player.status == "online", do: gettext("Online"), else: gettext("Offline"))
+                }></div>
               <% end %>
             </div>
           <% end %>

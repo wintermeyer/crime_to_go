@@ -224,10 +224,15 @@
                           <p class="text-xs md:text-sm text-primary">{gettext("Host")}</p>
                         <% end %>
                       </div>
-                      <!-- Online indicator -->
+                      <!-- Online/Offline indicator -->
                       <div class="flex items-center gap-1">
-                        <div class="w-2 h-2 bg-success rounded-full animate-pulse"></div>
-                        <span class="text-xs text-base-content/60">{gettext("Online")}</span>
+                        <div class={[
+                          "w-2 h-2 rounded-full",
+                          if(player.status == "online", do: "bg-success animate-pulse", else: "bg-error")
+                        ]}></div>
+                        <span class="text-xs text-base-content/60">
+                          {if player.status == "online", do: gettext("Online"), else: gettext("Offline")}
+                        </span>
                       </div>
                     </div>
                   </div>

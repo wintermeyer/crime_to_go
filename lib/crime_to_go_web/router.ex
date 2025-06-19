@@ -21,9 +21,12 @@ defmodule CrimeToGoWeb.Router do
     # Route for setting locale
     post "/set_locale", PageController, :set_locale
 
-    # Wrap all LiveViews in a live_session with locale mount
+    # Wrap all LiveViews in a live_session with locale mount and player status tracking
     live_session :default,
-      on_mount: {CrimeToGoWeb.LocaleHelpers, :default} do
+      on_mount: [
+        {CrimeToGoWeb.LocaleHelpers, :default},
+        {CrimeToGoWeb.LocaleHelpers, :player_status_tracking}
+      ] do
       live "/", HomeLive.Index, :index
 
       # Game management routes

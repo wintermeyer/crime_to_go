@@ -97,4 +97,21 @@ defmodule CrimeToGoWeb.GameLive.Show do
     players = Player.list_players_for_game(socket.assigns.game.id)
     {:noreply, assign(socket, players: players)}
   end
+
+  @impl true
+  def handle_info({:player_status_changed, _player, _status}, socket) do
+    # Refresh players list when player status changes
+    players = Player.list_players_for_game(socket.assigns.game.id)
+    {:noreply, assign(socket, players: players)}
+  end
+
+  @impl true
+  def terminate(_reason, socket) do
+    # Set player as offline when LiveView terminates
+    case socket.assigns[:current_player] do
+      nil -> :ok
+      current_player -> Player.set_player_offline(current_player)
+    end
+    :ok
+  end
 end

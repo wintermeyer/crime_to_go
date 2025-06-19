@@ -92,6 +92,8 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
       player_params
       |> Map.put("game_id", game.id)
       |> Map.put("game_host", is_host)
+      |> Map.put("status", "online")
+      |> Map.put("last_seen_at", DateTime.utc_now())
 
     # Validate nickname availability before creating player
     changeset =

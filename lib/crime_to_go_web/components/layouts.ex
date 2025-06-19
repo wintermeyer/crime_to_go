@@ -74,11 +74,17 @@ defmodule CrimeToGoWeb.Layouts do
             <div class="dropdown dropdown-end">
               <div tabindex="0" role="button" class="btn btn-ghost btn-sm flex items-center gap-2">
                 <%= if @current_player.avatar_file_name do %>
-                  <img 
-                    src={~p"/images/avatars/#{@current_player.avatar_file_name}"} 
-                    alt={@current_player.nickname}
-                    class="w-6 h-6 rounded-full"
-                  />
+                  <div class="relative">
+                    <img 
+                      src={~p"/images/avatars/#{@current_player.avatar_file_name}"} 
+                      alt={@current_player.nickname}
+                      class="w-6 h-6 rounded-full"
+                    />
+                    <div class={[
+                      "absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full border border-base-100",
+                      if(@current_player.status == "online", do: "bg-success", else: "bg-error")
+                    ]}></div>
+                  </div>
                 <% else %>
                   <.icon name="hero-user-circle" class="w-5 h-5" />
                 <% end %>

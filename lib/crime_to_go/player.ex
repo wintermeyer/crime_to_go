@@ -254,4 +254,89 @@ defmodule CrimeToGo.Player do
     |> order_by([p], p.inserted_at)
     |> Repo.all()
   end
+
+  @doc """
+  Updates a player's status.
+  
+  ## Examples
+  
+      iex> update_player_status(player, "online")
+      {:ok, %Player{}}
+      
+      iex> update_player_status(player, "offline")
+      {:ok, %Player{}}
+  """
+  def update_player_status(%Player{} = player, status) when status in ["online", "offline"] do
+    attrs = %{
+      status: status,
+      last_seen_at: DateTime.utc_now()
+    }
+    
+    player
+    |> Player.status_changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Sets a player as online and broadcasts the status change.
+  """
+  def set_player_online(%Player{} = player) do
+    case update_player_status(player, "online") do
+      {:ok, updated_player} ->
+        broadcast_player_status_change(updated_player, "online")
+        {:ok, updated_player}
+      error ->
+        error
+    end
+  end
+
+  @doc """
+  Sets a player as offline and broadcasts the status change.
+  """
+  def set_player_offline(%Player{} = player) do
+    case update_player_status(player, "offline") do
+      {:ok, updated_player} ->
+        broadcast_player_status_change(updated_player, "offline")
+        {:ok, updated_player}
+      error ->
+        error
+    end
+  end
+
+  @doc """
+  Gets all online players for a game.
+  """
+  def list_online_players_for_game(game_id) do
+    Player
+    |> where([p], p.game_id == ^game_id and p.status == "online")
+    |> order_by([p], p.inserted_at)
+    |> Repo.all()
+  end
+
+  @doc """
+  Gets all offline players for a game.
+  """
+  def list_offline_players_for_game(game_id) do
+    Player
+    |> where([p], p.game_id == ^game_id and p.status == "offline")
+    |> order_by([p], p.inserted_at)
+    |> Repo.all()
+  end
+
+  # Broadcasts player status changes to the game topic and player-specific topic.
+  defp broadcast_player_status_change(%Player{} = player, status) do
+    # Broadcast to game topic for all players in the game
+    Phoenix.PubSub.broadcast(
+      CrimeToGo.PubSub,
+      "game:#{player.game_id}",
+      {:player_status_changed, player, status}
+    )
+
+    # Broadcast to player-specific topic
+    Phoenix.PubSub.broadcast(
+      CrimeToGo.PubSub,
+      "player:#{player.id}",
+      {:status_changed, player, status}
+    )
+  end
 end

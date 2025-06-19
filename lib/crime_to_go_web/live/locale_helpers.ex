@@ -29,6 +29,10 @@ defmodule CrimeToGoWeb.LocaleHelpers do
     {:cont, socket}
   end
 
+  def on_mount(:player_status_tracking, _params, _session, socket) do
+    {:cont, socket}
+  end
+
   defp assign_current_player(socket, params) do
     # Try to get game_id from params
     game_id = params["game_id"] || params["id"]
@@ -44,7 +48,22 @@ defmodule CrimeToGoWeb.LocaleHelpers do
             # Verify the player exists and belongs to this game
             players = Player.list_players_for_game(game_id)
             current_player = Enum.find(players, &(&1.id == player_id))
-            Phoenix.Component.assign(socket, current_player: current_player)
+            
+            if current_player do
+              # Set player as online when they connect
+              {:ok, updated_player} = Player.set_player_online(current_player)
+              
+              # Subscribe to player status updates
+              Phoenix.PubSub.subscribe(CrimeToGo.PubSub, "player:#{updated_player.id}")
+              Phoenix.PubSub.subscribe(CrimeToGo.PubSub, "game:#{game_id}")
+              
+              # Track this player for cleanup on disconnect
+              Process.put(:current_player_id, updated_player.id)
+              
+              Phoenix.Component.assign(socket, current_player: updated_player)
+            else
+              Phoenix.Component.assign(socket, current_player: nil)
+            end
           else
             Phoenix.Component.assign(socket, current_player: nil)
           end
