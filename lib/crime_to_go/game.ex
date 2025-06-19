@@ -1,10 +1,14 @@
 defmodule CrimeToGo.Game do
   @moduledoc """
   The Game context.
+  
+  This context manages game-related operations including creation, state management,
+  and player interactions. It provides the main business logic for game lifecycle.
   """
 
   import Ecto.Query, warn: false
   alias CrimeToGo.Repo
+  alias CrimeToGo.Shared
 
   alias CrimeToGo.Game.Game
 
@@ -17,6 +21,7 @@ defmodule CrimeToGo.Game do
       [%Game{}, ...]
 
   """
+  @spec list_games() :: [Game.t()]
   def list_games do
     Repo.all(Game)
   end
@@ -35,6 +40,7 @@ defmodule CrimeToGo.Game do
       ** (Ecto.NoResultsError)
 
   """
+  @spec get_game!(binary()) :: Game.t()
   def get_game!(id), do: Repo.get!(Game, id)
 
   @doc """
@@ -49,6 +55,7 @@ defmodule CrimeToGo.Game do
       nil
 
   """
+  @spec get_game_by_code(String.t()) :: Game.t() | nil
   def get_game_by_code(game_code) do
     Repo.get_by(Game, game_code: game_code)
   end
@@ -65,19 +72,13 @@ defmodule CrimeToGo.Game do
       {:error, %Ecto.Changeset{}}
 
   """
+  @spec create_game(map()) :: {:ok, Game.t()} | {:error, Ecto.Changeset.t()}
   def create_game(attrs \\ %{}) do
     game_code = generate_unique_game_code()
 
-    # Convert attrs to string keys if they contain atom keys
-    attrs_normalized =
-      if Enum.any?(Map.keys(attrs), &is_atom/1) do
-        for {key, val} <- attrs, into: %{}, do: {to_string(key), val}
-      else
-        attrs
-      end
-
     attrs_with_code =
-      attrs_normalized
+      attrs
+      |> Shared.normalize_attrs()
       |> Map.put("game_code", game_code)
       |> Map.put_new("invitation_code", game_code)
 
@@ -98,6 +99,7 @@ defmodule CrimeToGo.Game do
       {:error, %Ecto.Changeset{}}
 
   """
+  @spec update_game(Game.t(), map()) :: {:ok, Game.t()} | {:error, Ecto.Changeset.t()}
   def update_game(%Game{} = game, attrs) do
     game
     |> Game.changeset(attrs)
@@ -116,6 +118,7 @@ defmodule CrimeToGo.Game do
       {:error, %Ecto.Changeset{}}
 
   """
+  @spec delete_game(Game.t()) :: {:ok, Game.t()} | {:error, Ecto.Changeset.t()}
   def delete_game(%Game{} = game) do
     Repo.delete(game)
   end
@@ -129,6 +132,7 @@ defmodule CrimeToGo.Game do
       %Ecto.Changeset{data: %Game{}}
 
   """
+  @spec change_game(Game.t(), map()) :: Ecto.Changeset.t()
   def change_game(%Game{} = game, attrs \\ %{}) do
     Game.changeset(game, attrs)
   end
@@ -142,13 +146,7 @@ defmodule CrimeToGo.Game do
     |> Repo.update()
     |> case do
       {:ok, updated_game} = result ->
-        # Broadcast game started event
-        Phoenix.PubSub.broadcast(
-          CrimeToGo.PubSub,
-          "game:#{game.id}",
-          {:game_started, updated_game}
-        )
-
+        Shared.broadcast_event("game:#{game.id}", {:game_started, updated_game})
         result
 
       error ->

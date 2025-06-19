@@ -2,42 +2,35 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
   use CrimeToGoWeb, :live_view
   use CrimeToGoWeb.BaseLive
 
-  alias CrimeToGo.Game
-  alias CrimeToGo.Player
-  alias CrimeToGo.Chat
+  alias CrimeToGo.{Game, Player, Chat}
+  alias CrimeToGo.Shared.Constants
 
   @impl true
   def mount(%{"game_id" => game_id}, _session, socket) do
-    case Game.get_game!(game_id) do
-      %{state: "pre_game"} = game ->
-        existing_players = Player.list_players_for_game(game_id)
-        default_nickname = generate_default_nickname(existing_players, game.lang)
+    handle_resource_not_found(socket, fn ->
+      game = Game.get_game!(game_id)
+      
+      case validate_game_state(socket, game, "pre_game", gettext("This game is no longer accepting new players")) do
+        {:ok, socket} ->
+          existing_players = Player.list_players_for_game(game_id)
+          default_nickname = generate_default_nickname(existing_players, game.lang)
+          
+          changeset =
+            Player.change_player(%Player.Player{game_id: game_id}, %{"nickname" => default_nickname})
+            |> Map.put(:action, :validate)
+
+          {:ok,
+           assign(socket,
+             game: game,
+             changeset: changeset,
+             form: to_form(changeset),
+             existing_players: existing_players,
+             form_params: %{"nickname" => default_nickname}
+           )}
         
-        changeset =
-          Player.change_player(%Player.Player{game_id: game_id}, %{"nickname" => default_nickname})
-          |> Map.put(:action, :validate)
-
-        {:ok,
-         assign(socket,
-           game: game,
-           changeset: changeset,
-           form: to_form(changeset),
-           existing_players: existing_players,
-           form_params: %{"nickname" => default_nickname}
-         )}
-
-      _game ->
-        {:ok,
-         socket
-         |> put_flash(:error, gettext("This game is no longer accepting new players"))
-         |> push_navigate(to: ~p"/")}
-    end
-  rescue
-    Ecto.NoResultsError ->
-      {:ok,
-       socket
-       |> put_flash(:error, gettext("Game not found"))
-       |> push_navigate(to: ~p"/")}
+        error_result -> error_result
+      end
+    end)
   end
 
   @impl true
@@ -93,7 +86,7 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
             end
 
             # Broadcast that a player joined
-            Phoenix.PubSub.broadcast(CrimeToGo.PubSub, "game:#{game.id}", {:player_joined, player})
+            safe_broadcast("game:#{game.id}", {:player_joined, player})
 
             # Redirect host to game show page, other players to lobby
             redirect_path =
@@ -133,18 +126,8 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
      )}
   end
 
-  # Returns the list of all adventurer avatar filenames that exist in
-  # priv/static/images/avatars. These were generated as
-  # "adventurer_avatar_01.webp" ... "adventurer_avatar_50.webp".
-  #
-  # NB: If you ever change the number of generated avatars just update the
-  # range below – they follow the same naming scheme.
   defp available_avatars do
-    1..50
-    |> Enum.map(fn i ->
-      i |> Integer.to_string() |> String.pad_leading(2, "0")
-    end)
-    |> Enum.map(&"adventurer_avatar_#{&1}.webp")
+    Constants.available_avatars()
   end
 
   defp avatar_available?(game_id, avatar_filename) do

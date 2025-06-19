@@ -1,6 +1,8 @@
 defmodule CrimeToGo.Player.Player do
   use Ecto.Schema
   import Ecto.Changeset
+  
+  alias CrimeToGo.Shared.{Constants, Validations}
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -24,8 +26,10 @@ defmodule CrimeToGo.Player.Player do
     player
     |> cast(attrs, [:game_host, :is_robot, :nickname, :avatar_file_name, :game_id])
     |> validate_required([:nickname, :avatar_file_name, :game_id])
-    |> validate_length(:nickname, max: 140)
-    |> validate_length(:avatar_file_name, max: 255)
+    |> validate_length(:nickname, max: Constants.max_length(:nickname))
+    |> validate_length(:avatar_file_name, max: Constants.max_length(:avatar_file_name))
+    |> Validations.validate_not_blank(:nickname)
+    |> Validations.validate_safe_text(:nickname)
     |> unique_constraint(:nickname, name: :players_game_id_nickname_index)
     |> unique_constraint(:avatar_file_name, name: :players_game_id_avatar_file_name_index)
     |> foreign_key_constraint(:game_id)

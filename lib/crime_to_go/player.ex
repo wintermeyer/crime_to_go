@@ -1,10 +1,14 @@
 defmodule CrimeToGo.Player do
   @moduledoc """
   The Player context.
+  
+  This context manages player-related operations including creation, game membership,
+  host management, and avatar/nickname availability checking.
   """
 
   import Ecto.Query, warn: false
   alias CrimeToGo.Repo
+  alias CrimeToGo.Shared
 
   alias CrimeToGo.Player.Player
   alias CrimeToGo.Game.Game
@@ -213,16 +217,9 @@ defmodule CrimeToGo.Player do
 
   """
   def create_host_player(%Game{} = game, attrs) do
-    # Convert attrs to string keys if they contain atom keys
-    attrs_normalized =
-      if Enum.any?(Map.keys(attrs), &is_atom/1) do
-        for {key, val} <- attrs, into: %{}, do: {to_string(key), val}
-      else
-        attrs
-      end
-
     attrs_with_host =
-      attrs_normalized
+      attrs
+      |> Shared.normalize_attrs()
       |> Map.put("game_id", game.id)
       |> Map.put("game_host", true)
 

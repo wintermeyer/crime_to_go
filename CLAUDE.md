@@ -2,6 +2,37 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Project Overview
+
+Crime to Go is a multilingual multiplayer detective game built with Phoenix LiveView. The application supports real-time gameplay with chat functionality, avatar selection, and internationalization across 8 languages.
+
+### Key Technologies
+- **Phoenix 1.8** - Web framework with LiveView for real-time interactions
+- **Ecto** - Database wrapper and query generator for PostgreSQL
+- **Tailwind CSS** - Utility-first CSS framework for styling
+- **Gettext** - Internationalization support for 8 languages
+- **PubSub** - Real-time broadcasting for game events
+
+### Code Organization Principles
+
+The codebase follows these principles for maintainability:
+
+1. **DRY (Don't Repeat Yourself)** - Common patterns are extracted into shared modules
+2. **Single Responsibility** - Each module has a clear, focused purpose
+3. **Consistent Error Handling** - Standardized error responses across the application
+4. **Type Safety** - TypeSpecs are used for better documentation and tooling
+5. **Internationalization First** - All user-facing text supports multiple languages
+
+### Shared Modules
+
+To reduce duplication, the application uses several shared modules:
+
+- `CrimeToGo.Shared` - Common utilities and helper functions
+- `CrimeToGo.Shared.Constants` - Application-wide constants and configuration
+- `CrimeToGo.Shared.Validations` - Reusable validation functions
+- `CrimeToGo.Shared.ErrorHandler` - Centralized error handling
+- `CrimeToGoWeb.BaseLive` - Common LiveView patterns and utilities
+
 ## Development Commands
 
 ### Setup and Dependencies
@@ -58,3 +89,29 @@ This is a Phoenix 1.8 web application using:
 - `config/` - Application configuration files
 
 The application uses Phoenix's standard MVC pattern with LiveView capabilities. Database operations go through Ecto contexts in the `CrimeToGo` namespace, while web-facing code lives in `CrimeToGoWeb`.
+
+### Development Guidelines
+
+When working on this codebase:
+
+1. **Use Shared Modules** - Always check if functionality exists in shared modules before creating new code
+2. **Follow Naming Conventions** - Use descriptive names that clearly indicate purpose
+3. **Add Documentation** - Include @doc and @spec for public functions
+4. **Validate Input** - Use shared validation functions for consistency
+5. **Handle Errors Gracefully** - Use the ErrorHandler module for consistent error responses
+6. **Test Thoroughly** - Ensure all changes are covered by tests
+7. **Maintain I18n** - All user-facing strings must be translatable
+
+### Performance Considerations
+
+- Use preloading for associations to avoid N+1 queries
+- Leverage PubSub for real-time updates instead of polling
+- Keep LiveView assigns minimal - only store what's needed for rendering
+- Use database indexes for frequently queried fields
+
+### Security Notes
+
+- All user input is validated through Ecto changesets
+- Game codes exclude confusing characters (0, 1, 7) for usability
+- Soft deletion is used for chat messages to maintain data integrity
+- Foreign key constraints ensure referential integrity

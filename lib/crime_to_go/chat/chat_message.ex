@@ -1,6 +1,8 @@
 defmodule CrimeToGo.Chat.ChatMessage do
   use Ecto.Schema
   import Ecto.Changeset
+  
+  alias CrimeToGo.Shared.{Constants, Validations}
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -20,7 +22,8 @@ defmodule CrimeToGo.Chat.ChatMessage do
     chat_message
     |> cast(attrs, [:content, :deleted_at, :chat_room_id, :player_id])
     |> validate_required([:content, :chat_room_id, :player_id])
-    |> validate_length(:content, max: 1000)
+    |> validate_length(:content, max: Constants.max_length(:chat_message))
+    |> Validations.validate_not_blank(:content)
     |> foreign_key_constraint(:chat_room_id)
     |> foreign_key_constraint(:player_id)
   end

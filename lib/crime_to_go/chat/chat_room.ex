@@ -1,11 +1,13 @@
 defmodule CrimeToGo.Chat.ChatRoom do
   use Ecto.Schema
   import Ecto.Changeset
+  
+  alias CrimeToGo.Shared.{Constants, Validations}
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
 
-  @valid_room_types ~w(public private)
+  @valid_room_types Constants.chat_room_types()
 
   schema "chat_rooms" do
     field :name, :string
@@ -25,7 +27,9 @@ defmodule CrimeToGo.Chat.ChatRoom do
     chat_room
     |> cast(attrs, [:name, :room_type, :game_id, :created_by])
     |> validate_required([:name, :room_type, :game_id])
-    |> validate_length(:name, max: 100)
+    |> validate_length(:name, max: Constants.max_length(:chat_room_name))
+    |> Validations.validate_not_blank(:name)
+    |> Validations.validate_safe_text(:name)
     |> validate_inclusion(:room_type, @valid_room_types)
     |> unique_constraint(:name, name: :chat_rooms_game_id_name_index)
     |> foreign_key_constraint(:game_id)

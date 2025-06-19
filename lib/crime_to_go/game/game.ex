@@ -1,12 +1,14 @@
 defmodule CrimeToGo.Game.Game do
   use Ecto.Schema
   import Ecto.Changeset
+  
+  alias CrimeToGo.Shared.Constants
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
 
-  @valid_states ~w(pre_game active post_game)
-  @valid_languages ~w(de en fr es it tr ru uk)
+  @valid_states Constants.game_states()
+  @valid_languages Constants.supported_languages()
 
   schema "games" do
     field :invitation_code, :string
@@ -27,8 +29,8 @@ defmodule CrimeToGo.Game.Game do
     game
     |> cast(attrs, [:invitation_code, :start_at, :end_at, :state, :game_code, :lang])
     |> validate_required([:invitation_code, :game_code, :lang])
-    |> validate_length(:invitation_code, max: 20)
-    |> validate_length(:game_code, max: 20)
+    |> validate_length(:invitation_code, max: Constants.max_length(:invitation_code))
+    |> validate_length(:game_code, max: Constants.max_length(:game_code))
     |> validate_inclusion(:state, @valid_states)
     |> validate_inclusion(:lang, @valid_languages)
     |> unique_constraint(:game_code)
@@ -40,13 +42,16 @@ defmodule CrimeToGo.Game.Game do
   def valid_languages, do: @valid_languages
 
   @doc """
-  Generates a unique 12-digit game code without 0, 1, and 7
+  Generates a unique game code using digits that avoid confusion (no 0, 1, or 7).
+  
+  Uses predefined constants for the valid digits and code length to ensure
+  consistency across the application.
   """
   def generate_game_code do
-    # Valid digits: 2, 3, 4, 5, 6, 8, 9
-    valid_digits = ~w(2 3 4 5 6 8 9)
+    valid_digits = Constants.game_code_digits()
+    code_length = Constants.game_code_length()
 
-    1..12
+    1..code_length
     |> Enum.map(fn _ -> Enum.random(valid_digits) end)
     |> Enum.join()
   end
