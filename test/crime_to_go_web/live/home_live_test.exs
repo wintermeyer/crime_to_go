@@ -86,11 +86,11 @@ defmodule CrimeToGoWeb.HomeLiveTest do
 
       {:ok, view, _html} = live(conn, "/")
 
-      # Enter a valid game code
+      # Enter a valid game code (with valid checksum)
       html =
         view
         |> form("form[phx-submit='join_game']")
-        |> render_change(game_code: "234234234234")
+        |> render_change(game_code: "998828935596")
 
       # Button should be enabled now
       refute html =~ ~s(disabled="disabled")
@@ -131,9 +131,9 @@ defmodule CrimeToGoWeb.HomeLiveTest do
       _button = element(view, "button", "Join Game")
       assert render(element(view, "button", "Join Game")) =~ ~s(disabled="disabled")
 
-      # Type valid code
+      # Type valid code (with valid checksum)
       view
-      |> form("form[phx-submit='join_game']", game_code: "234567890123")
+      |> form("form[phx-submit='join_game']", game_code: "369884542285")
       |> render_change()
 
       html = render(view)

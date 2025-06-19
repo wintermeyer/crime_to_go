@@ -81,7 +81,18 @@ defmodule CrimeToGoWeb.HomeLive.Index do
           {:noreply, assign(socket, join_error: gettext("Game code not found"))}
 
         game ->
-          {:noreply, push_navigate(socket, to: ~p"/games/#{game.id}/join")}
+          # Check if game is in pre_game state
+          if game.state == "pre_game" do
+            {:noreply, push_navigate(socket, to: ~p"/games/#{game.id}/join")}
+          else
+            # Game has already started or ended
+            error_message = case game.state do
+              "active" -> gettext("This game has already started")
+              "post_game" -> gettext("This game has already ended")
+              _ -> gettext("This game is not accepting new players")
+            end
+            {:noreply, assign(socket, join_error: error_message)}
+          end
       end
     else
       # Invalid format or checksum

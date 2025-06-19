@@ -194,8 +194,8 @@ msgstr ""
 
 #: lib/crime_to_go_web/live/game_live/lobby.ex:40
 #: lib/crime_to_go_web/live/game_live/show.ex:52
-#: lib/crime_to_go_web/live/home_live/index.ex:142
-#: lib/crime_to_go_web/live/home_live/index.ex:170
+#: lib/crime_to_go_web/live/home_live/index.ex:153
+#: lib/crime_to_go_web/live/home_live/index.ex:181
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Game not found"
 msgstr ""
@@ -456,7 +456,7 @@ msgstr ""
 msgid "Invite More Players"
 msgstr ""
 
-#: lib/crime_to_go_web/live/home_live/index.ex:249
+#: lib/crime_to_go_web/live/home_live/index.ex:260
 #, elixir-autogen, elixir-format
 msgid "%{count} day ago"
 msgid_plural "%{count} days ago"
@@ -464,7 +464,7 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: lib/crime_to_go_web/live/home_live/index.ex:245
+#: lib/crime_to_go_web/live/home_live/index.ex:256
 #, elixir-autogen, elixir-format
 msgid "%{count} hour ago"
 msgid_plural "%{count} hours ago"
@@ -472,7 +472,7 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: lib/crime_to_go_web/live/home_live/index.ex:241
+#: lib/crime_to_go_web/live/home_live/index.ex:252
 #, elixir-autogen, elixir-format
 msgid "%{count} minute ago"
 msgid_plural "%{count} minutes ago"
@@ -590,12 +590,12 @@ msgstr ""
 msgid "Waiting for more players..."
 msgstr ""
 
-#: lib/crime_to_go_web/live/home_live/index.ex:166
+#: lib/crime_to_go_web/live/home_live/index.ex:177
 #, elixir-autogen, elixir-format
 msgid "You can only rejoin games you are part of"
 msgstr ""
 
-#: lib/crime_to_go_web/live/home_live/index.ex:138
+#: lib/crime_to_go_web/live/home_live/index.ex:149
 #, elixir-autogen, elixir-format
 msgid "You can only rejoin games you created"
 msgstr ""
@@ -610,7 +610,7 @@ msgstr "Ви вже приєдналися до цієї гри"
 msgid "Your games"
 msgstr ""
 
-#: lib/crime_to_go_web/live/home_live/index.ex:237
+#: lib/crime_to_go_web/live/home_live/index.ex:248
 #, elixir-autogen, elixir-format
 msgid "just now"
 msgstr ""
@@ -649,8 +649,23 @@ msgstr "Мій профіль"
 msgid "Offline"
 msgstr "Офлайн"
 
-#: lib/crime_to_go_web/live/home_live/index.ex:88
-#: lib/crime_to_go_web/live/home_live/index.ex:102
+#: lib/crime_to_go_web/live/home_live/index.ex:99
+#: lib/crime_to_go_web/live/home_live/index.ex:113
 #, elixir-autogen, elixir-format
 msgid "Invalid game code format"
+msgstr ""
+
+#: lib/crime_to_go_web/live/home_live/index.ex:91
+#, elixir-autogen, elixir-format
+msgid "This game has already ended"
+msgstr ""
+
+#: lib/crime_to_go_web/live/home_live/index.ex:90
+#, elixir-autogen, elixir-format
+msgid "This game has already started"
+msgstr ""
+
+#: lib/crime_to_go_web/live/home_live/index.ex:92
+#, elixir-autogen, elixir-format, fuzzy
+msgid "This game is not accepting new players"
 msgstr ""

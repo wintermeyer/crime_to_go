@@ -265,7 +265,7 @@
                 </div>
                 <button
                   type="submit"
-                  disabled={String.length(@game_code) != 12}
+                  disabled={String.length(@game_code) != 12 || @join_error != nil}
                   class="btn btn-success w-full disabled:btn-disabled"
                 >
                   {gettext("Join Game")}
