@@ -9,16 +9,51 @@ defmodule CrimeToGoWeb.LocaleHelpers do
   """
 
   alias CrimeToGoWeb.Plugs.Locale
+  alias CrimeToGo.Player
 
-  def on_mount(:default, _params, session, socket) do
+  def on_mount(:default, params, session, socket) do
     locale = Map.get(session, "locale", Locale.default_locale())
 
-    if locale in Locale.supported_locales() do
-      Gettext.put_locale(CrimeToGoWeb.Gettext, locale)
-      {:cont, Phoenix.Component.assign(socket, locale: locale)}
+    socket = 
+      if locale in Locale.supported_locales() do
+        Gettext.put_locale(CrimeToGoWeb.Gettext, locale)
+        Phoenix.Component.assign(socket, locale: locale)
+      else
+        Gettext.put_locale(CrimeToGoWeb.Gettext, Locale.default_locale())
+        Phoenix.Component.assign(socket, locale: Locale.default_locale())
+      end
+
+    # Check for current player based on route params and cookies
+    socket = assign_current_player(socket, params)
+
+    {:cont, socket}
+  end
+
+  defp assign_current_player(socket, params) do
+    # Try to get game_id from params
+    game_id = params["game_id"] || params["id"]
+    
+    if game_id && Phoenix.LiveView.connected?(socket) do
+      cookie_name = "player_#{game_id}"
+      
+      case Phoenix.LiveView.get_connect_params(socket) do
+        %{} = connect_params ->
+          player_id = Map.get(connect_params, cookie_name)
+          
+          if player_id do
+            # Verify the player exists and belongs to this game
+            players = Player.list_players_for_game(game_id)
+            current_player = Enum.find(players, &(&1.id == player_id))
+            Phoenix.Component.assign(socket, current_player: current_player)
+          else
+            Phoenix.Component.assign(socket, current_player: nil)
+          end
+          
+        _ ->
+          Phoenix.Component.assign(socket, current_player: nil)
+      end
     else
-      Gettext.put_locale(CrimeToGoWeb.Gettext, Locale.default_locale())
-      {:cont, Phoenix.Component.assign(socket, locale: Locale.default_locale())}
+      Phoenix.Component.assign(socket, current_player: nil)
     end
   end
 

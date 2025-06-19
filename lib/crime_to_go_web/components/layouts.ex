@@ -15,6 +15,8 @@ defmodule CrimeToGoWeb.Layouts do
   def app(assigns) do
     # Default locale if not set
     assigns = assign_new(assigns, :locale, fn -> "en" end)
+    # Default current_player to nil if not set
+    assigns = assign_new(assigns, :current_player, fn -> nil end)
 
     ~H"""
     <!-- Navigation Bar -->
@@ -66,36 +68,106 @@ defmodule CrimeToGoWeb.Layouts do
 
       <div class="navbar-end">
         <div class="flex items-center gap-2">
-          <!-- Language Selector -->
-          <div class="dropdown dropdown-end">
-            <div tabindex="0" role="button" class="btn btn-ghost btn-sm">
-              <.icon name="hero-language" class="w-4 h-4" />
-              <span class="hidden sm:inline ml-1">
-                {locale_flag(@locale)} {String.upcase(@locale)}
-              </span>
+          <!-- Player Dropdown or Language Selector -->
+          <%= if @current_player do %>
+            <!-- Player Dropdown Menu -->
+            <div class="dropdown dropdown-end">
+              <div tabindex="0" role="button" class="btn btn-ghost btn-sm flex items-center gap-2">
+                <%= if @current_player.avatar_file_name do %>
+                  <img 
+                    src={~p"/images/avatars/#{@current_player.avatar_file_name}"} 
+                    alt={@current_player.nickname}
+                    class="w-6 h-6 rounded-full"
+                  />
+                <% else %>
+                  <.icon name="hero-user-circle" class="w-5 h-5" />
+                <% end %>
+                <span class="hidden sm:inline">{@current_player.nickname}</span>
+                <.icon name="hero-chevron-down" class="w-3 h-3" />
+              </div>
+              <ul
+                tabindex="0"
+                class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
+              >
+                <!-- Profile -->
+                <li>
+                  <a href="#" class="flex items-center gap-2">
+                    <.icon name="hero-user" class="w-4 h-4" />
+                    {gettext("My Profile")}
+                  </a>
+                </li>
+                
+                <!-- Change Language -->
+                <li>
+                  <details>
+                    <summary class="flex items-center gap-2">
+                      <.icon name="hero-language" class="w-4 h-4" />
+                      {gettext("Language")}
+                    </summary>
+                    <ul class="p-2">
+                      <li :for={{code, name} <- locale_names()}>
+                        <form method="post" action="/set_locale" style="display: inline;">
+                          <input type="hidden" name="_csrf_token" value={Phoenix.Controller.get_csrf_token()} />
+                          <input type="hidden" name="locale" value={code} />
+                          <button
+                            type="submit"
+                            class={[
+                              "w-full text-left flex items-center gap-2 p-2 hover:bg-base-200 rounded",
+                              @locale == code && "bg-base-200 font-medium"
+                            ]}
+                          >
+                            <span class="text-lg">{locale_flag(code)}</span>
+                            {name}
+                          </button>
+                        </form>
+                      </li>
+                    </ul>
+                  </details>
+                </li>
+                
+                <div class="divider my-1"></div>
+                
+                <!-- Leave Game -->
+                <li>
+                  <a href="/" class="flex items-center gap-2 text-error">
+                    <.icon name="hero-arrow-left-on-rectangle" class="w-4 h-4" />
+                    {gettext("Leave Game")}
+                  </a>
+                </li>
+              </ul>
             </div>
-            <ul
-              tabindex="0"
-              class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
-            >
-              <li :for={{code, name} <- locale_names()}>
-                <form method="post" action="/set_locale" style="display: inline;">
-                  <input type="hidden" name="_csrf_token" value={Phoenix.Controller.get_csrf_token()} />
-                  <input type="hidden" name="locale" value={code} />
-                  <button
-                    type="submit"
-                    class={[
-                      "w-full text-left flex items-center gap-2 p-2 hover:bg-base-200 rounded",
-                      @locale == code && "bg-base-200 font-medium"
-                    ]}
-                  >
-                    <span class="text-lg">{locale_flag(code)}</span>
-                    {name}
-                  </button>
-                </form>
-              </li>
-            </ul>
-          </div>
+          <% else %>
+            <!-- Language Selector (when not in game) -->
+            <div class="dropdown dropdown-end">
+              <div tabindex="0" role="button" class="btn btn-ghost btn-sm">
+                <.icon name="hero-language" class="w-4 h-4" />
+                <span class="hidden sm:inline ml-1">
+                  {locale_flag(@locale)} {String.upcase(@locale)}
+                </span>
+              </div>
+              <ul
+                tabindex="0"
+                class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
+              >
+                <li :for={{code, name} <- locale_names()}>
+                  <form method="post" action="/set_locale" style="display: inline;">
+                    <input type="hidden" name="_csrf_token" value={Phoenix.Controller.get_csrf_token()} />
+                    <input type="hidden" name="locale" value={code} />
+                    <button
+                      type="submit"
+                      class={[
+                        "w-full text-left flex items-center gap-2 p-2 hover:bg-base-200 rounded",
+                        @locale == code && "bg-base-200 font-medium"
+                      ]}
+                    >
+                      <span class="text-lg">{locale_flag(code)}</span>
+                      {name}
+                    </button>
+                  </form>
+                </li>
+              </ul>
+            </div>
+          <% end %>
           
     <!-- Notification Bell -->
           <button class="btn btn-ghost btn-sm btn-circle relative">

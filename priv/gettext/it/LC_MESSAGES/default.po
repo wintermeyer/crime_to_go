@@ -21,7 +21,7 @@ msgstr "Un gioco investigativo online multiplayer dove i giocatori collaborano p
 msgid "Actions"
 msgstr "Azioni"
 
-#: lib/crime_to_go_web/components/layouts.ex:163
+#: lib/crime_to_go_web/components/layouts.ex:235
 #, elixir-autogen, elixir-format
 msgid "Attempting to reconnect"
 msgstr "Tentativo di riconnessione"
@@ -72,8 +72,8 @@ msgstr "Analisi delle Prove"
 msgid "Game Features"
 msgstr "Caratteristiche del Gioco"
 
-#: lib/crime_to_go_web/components/layouts.ex:39
-#: lib/crime_to_go_web/components/layouts.ex:61
+#: lib/crime_to_go_web/components/layouts.ex:41
+#: lib/crime_to_go_web/components/layouts.ex:63
 #, elixir-autogen, elixir-format
 msgid "Games"
 msgstr "Partite"
@@ -83,13 +83,13 @@ msgstr "Partite"
 msgid "Gather and analyze clues to piece together the mystery"
 msgstr "Raccogli e analizza indizi per ricostruire il mistero"
 
-#: lib/crime_to_go_web/components/layouts.ex:175
+#: lib/crime_to_go_web/components/layouts.ex:247
 #, elixir-autogen, elixir-format
 msgid "Hang in there while we get back on track"
 msgstr "Aspetta mentre torniamo in carreggiata"
 
-#: lib/crime_to_go_web/components/layouts.ex:34
-#: lib/crime_to_go_web/components/layouts.ex:56
+#: lib/crime_to_go_web/components/layouts.ex:36
+#: lib/crime_to_go_web/components/layouts.ex:58
 #, elixir-autogen, elixir-format
 msgid "Home"
 msgstr "Home"
@@ -120,12 +120,12 @@ msgstr "Chat in Tempo Reale"
 msgid "Real-time Communication"
 msgstr "Comunicazione in Tempo Reale"
 
-#: lib/crime_to_go_web/components/layouts.ex:170
+#: lib/crime_to_go_web/components/layouts.ex:242
 #, elixir-autogen, elixir-format
 msgid "Something went wrong!"
 msgstr "Qualcosa è andato storto!"
 
-#: lib/crime_to_go_web/components/layouts.ex:158
+#: lib/crime_to_go_web/components/layouts.ex:230
 #, elixir-autogen, elixir-format
 msgid "We can't find the internet"
 msgstr "Non riusciamo a trovare internet"
@@ -265,10 +265,10 @@ msgstr "Costruisci applicazioni web ricche e interattive rapidamente, con meno c
 msgid "Changelog"
 msgstr "Registro delle Modifiche"
 
-#: lib/crime_to_go_web/components/layouts.ex:47
-#: lib/crime_to_go_web/components/layouts.ex:48
-#: lib/crime_to_go_web/components/layouts.ex:125
-#: lib/crime_to_go_web/components/layouts.ex:126
+#: lib/crime_to_go_web/components/layouts.ex:49
+#: lib/crime_to_go_web/components/layouts.ex:50
+#: lib/crime_to_go_web/components/layouts.ex:197
+#: lib/crime_to_go_web/components/layouts.ex:198
 #: lib/crime_to_go_web/components/layouts/root.html.heex:7
 #, elixir-autogen, elixir-format
 msgid "CrimeToGo"
@@ -623,3 +623,18 @@ msgstr ""
 #, elixir-autogen, elixir-format, fuzzy
 msgid "players"
 msgstr ""
+
+#: lib/crime_to_go_web/components/layouts.ex:105
+#, elixir-autogen, elixir-format
+msgid "Language"
+msgstr "Lingua"
+
+#: lib/crime_to_go_web/components/layouts.ex:134
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Leave Game"
+msgstr "Lascia il gioco"
+
+#: lib/crime_to_go_web/components/layouts.ex:96
+#, elixir-autogen, elixir-format
+msgid "My Profile"
+msgstr "Il mio profilo"
