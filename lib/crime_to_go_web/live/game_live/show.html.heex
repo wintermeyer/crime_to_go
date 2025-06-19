@@ -9,11 +9,53 @@
     <!-- Game Code - Most Important, Always Visible -->
     <.mobile_game_code code={@game.game_code} primary={true} />
 
+    <!-- Sharing Options - Always Visible, Above Players -->
+    <div class="card bg-base-100 mb-3">
+      <div class="card-body p-4">
+        <h3 class="text-sm font-semibold mb-3">{gettext("Invite More Players")}</h3>
+        
+        <!-- QR Code - Display First -->
+        <div class="text-center mb-4">
+          <div class="flex justify-center mb-2">
+            <div class="bg-white p-3 rounded-lg border border-base-300">
+              <div style="width: 140px; height: 140px;">
+                {Phoenix.HTML.raw(EQRCode.encode(@join_url) |> EQRCode.svg(width: 140, viewbox: true))}
+              </div>
+            </div>
+          </div>
+          <p class="text-xs text-base-content/60">{gettext("Scan to join instantly")}</p>
+        </div>
+        
+        <!-- Join Link -->
+        <div>
+          <label class="text-xs font-medium text-base-content/70 mb-1 block">{gettext("Join Link")}</label>
+          <div class="flex gap-2">
+            <input
+              id="show-join-url"
+              type="text"
+              readonly
+              value={@join_url}
+              class="input input-bordered input-sm flex-1 text-xs font-mono"
+            />
+            <button
+              class="btn btn-outline btn-sm"
+              onclick="navigator.clipboard.writeText(document.getElementById('show-join-url').value).then(() => {
+                document.getElementById('show-copy-feedback').classList.remove('hidden');
+                setTimeout(() => document.getElementById('show-copy-feedback').classList.add('hidden'), 1500);
+              })"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+            </button>
+          </div>
+          <p id="show-copy-feedback" class="text-xs text-success mt-1 hidden">{gettext("Link copied!")}</p>
+        </div>
+      </div>
+    </div>
+
     <!-- Players Section - Compact -->
     <.mobile_player_list players={@players} show_status={true} />
-
-    <!-- Expandable Sharing Options -->
-    <.mobile_sharing_options join_url={@join_url} />
     <!-- Start Game Button - Fixed at Bottom -->
     <div class="card bg-base-100">
       <div class="card-body p-4">
