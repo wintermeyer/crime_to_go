@@ -8,24 +8,34 @@ defmodule CrimeToGoWeb.GameLive.Lobby do
   @impl true
   def mount(%{"id" => game_id} = params, _session, socket) do
     game = Game.get_game!(game_id)
+    players = Player.list_players_for_game(game_id)
 
-    if connected?(socket) do
-      # Subscribe to game updates
-      Phoenix.PubSub.subscribe(CrimeToGo.PubSub, "game:#{game_id}")
-    end
-
+    # Check if this user is accessing with a valid player_id parameter
     current_player =
       case Map.get(params, "player_id") do
         nil -> nil
-        player_id -> Player.get_player!(player_id)
+        player_id -> Enum.find(players, &(&1.id == player_id))
       end
 
-    {:ok,
-     assign(socket,
-       game: game,
-       players: Player.list_players_for_game(game_id),
-       current_player: current_player
-     )}
+    # If no valid player_id is provided, redirect to join page
+    if is_nil(current_player) do
+      {:ok,
+       socket
+       |> put_flash(:info, gettext("Please join the game first"))
+       |> push_navigate(to: ~p"/games/#{game_id}/join")}
+    else
+      if connected?(socket) do
+        # Subscribe to game updates
+        Phoenix.PubSub.subscribe(CrimeToGo.PubSub, "game:#{game_id}")
+      end
+
+      {:ok,
+       assign(socket,
+         game: game,
+         players: players,
+         current_player: current_player
+       )}
+    end
   rescue
     Ecto.NoResultsError ->
       {:ok,

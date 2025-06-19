@@ -6,23 +6,48 @@ defmodule CrimeToGoWeb.GameLive.Show do
   alias CrimeToGo.Player
 
   @impl true
-  def mount(%{"id" => game_id}, _session, socket) do
+  def mount(%{"id" => game_id} = params, _session, socket) do
     game = Game.get_game!(game_id)
+    players = Player.list_players_for_game(game_id)
 
-    if connected?(socket) do
-      # Subscribe to game updates
-      Phoenix.PubSub.subscribe(CrimeToGo.PubSub, "game:#{game_id}")
+    # Check if this user is accessing with a valid player_id parameter
+    current_player =
+      case Map.get(params, "player_id") do
+        nil -> nil
+        player_id -> Enum.find(players, &(&1.id == player_id))
+      end
+
+    # If no valid player_id is provided, redirect to join page
+    if is_nil(current_player) do
+      {:ok,
+       socket
+       |> put_flash(:info, gettext("Please join the game first"))
+       |> push_navigate(to: ~p"/games/#{game_id}/join")}
+    else
+      # If current player is not the host, redirect to lobby
+      if not current_player.game_host do
+        {:ok,
+         socket
+         |> push_navigate(to: ~p"/games/#{game_id}/lobby?player_id=#{current_player.id}")}
+      else
+        # Host can access this page
+        if connected?(socket) do
+          # Subscribe to game updates
+          Phoenix.PubSub.subscribe(CrimeToGo.PubSub, "game:#{game_id}")
+        end
+
+        # Generate the join URL for the QR code
+        join_url = CrimeToGoWeb.Endpoint.url() <> "/games/#{game_id}/join"
+
+        {:ok,
+         assign(socket,
+           game: game,
+           join_url: join_url,
+           players: players,
+           current_player: current_player
+         )}
+      end
     end
-
-    # Generate the join URL for the QR code
-    join_url = CrimeToGoWeb.Endpoint.url() <> "/games/#{game_id}/join"
-
-    {:ok,
-     assign(socket,
-       game: game,
-       join_url: join_url,
-       players: Player.list_players_for_game(game_id)
-     )}
   rescue
     Ecto.NoResultsError ->
       {:ok,

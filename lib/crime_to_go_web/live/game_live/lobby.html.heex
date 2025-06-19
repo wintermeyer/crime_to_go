@@ -23,9 +23,11 @@
                 <div class="text-center md:text-left">
                   <p
                     id="game-code-text"
-                    class="text-3xl md:text-5xl font-bold font-mono text-primary tracking-wider mb-2"
+                    class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold font-mono text-primary tracking-wider mb-2 whitespace-nowrap"
                   >
-                    {@game.game_code}
+                    {Phoenix.HTML.raw(
+                      CrimeToGoWeb.GameComponents.format_game_code(@game.game_code)
+                    )}
                   </p>
                   <p class="text-sm md:text-base text-base-content/60">
                     {gettext("Share this code with players")}

@@ -100,9 +100,9 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
             # Redirect host to game show page, other players to lobby
             redirect_path =
               if is_host do
-                ~p"/games/#{game.id}"
+                ~p"/games/#{game.id}?player_id=#{player.id}"
               else
-                ~p"/games/#{game.id}/lobby"
+                ~p"/games/#{game.id}/lobby?player_id=#{player.id}"
               end
 
             {:noreply,

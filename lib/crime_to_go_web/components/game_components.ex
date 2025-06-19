@@ -87,7 +87,7 @@ defmodule CrimeToGoWeb.GameComponents do
         </div>
         <div class={[
           "font-mono font-bold mb-2 game-code-display",
-          if(@primary, do: "text-2xl text-primary", else: "text-xl text-base-content")
+          if(@primary, do: "text-xl text-primary", else: "text-lg text-base-content")
         ]}>
           {Phoenix.HTML.raw(@formatted_code)}
         </div>
@@ -222,13 +222,13 @@ defmodule CrimeToGoWeb.GameComponents do
     """
   end
 
-  # Private helper functions
-  defp format_game_code(code) do
+  # Helper functions
+  def format_game_code(code) do
     code
     |> String.graphemes()
     |> Enum.chunk_every(4)
     |> Enum.map(&Enum.join/1)
-    |> Enum.join(~s(<span class="text-sm"> </span>))
+    |> Enum.join(~s(<span class="text-xs"> </span>))
     |> Phoenix.HTML.raw()
   end
 end
