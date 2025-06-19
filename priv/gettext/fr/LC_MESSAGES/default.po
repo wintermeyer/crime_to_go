@@ -26,17 +26,17 @@ msgstr "Actions"
 msgid "Attempting to reconnect"
 msgstr "Tentative de reconnexion"
 
-#: lib/crime_to_go_web/live/home_live/index.html.heex:111
+#: lib/crime_to_go_web/live/home_live/index.html.heex:128
 #, elixir-autogen, elixir-format
 msgid "Collaborative Gameplay"
 msgstr "Gameplay collaboratif"
 
-#: lib/crime_to_go_web/live/home_live/index.html.heex:128
+#: lib/crime_to_go_web/live/home_live/index.html.heex:145
 #, elixir-autogen, elixir-format
 msgid "Communicate with team members through public and private chat rooms"
 msgstr "Communiquez avec les membres de l'équipe via des salons de discussion publics et privés"
 
-#: lib/crime_to_go_web/live/home_live/index.html.heex:48
+#: lib/crime_to_go_web/live/home_live/index.html.heex:64
 #, elixir-autogen, elixir-format
 msgid "Create Game"
 msgstr "Créer une partie"
@@ -51,22 +51,22 @@ msgstr "Créer une nouvelle partie"
 msgid "Detective Work"
 msgstr "Travail de détective"
 
-#: lib/crime_to_go_web/live/home_live/index.html.heex:68
+#: lib/crime_to_go_web/live/home_live/index.html.heex:85
 #, elixir-autogen, elixir-format
 msgid "Enter a game code to join an ongoing detective investigation."
 msgstr "Entrez un code de jeu pour rejoindre une enquête de détective en cours."
 
-#: lib/crime_to_go_web/live/home_live/index.html.heex:77
+#: lib/crime_to_go_web/live/home_live/index.html.heex:94
 #, elixir-autogen, elixir-format
 msgid "Enter game code (12 digits)"
 msgstr "Entrer le code du jeu (12 chiffres)"
 
-#: lib/crime_to_go_web/live/home_live/index.html.heex:138
+#: lib/crime_to_go_web/live/home_live/index.html.heex:155
 #, elixir-autogen, elixir-format
 msgid "Evidence Analysis"
 msgstr "Analyse des preuves"
 
-#: lib/crime_to_go_web/live/home_live/index.html.heex:102
+#: lib/crime_to_go_web/live/home_live/index.html.heex:119
 #, elixir-autogen, elixir-format
 msgid "Game Features"
 msgstr "Fonctionnalités du jeu"
@@ -77,7 +77,7 @@ msgstr "Fonctionnalités du jeu"
 msgid "Games"
 msgstr "Jeux"
 
-#: lib/crime_to_go_web/live/home_live/index.html.heex:140
+#: lib/crime_to_go_web/live/home_live/index.html.heex:157
 #, elixir-autogen, elixir-format
 msgid "Gather and analyze clues to piece together the mystery"
 msgstr "Rassemblez et analysez des indices pour reconstituer le mystère"
@@ -93,12 +93,12 @@ msgstr "Patientez pendant que nous rétablissons la connexion"
 msgid "Home"
 msgstr "Accueil"
 
-#: lib/crime_to_go_web/live/home_live/index.html.heex:65
+#: lib/crime_to_go_web/live/home_live/index.html.heex:82
 #, elixir-autogen, elixir-format
 msgid "Join Existing Game"
 msgstr ""
 
-#: lib/crime_to_go_web/live/home_live/index.html.heex:91
+#: lib/crime_to_go_web/live/home_live/index.html.heex:108
 #: lib/crime_to_go_web/live/player_live/join.html.heex:8
 #, elixir-autogen, elixir-format
 msgid "Join Game"
@@ -114,7 +114,7 @@ msgstr ""
 msgid "Real-time Chat"
 msgstr ""
 
-#: lib/crime_to_go_web/live/home_live/index.html.heex:125
+#: lib/crime_to_go_web/live/home_live/index.html.heex:142
 #, elixir-autogen, elixir-format
 msgid "Real-time Communication"
 msgstr ""
@@ -139,7 +139,7 @@ msgstr ""
 msgid "Work together to gather clues, analyze evidence, and identify the culprit."
 msgstr ""
 
-#: lib/crime_to_go_web/live/home_live/index.html.heex:114
+#: lib/crime_to_go_web/live/home_live/index.html.heex:131
 #, elixir-autogen, elixir-format
 msgid "Work together with other players to solve complex criminal cases"
 msgstr ""
@@ -149,12 +149,12 @@ msgstr ""
 msgid "close"
 msgstr ""
 
-#: lib/crime_to_go_web/live/home_live/index.ex:33
+#: lib/crime_to_go_web/live/home_live/index.ex:41
 #, elixir-autogen, elixir-format
 msgid "Failed to create game. Please try again."
 msgstr ""
 
-#: lib/crime_to_go_web/live/home_live/index.ex:41
+#: lib/crime_to_go_web/live/home_live/index.ex:60
 #, elixir-autogen, elixir-format
 msgid "Game code not found"
 msgstr ""
@@ -162,22 +162,22 @@ msgstr ""
 #: lib/crime_to_go_web/live/player_live/join.html.heex:92
 #, elixir-autogen, elixir-format
 msgid "All avatars have been taken."
-msgstr ""
+msgstr "Tous les avatars ont été pris."
 
 #: lib/crime_to_go_web/live/player_live/join.html.heex:35
 #, elixir-autogen, elixir-format
 msgid "Choose Your Avatar"
-msgstr ""
+msgstr "Choisissez votre Avatar"
 
 #: lib/crime_to_go_web/live/player_live/join.html.heex:21
 #, elixir-autogen, elixir-format
 msgid "Choose Your Detective Name"
-msgstr ""
+msgstr "Choisissez votre nom de détective"
 
 #: lib/crime_to_go_web/live/player_live/join.html.heex:54
 #, elixir-autogen, elixir-format
 msgid "Click another to change"
-msgstr ""
+msgstr "Cliquez sur un autre pour changer"
 
 #: lib/crime_to_go_web/live/game_live/show.html.heex:43
 #, elixir-autogen, elixir-format
@@ -192,12 +192,12 @@ msgstr ""
 #: lib/crime_to_go_web/live/player_live/join.html.heex:120
 #, elixir-autogen, elixir-format
 msgid "Current Detectives"
-msgstr ""
+msgstr "Détectives actuels"
 
 #: lib/crime_to_go_web/live/player_live/join.html.heex:22
 #, elixir-autogen, elixir-format
 msgid "Enter your detective name"
-msgstr ""
+msgstr "Entrez votre nom de détective"
 
 #: lib/crime_to_go_web/live/game_live/lobby.html.heex:10
 #: lib/crime_to_go_web/live/game_live/show.html.heex:8
@@ -226,12 +226,12 @@ msgstr ""
 #: lib/crime_to_go_web/live/player_live/join.html.heex:139
 #, elixir-autogen, elixir-format
 msgid "Host"
-msgstr ""
+msgstr "Hôte"
 
 #: lib/crime_to_go_web/live/player_live/join.html.heex:108
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Join Game as Detective"
-msgstr ""
+msgstr "Rejoindre en tant que détective"
 
 #: lib/crime_to_go_web/live/game_live/lobby.html.heex:20
 #: lib/crime_to_go_web/live/game_live/show.html.heex:66
@@ -252,7 +252,7 @@ msgstr ""
 #: lib/crime_to_go_web/live/player_live/join.html.heex:51
 #, elixir-autogen, elixir-format
 msgid "Selected Avatar"
-msgstr ""
+msgstr "Avatar sélectionné"
 
 #: lib/crime_to_go_web/live/game_live/show.html.heex:20
 #, elixir-autogen, elixir-format
@@ -277,7 +277,7 @@ msgstr ""
 #: lib/crime_to_go_web/live/player_live/join.html.heex:28
 #, elixir-autogen, elixir-format
 msgid "This name will be visible to other players"
-msgstr ""
+msgstr "Ce nom sera visible par les autres joueurs"
 
 #: lib/crime_to_go_web/live/game_live/show.ex:50
 #, elixir-autogen, elixir-format
@@ -373,3 +373,16 @@ msgstr ""
 #, elixir-autogen, elixir-format
 msgid "This detective name is already taken"
 msgstr "Ce nom de détective est déjà pris"
+
+#: lib/crime_to_go_web/live/home_live/index.html.heex:51
+#, elixir-autogen, elixir-format
+msgid "Game Language"
+msgstr "Langue du Jeu"
+
+#: lib/crime_to_go_web/live/home_live/index.html.heex:60
+#, elixir-autogen, elixir-format
+msgid "Language for game content and story"
+msgstr "Langue pour le contenu et l'histoire du jeu"
+
+msgid "Detective #%{number}"
+msgstr "Détective n°%{number}"

@@ -44,9 +44,26 @@
                   "Start a new detective game and invite friends to join you in solving mysteries."
                 )}
               </p>
-              <button phx-click="create_game" class="btn btn-primary w-full">
-                {gettext("Create Game")}
-              </button>
+              
+              <.form for={@create_form} phx-submit="create_game" phx-change="validate_create" class="space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-base-content mb-2">
+                    {gettext("Game Language")}
+                  </label>
+                  <.input
+                    field={@create_form[:lang]}
+                    type="select"
+                    options={language_options()}
+                    class="select select-bordered w-full"
+                  />
+                  <p class="text-xs text-base-content/60 mt-1">
+                    {gettext("Language for game content and story")}
+                  </p>
+                </div>
+                <button type="submit" class="btn btn-primary w-full">
+                  {gettext("Create Game")}
+                </button>
+              </.form>
             </div>
           </div>
         </div>

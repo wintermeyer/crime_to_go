@@ -6,6 +6,7 @@ defmodule CrimeToGo.Game.Game do
   @foreign_key_type :binary_id
 
   @valid_states ~w(pre_game active post_game)
+  @valid_languages ~w(de en fr es it tr ru uk)
 
   schema "games" do
     field :invitation_code, :string
@@ -13,6 +14,7 @@ defmodule CrimeToGo.Game.Game do
     field :end_at, :utc_datetime
     field :state, :string, default: "pre_game"
     field :game_code, :string
+    field :lang, :string, default: "en"
 
     has_many :players, CrimeToGo.Player.Player
     has_many :chat_rooms, CrimeToGo.Chat.ChatRoom
@@ -23,13 +25,19 @@ defmodule CrimeToGo.Game.Game do
   @doc false
   def changeset(game, attrs) do
     game
-    |> cast(attrs, [:invitation_code, :start_at, :end_at, :state, :game_code])
-    |> validate_required([:invitation_code, :game_code])
+    |> cast(attrs, [:invitation_code, :start_at, :end_at, :state, :game_code, :lang])
+    |> validate_required([:invitation_code, :game_code, :lang])
     |> validate_length(:invitation_code, max: 20)
     |> validate_length(:game_code, max: 20)
     |> validate_inclusion(:state, @valid_states)
+    |> validate_inclusion(:lang, @valid_languages)
     |> unique_constraint(:game_code)
   end
+
+  @doc """
+  Returns the list of valid languages for games.
+  """
+  def valid_languages, do: @valid_languages
 
   @doc """
   Generates a unique 12-digit game code without 0, 1, and 7

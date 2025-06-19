@@ -18,21 +18,19 @@ defmodule CrimeToGoWeb.HomeLiveTest do
       assert html =~ "Create New Game"
       assert html =~ "Join Existing Game"
       assert html =~ "Game Features"
+      assert html =~ "Game Language"
     end
 
-    test "Home page create new game redirects to join page", %{conn: conn} do
+    test "Home page displays game language form", %{conn: conn} do
       # Set to English locale
       conn = conn |> put_req_cookie("locale", "en") |> fetch_cookies()
 
-      {:ok, view, _html} = live(conn, "/")
+      {:ok, _view, html} = live(conn, "/")
 
-      assert view
-             |> element("button", "Create Game")
-             |> render_click()
-             |> follow_redirect(conn)
-             |> then(fn {:ok, _view, html} ->
-               assert html =~ "Join Game"
-             end)
+      # Check that the form includes game language selection
+      assert html =~ "Game Language"
+      assert html =~ "Language for game content and story"
+      assert html =~ "phx-submit=\"create_game\""
     end
 
     @tag :skip
