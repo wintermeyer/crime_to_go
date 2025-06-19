@@ -315,7 +315,7 @@ msgstr ""
 msgid "Source Code"
 msgstr ""
 
-#: lib/crime_to_go_web/live/player_live/join.ex:234
+#: lib/crime_to_go_web/live/player_live/join.ex:232
 #, elixir-autogen, elixir-format
 msgid "This detective name is already taken"
 msgstr "Bu dedektif adı zaten alınmış"
@@ -329,13 +329,6 @@ msgstr "Oyun Dili"
 #, elixir-autogen, elixir-format
 msgid "Language for game content and story"
 msgstr "Oyun içeriği ve hikayes için dil"
-
-#: lib/crime_to_go_web/live/player_live/join.ex:195
-#: lib/crime_to_go_web/live/player_live/join.ex:208
-#: lib/crime_to_go_web/live/player_live/join.ex:211
-#, elixir-autogen
-msgid "Detective #%{number}"
-msgstr "Dedektif #%{number}"
 
 #: lib/crime_to_go_web/live/game_live/show.html.heex:315
 #, elixir-autogen, elixir-format
@@ -666,3 +659,10 @@ msgstr ""
 #, elixir-autogen, elixir-format, fuzzy
 msgid "This game is not accepting new players"
 msgstr ""
+
+#: lib/crime_to_go_web/live/player_live/join.ex:193
+#: lib/crime_to_go_web/live/player_live/join.ex:206
+#: lib/crime_to_go_web/live/player_live/join.ex:209
+#, elixir-autogen, elixir-format
+msgid "Detective%{number}"
+msgstr "Dedektif%{number}"

@@ -182,33 +182,31 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
   end
 
   defp generate_default_nickname(existing_players, game_lang) do
+    # Set the locale temporarily to generate the nickname in the correct language
+    current_locale = Gettext.get_locale(CrimeToGoWeb.Gettext)
+    Gettext.put_locale(CrimeToGoWeb.Gettext, game_lang)
+    
     # Count all existing players and add 1 for the new player
     next_number = length(existing_players) + 1
 
-    # Get the current locale to temporarily switch for translation
-    current_locale = Gettext.get_locale(CrimeToGoWeb.Gettext)
+    # Generate the nickname using gettext interpolation (e.g., "Detective1", "Detektiv1")
+    nickname = gettext("Detective%{number}", number: next_number)
 
-    # Temporarily set locale to the game's language for translation
-    Gettext.put_locale(CrimeToGoWeb.Gettext, game_lang)
-
-    # Generate the nickname using the game's language
-    nickname = gettext("Detective #%{number}", number: next_number)
-
-    # Check if this nickname is already taken (in case of custom detective names)
+    # Check if this nickname is already taken (case-insensitive)
     existing_nicknames =
       existing_players
-      |> Enum.map(& &1.nickname)
+      |> Enum.map(&String.downcase(&1.nickname))
       |> MapSet.new()
 
     final_nickname =
-      if MapSet.member?(existing_nicknames, nickname) do
+      if MapSet.member?(existing_nicknames, String.downcase(nickname)) do
         # If somehow the generated nickname is taken, find the next available number
         Stream.iterate(next_number + 1, &(&1 + 1))
         |> Enum.find(fn i ->
-          candidate = gettext("Detective #%{number}", number: i)
-          not MapSet.member?(existing_nicknames, candidate)
+          candidate = gettext("Detective%{number}", number: i)
+          not MapSet.member?(existing_nicknames, String.downcase(candidate))
         end)
-        |> then(&gettext("Detective #%{number}", number: &1))
+        |> then(&gettext("Detective%{number}", number: &1))
       else
         nickname
       end
