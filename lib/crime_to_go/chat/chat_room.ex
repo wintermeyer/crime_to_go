@@ -1,7 +1,7 @@
 defmodule CrimeToGo.Chat.ChatRoom do
   use Ecto.Schema
   import Ecto.Changeset
-  
+
   alias CrimeToGo.Shared.{Constants, Validations}
 
   @primary_key {:id, :binary_id, autogenerate: true}

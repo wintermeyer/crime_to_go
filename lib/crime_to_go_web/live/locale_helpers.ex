@@ -1,7 +1,7 @@
 defmodule CrimeToGoWeb.LocaleHelpers do
   @moduledoc """
   Helper functions for locale management in LiveViews.
-  
+
   This module provides utilities for handling internationalization across
   the application, including locale detection, validation, and display helpers.
   It integrates with the Plug.Locale plug to maintain consistent locale
@@ -24,7 +24,7 @@ defmodule CrimeToGoWeb.LocaleHelpers do
 
   @doc """
   Returns a map of locale codes to their native language names.
-  
+
   This provides user-friendly display names for each supported language,
   shown in the language's native script for better UX.
   """
@@ -44,9 +44,9 @@ defmodule CrimeToGoWeb.LocaleHelpers do
 
   @doc """
   Gets the display name for a given locale code.
-  
+
   ## Examples
-  
+
       iex> current_locale_name("de")
       "Deutsch"
       
@@ -58,11 +58,11 @@ defmodule CrimeToGoWeb.LocaleHelpers do
 
   @doc """
   Gets the flag emoji for a given locale code.
-  
+
   Returns a default globe emoji for unknown locales.
-  
+
   ## Examples
-  
+
       iex> locale_flag("de")
       "🇩🇪"
       

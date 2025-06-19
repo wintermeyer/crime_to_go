@@ -1,7 +1,7 @@
 defmodule CrimeToGo.Game do
   @moduledoc """
   The Game context.
-  
+
   This context manages game-related operations including creation, state management,
   and player interactions. It provides the main business logic for game lifecycle.
   """

@@ -57,6 +57,18 @@ let liveSocket = new LiveSocket("/live", Socket, {
   hooks: Hooks
 })
 
+// Handle copy to clipboard event
+window.addEventListener("phx:copy_to_clipboard", (e) => {
+  if(navigator.clipboard) {
+    navigator.clipboard.writeText(e.detail.text).then(() => {
+      // You could show a toast notification here
+      console.log("Copied to clipboard:", e.detail.text)
+    }).catch(err => {
+      console.error("Failed to copy:", err)
+    })
+  }
+})
+
 // connect if there are any LiveViews on the page
 liveSocket.connect()
 

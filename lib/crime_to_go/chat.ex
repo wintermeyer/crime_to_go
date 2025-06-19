@@ -1,7 +1,7 @@
 defmodule CrimeToGo.Chat do
   @moduledoc """
   The Chat context.
-  
+
   This context manages chat-related operations including chat rooms, messages,
   and room membership. It handles both public and private chat functionality.
   """

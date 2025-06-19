@@ -1,7 +1,7 @@
 defmodule CrimeToGo.Shared.Validations do
   @moduledoc """
   Common validation functions used across different schemas and contexts.
-  
+
   This module provides reusable validation logic to ensure consistency
   and reduce duplication across the application.
   """
@@ -10,9 +10,9 @@ defmodule CrimeToGo.Shared.Validations do
 
   @doc """
   Validates that a nickname is unique within a game.
-  
+
   ## Examples
-  
+
       changeset
       |> validate_unique_nickname_in_game()
   """
@@ -22,8 +22,12 @@ defmodule CrimeToGo.Shared.Validations do
     nickname = get_field(changeset, :nickname)
 
     case {game_id, nickname} do
-      {nil, _} -> changeset
-      {_, nil} -> changeset
+      {nil, _} ->
+        changeset
+
+      {_, nil} ->
+        changeset
+
       {game_id, nickname} ->
         if CrimeToGo.Player.nickname_available?(game_id, nickname) do
           changeset
@@ -35,9 +39,9 @@ defmodule CrimeToGo.Shared.Validations do
 
   @doc """
   Validates that an avatar is unique within a game.
-  
+
   ## Examples
-  
+
       changeset
       |> validate_unique_avatar_in_game()
   """
@@ -47,8 +51,12 @@ defmodule CrimeToGo.Shared.Validations do
     avatar_file_name = get_field(changeset, :avatar_file_name)
 
     case {game_id, avatar_file_name} do
-      {nil, _} -> changeset
-      {_, nil} -> changeset
+      {nil, _} ->
+        changeset
+
+      {_, nil} ->
+        changeset
+
       {game_id, avatar_file_name} ->
         if CrimeToGo.Player.avatar_available?(game_id, avatar_file_name) do
           changeset
@@ -60,9 +68,9 @@ defmodule CrimeToGo.Shared.Validations do
 
   @doc """
   Validates that a chat room name is unique within a game.
-  
+
   ## Examples
-  
+
       changeset
       |> validate_unique_chat_room_name_in_game()
   """
@@ -72,8 +80,12 @@ defmodule CrimeToGo.Shared.Validations do
     name = get_field(changeset, :name)
 
     case {game_id, name} do
-      {nil, _} -> changeset
-      {_, nil} -> changeset
+      {nil, _} ->
+        changeset
+
+      {_, nil} ->
+        changeset
+
       {game_id, name} ->
         if CrimeToGo.Chat.chat_room_name_available?(game_id, name) do
           changeset
@@ -85,11 +97,11 @@ defmodule CrimeToGo.Shared.Validations do
 
   @doc """
   Validates that a string field contains only safe characters.
-  
+
   This helps prevent potential security issues with user input.
-  
+
   ## Examples
-  
+
       changeset
       |> validate_safe_text(:nickname)
   """
@@ -106,9 +118,9 @@ defmodule CrimeToGo.Shared.Validations do
 
   @doc """
   Validates that a field is not empty after trimming whitespace.
-  
+
   ## Examples
-  
+
       changeset
       |> validate_not_blank(:nickname)
   """

@@ -1,157 +1,209 @@
 <div class="min-h-screen bg-gradient-to-br from-base-50 to-base-100">
   <% form = to_form(@changeset) %>
-  <div class="container w-full max-w-lg mx-auto px-2 py-4 sm:px-4 sm:py-8">
-    <div class="w-full">
-      <!-- Header -->
-      <div class="text-center mb-4 sm:mb-8">
-        <h1 class="text-2xl sm:text-3xl font-bold text-base-content mb-2 sm:mb-4">
-          {gettext("Join Game")}
-        </h1>
-      </div>
-      
-<!-- Join Form -->
-      <div class="card bg-base-100 shadow-xl border border-base-300">
-        <div class="card-body p-4 sm:p-6">
-          <.form for={form} phx-submit="join" phx-change="validate" class="space-y-4">
-            <!-- Nickname Input -->
-            <div>
-              <.input
-                field={form[:nickname]}
-                type="text"
-                label={gettext("Choose Your Detective Name")}
-                placeholder={gettext("Enter your detective name")}
-                maxlength="140"
-                required
-                autofocus
-              />
-              <p class="text-xs sm:text-sm text-base-content/60 mt-1">
-                {gettext("This name will be visible to other players")}
-              </p>
-            </div>
-            
+  <div class="container mx-auto px-2 py-4 sm:px-4 sm:py-8 md:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="text-center mb-6 md:mb-10">
+      <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-base-content mb-2 md:mb-4">
+        {gettext("Join Game")}
+      </h1>
+      <p class="text-base sm:text-lg md:text-xl text-base-content/70">
+        {gettext("Get ready to solve mysteries with other detectives")}
+      </p>
+    </div>
+    
+<!-- Main Content - Responsive Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 max-w-7xl mx-auto">
+      <!-- Join Form - Takes up 2 columns on large screens -->
+      <div class="lg:col-span-2">
+        <div class="card bg-base-100 shadow-xl border border-base-300">
+          <div class="card-body p-4 sm:p-6 md:p-8">
+            <.form for={form} phx-submit="join" phx-change="validate" class="space-y-6">
+              <!-- Nickname Input -->
+              <div>
+                <.input
+                  field={form[:nickname]}
+                  type="text"
+                  label={gettext("Choose Your Detective Name")}
+                  placeholder={gettext("Enter your detective name")}
+                  maxlength="140"
+                  required
+                  autofocus
+                  class="w-full"
+                />
+                <p class="text-xs sm:text-sm md:text-base text-base-content/60 mt-1">
+                  {gettext("This name will be visible to other players")}
+                </p>
+              </div>
+              
 <!-- Avatar Selection -->
-            <div>
-              <label class="block text-base sm:text-lg font-semibold text-base-content mb-1 sm:mb-2">
-                {gettext("Choose Your Avatar")}
-              </label>
-              <div class="mt-1 sm:mt-2">
-                <%= if form[:avatar_file_name].value do %>
-                  <div class="card bg-base-200 mb-3">
-                    <div class="card-body p-2 sm:p-4">
-                      <div class="flex items-center gap-3">
-                        <img
-                          src={~p"/images/avatars/#{form[:avatar_file_name].value}"}
-                          alt="selected avatar"
-                          width="48"
-                          height="48"
-                          class="rounded-lg shadow-md"
-                        />
-                        <div class="flex-1 overflow-hidden">
-                          <p class="font-medium text-base-content truncate max-w-xs">
-                            {gettext("Selected Avatar")}
-                          </p>
-                          <p class="text-xs sm:text-sm text-base-content/60">
-                            {gettext("Click another to change")}
-                          </p>
+              <div>
+                <label class="block text-base sm:text-lg md:text-xl font-semibold text-base-content mb-2 md:mb-4">
+                  {gettext("Choose Your Avatar")}
+                </label>
+                <div class="mt-2 md:mt-4">
+                  <%= if form[:avatar_file_name].value do %>
+                    <div class="card bg-primary/10 border-2 border-primary mb-4">
+                      <div class="card-body p-3 sm:p-4 md:p-6">
+                        <div class="flex items-center gap-3 md:gap-4">
+                          <img
+                            src={~p"/images/avatars/#{form[:avatar_file_name].value}"}
+                            alt="selected avatar"
+                            width="64"
+                            height="64"
+                            class="rounded-lg shadow-md w-12 h-12 md:w-16 md:h-16"
+                          />
+                          <div class="flex-1">
+                            <p class="font-medium text-base-content text-sm md:text-base">
+                              {gettext("Selected Avatar")}
+                            </p>
+                            <p class="text-xs sm:text-sm md:text-base text-base-content/60">
+                              {gettext("Click another to change")}
+                            </p>
+                          </div>
+                          <div class="badge badge-primary badge-sm md:badge-md">
+                            {gettext("Selected")}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                <% end %>
-                
+                  <% end %>
+                  
 <!-- Avatar Grid -->
-                <div class="card bg-base-200">
-                  <div class="card-body p-2 sm:p-4">
-                    <div class="grid grid-cols-4 sm:grid-cols-6 gap-2 max-h-60 overflow-y-auto">
-                      <%= for avatar <- available_avatars(), avatar_available?(@game.id, avatar) do %>
-                        <label class={[
-                          "cursor-pointer p-1 sm:p-2 rounded-lg border-2 transition-all flex flex-col items-center",
-                          if(form[:avatar_file_name].value == avatar,
-                            do: "border-primary bg-primary/10",
-                            else: "border-transparent hover:border-primary/30"
-                          )
-                        ]}>
-                          <input
-                            type="radio"
-                            name={form[:avatar_file_name].name}
-                            value={avatar}
-                            checked={form[:avatar_file_name].value == avatar}
-                            class="hidden"
-                          />
-                          <img
-                            src={~p"/images/avatars/#{avatar}"}
-                            alt={avatar}
-                            width="48"
-                            height="48"
-                            class="rounded-lg shadow-md"
-                          />
-                        </label>
-                      <% end %>
-                      <%= if Enum.all?(available_avatars(), fn a -> not avatar_available?(@game.id, a) end) do %>
-                        <p class="col-span-full text-xs sm:text-sm text-base-content/60 text-center">
-                          {gettext("All avatars have been taken.")}
-                        </p>
-                      <% end %>
+                  <div class="card bg-base-200">
+                    <div class="card-body p-3 sm:p-4 md:p-6">
+                      <div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2 md:gap-3 max-h-60 md:max-h-96 overflow-y-auto">
+                        <%= for avatar <- available_avatars(), avatar_available?(@game.id, avatar) do %>
+                          <label class={[
+                            "cursor-pointer p-1 sm:p-2 rounded-lg border-2 transition-all flex flex-col items-center hover:scale-105",
+                            if(form[:avatar_file_name].value == avatar,
+                              do: "border-primary bg-primary/10 scale-105",
+                              else: "border-transparent hover:border-primary/30 hover:bg-base-300"
+                            )
+                          ]}>
+                            <input
+                              type="radio"
+                              name={form[:avatar_file_name].name}
+                              value={avatar}
+                              checked={form[:avatar_file_name].value == avatar}
+                              class="hidden"
+                            />
+                            <img
+                              src={~p"/images/avatars/#{avatar}"}
+                              alt={avatar}
+                              width="64"
+                              height="64"
+                              class="rounded-lg shadow-md w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14"
+                            />
+                          </label>
+                        <% end %>
+                        <%= if Enum.all?(available_avatars(), fn a -> not avatar_available?(@game.id, a) end) do %>
+                          <p class="col-span-full text-xs sm:text-sm md:text-base text-base-content/60 text-center py-8">
+                            {gettext("All avatars have been taken.")}
+                          </p>
+                        <% end %>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            
+              
 <!-- Submit Button -->
-            <div class="pt-2 sm:pt-4">
-              <button
-                type="submit"
-                disabled={not @changeset.valid?}
-                class="btn btn-primary w-full disabled:btn-disabled"
-              >
-                {gettext("Join Game as Detective")}
-              </button>
-            </div>
-          </.form>
+              <div class="pt-2 md:pt-4">
+                <button
+                  type="submit"
+                  disabled={not @changeset.valid?}
+                  class="btn btn-primary btn-md md:btn-lg w-full disabled:btn-disabled"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 md:h-6 md:w-6 mr-2"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+                    />
+                  </svg>
+                  {gettext("Join Game as Detective")}
+                </button>
+              </div>
+            </.form>
+          </div>
         </div>
       </div>
       
-<!-- Existing Players -->
-      <%= if not Enum.empty?(@existing_players) do %>
-        <div class="card bg-base-100 shadow-xl border border-base-300 mt-4 sm:mt-6">
-          <div class="card-body p-4 sm:p-6">
-            <h3 class="text-base sm:text-lg font-semibold text-base-content mb-2 sm:mb-4">
-              {gettext("Current Detectives")}
-            </h3>
-            <div class="space-y-2 sm:space-y-3">
-              <%= for player <- @existing_players do %>
-                <div class="card bg-base-200">
-                  <div class="card-body p-2 sm:p-3">
-                    <div class="flex items-center gap-2 sm:gap-3">
-                      <img
-                        src={~p"/images/avatars/#{player.avatar_file_name}"}
-                        alt="avatar"
-                        width="32"
-                        height="32"
-                        class="rounded-full"
-                      />
-                      <div class="flex-1">
-                        <p class="font-medium text-xs sm:text-base text-base-content">
-                          {player.nickname}
-                          <%= if player.game_host do %>
-                            <span class="badge badge-warning badge-xs sm:badge-sm ml-1 sm:ml-2">
-                              {gettext("Host")}
-                            </span>
-                          <% end %>
-                        </p>
-                        <p class="text-xs sm:text-sm text-base-content/60">
-                          {format_avatar_name(player.avatar_file_name)}
-                        </p>
+<!-- Existing Players - Sidebar on large screens -->
+      <div class="lg:col-span-1">
+        <div class="card bg-base-100 shadow-xl border border-base-300 h-full">
+          <div class="card-body p-4 sm:p-6 md:p-8">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-base sm:text-lg md:text-xl font-semibold text-base-content">
+                {gettext("Current Detectives")}
+              </h3>
+              <div class="badge badge-neutral badge-sm md:badge-md">
+                {length(@existing_players)}
+              </div>
+            </div>
+
+            <%= if Enum.empty?(@existing_players) do %>
+              <div class="text-center py-8">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-12 w-12 md:h-16 md:w-16 mx-auto text-base-300 mb-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                  />
+                </svg>
+                <p class="text-sm md:text-base text-base-content/60">
+                  {gettext("Be the first detective to join!")}
+                </p>
+              </div>
+            <% else %>
+              <div class="space-y-2 md:space-y-3">
+                <%= for player <- @existing_players do %>
+                  <div class="card bg-base-200 hover:bg-base-300 transition-colors">
+                    <div class="card-body p-2 sm:p-3 md:p-4">
+                      <div class="flex items-center gap-2 sm:gap-3">
+                        <img
+                          src={~p"/images/avatars/#{player.avatar_file_name}"}
+                          alt="avatar"
+                          width="40"
+                          height="40"
+                          class="rounded-full w-8 h-8 md:w-10 md:h-10"
+                        />
+                        <div class="flex-1 min-w-0">
+                          <p class="font-medium text-xs sm:text-sm md:text-base text-base-content truncate">
+                            {player.nickname}
+                          </p>
+                          <p class="text-xs md:text-sm text-base-content/60">
+                            {format_avatar_name(player.avatar_file_name)}
+                          </p>
+                        </div>
+                        <%= if player.game_host do %>
+                          <span class="badge badge-warning badge-xs sm:badge-sm">
+                            {gettext("Host")}
+                          </span>
+                        <% end %>
                       </div>
                     </div>
                   </div>
-                </div>
-              <% end %>
-            </div>
+                <% end %>
+              </div>
+            <% end %>
           </div>
         </div>
-      <% end %>
+      </div>
     </div>
   </div>
 </div>

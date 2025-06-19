@@ -1,7 +1,7 @@
 defmodule CrimeToGo.Player do
   @moduledoc """
   The Player context.
-  
+
   This context manages player-related operations including creation, game membership,
   host management, and avatar/nickname availability checking.
   """

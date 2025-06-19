@@ -1,7 +1,7 @@
 defmodule CrimeToGo.Shared.Constants do
   @moduledoc """
   Application-wide constants and configuration values.
-  
+
   This module centralizes commonly used constants across the application,
   making them easier to maintain and update.
   """
@@ -62,9 +62,9 @@ defmodule CrimeToGo.Shared.Constants do
 
   @doc """
   Gets the maximum length for a specific field.
-  
+
   ## Examples
-  
+
       iex> max_length(:nickname)
       140
   """
@@ -75,9 +75,9 @@ defmodule CrimeToGo.Shared.Constants do
 
   @doc """
   Generates the list of available avatar filenames.
-  
+
   ## Examples
-  
+
       iex> available_avatars()
       ["adventurer_avatar_01.webp", "adventurer_avatar_02.webp", ...]
   """

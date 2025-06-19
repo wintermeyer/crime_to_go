@@ -1,7 +1,7 @@
 defmodule CrimeToGo.Game.Game do
   use Ecto.Schema
   import Ecto.Changeset
-  
+
   alias CrimeToGo.Shared.Constants
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -43,7 +43,7 @@ defmodule CrimeToGo.Game.Game do
 
   @doc """
   Generates a unique game code using digits that avoid confusion (no 0, 1, or 7).
-  
+
   Uses predefined constants for the valid digits and code length to ensure
   consistency across the application.
   """

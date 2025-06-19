@@ -10,7 +10,7 @@ defmodule CrimeToGoWeb.HomeLive.Index do
   def mount(_params, _session, socket) do
     current_locale = socket.assigns[:locale] || Locale.default_locale()
     create_changeset = Game.change_game(%Game.Game{}, %{"lang" => current_locale})
-    
+
     {:ok,
      assign(socket,
        game_code: "",
@@ -36,7 +36,7 @@ defmodule CrimeToGoWeb.HomeLive.Index do
         {:noreply, push_navigate(socket, to: ~p"/games/#{game.id}/join")}
 
       {:error, changeset} ->
-        {:noreply, 
+        {:noreply,
          socket
          |> put_flash(:error, gettext("Failed to create game. Please try again."))
          |> assign(create_form: to_form(changeset))}
@@ -45,7 +45,7 @@ defmodule CrimeToGoWeb.HomeLive.Index do
 
   @impl true
   def handle_event("validate_create", %{"game" => game_params}, socket) do
-    changeset = 
+    changeset =
       %Game.Game{}
       |> Game.change_game(game_params)
       |> Map.put(:action, :validate)
@@ -71,7 +71,7 @@ defmodule CrimeToGoWeb.HomeLive.Index do
 
   defp language_options do
     CrimeToGoWeb.LocaleHelpers.locale_names()
-    |> Enum.map(fn {code, name} -> 
+    |> Enum.map(fn {code, name} ->
       {name, code}
     end)
     |> Enum.sort_by(fn {name, _code} -> name end)

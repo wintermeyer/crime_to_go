@@ -44,8 +44,13 @@
                   "Start a new detective game and invite friends to join you in solving mysteries."
                 )}
               </p>
-              
-              <.form for={@create_form} phx-submit="create_game" phx-change="validate_create" class="space-y-4">
+
+              <.form
+                for={@create_form}
+                phx-submit="create_game"
+                phx-change="validate_create"
+                class="space-y-4"
+              >
                 <div>
                   <label class="block text-sm font-medium text-base-content mb-2">
                     {gettext("Game Language")}

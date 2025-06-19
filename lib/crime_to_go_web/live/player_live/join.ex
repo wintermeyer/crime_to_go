@@ -9,14 +9,21 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
   def mount(%{"game_id" => game_id}, _session, socket) do
     handle_resource_not_found(socket, fn ->
       game = Game.get_game!(game_id)
-      
-      case validate_game_state(socket, game, "pre_game", gettext("This game is no longer accepting new players")) do
+
+      case validate_game_state(
+             socket,
+             game,
+             "pre_game",
+             gettext("This game is no longer accepting new players")
+           ) do
         {:ok, socket} ->
           existing_players = Player.list_players_for_game(game_id)
           default_nickname = generate_default_nickname(existing_players, game.lang)
-          
+
           changeset =
-            Player.change_player(%Player.Player{game_id: game_id}, %{"nickname" => default_nickname})
+            Player.change_player(%Player.Player{game_id: game_id}, %{
+              "nickname" => default_nickname
+            })
             |> Map.put(:action, :validate)
 
           {:ok,
@@ -27,8 +34,9 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
              existing_players: existing_players,
              form_params: %{"nickname" => default_nickname}
            )}
-        
-        error_result -> error_result
+
+        error_result ->
+          error_result
       end
     end)
   end
@@ -67,14 +75,15 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
       |> Map.put("game_host", is_host)
 
     # Validate nickname availability before creating player
-    changeset = 
+    changeset =
       %Player.Player{}
       |> Player.Player.changeset(player_params)
       |> validate_nickname_availability(game.id)
-    
+
     case changeset.valid? do
       false ->
         {:noreply, assign(socket, changeset: changeset, form: to_form(changeset))}
+
       true ->
         case Player.create_player(player_params) do
           {:ok, player} ->
@@ -145,48 +154,55 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
   defp generate_default_nickname(existing_players, game_lang) do
     # Count all existing players and add 1 for the new player
     next_number = length(existing_players) + 1
-    
+
     # Get the current locale to temporarily switch for translation
     current_locale = Gettext.get_locale(CrimeToGoWeb.Gettext)
-    
+
     # Temporarily set locale to the game's language for translation
     Gettext.put_locale(CrimeToGoWeb.Gettext, game_lang)
-    
+
     # Generate the nickname using the game's language
     nickname = gettext("Detective #%{number}", number: next_number)
-    
+
     # Check if this nickname is already taken (in case of custom detective names)
-    existing_nicknames = 
+    existing_nicknames =
       existing_players
       |> Enum.map(& &1.nickname)
       |> MapSet.new()
-    
-    final_nickname = if MapSet.member?(existing_nicknames, nickname) do
-      # If somehow the generated nickname is taken, find the next available number
-      Stream.iterate(next_number + 1, & &1 + 1)
-      |> Enum.find(fn i ->
-        candidate = gettext("Detective #%{number}", number: i)
-        not MapSet.member?(existing_nicknames, candidate)
-      end)
-      |> then(&gettext("Detective #%{number}", number: &1))
-    else
-      nickname
-    end
-    
+
+    final_nickname =
+      if MapSet.member?(existing_nicknames, nickname) do
+        # If somehow the generated nickname is taken, find the next available number
+        Stream.iterate(next_number + 1, &(&1 + 1))
+        |> Enum.find(fn i ->
+          candidate = gettext("Detective #%{number}", number: i)
+          not MapSet.member?(existing_nicknames, candidate)
+        end)
+        |> then(&gettext("Detective #%{number}", number: &1))
+      else
+        nickname
+      end
+
     # Restore the original locale
     Gettext.put_locale(CrimeToGoWeb.Gettext, current_locale)
-    
+
     final_nickname
   end
 
   defp validate_nickname_availability(changeset, game_id) do
     case Ecto.Changeset.get_field(changeset, :nickname) do
-      nil -> changeset
+      nil ->
+        changeset
+
       nickname ->
         if Player.nickname_available?(game_id, nickname) do
           changeset
         else
-          Ecto.Changeset.add_error(changeset, :nickname, gettext("This detective name is already taken"))
+          Ecto.Changeset.add_error(
+            changeset,
+            :nickname,
+            gettext("This detective name is already taken")
+          )
         end
     end
   end

@@ -1,19 +1,19 @@
 defmodule CrimeToGo.Shared do
   @moduledoc """
   Shared utilities and common operations used across the application.
-  
+
   This module contains reusable functions that help reduce code duplication
   and provide consistent behavior across different contexts.
   """
 
   @doc """
   Normalizes attribute maps by converting atom keys to string keys.
-  
+
   This is commonly needed when working with forms that might have
   either atom or string keys, ensuring consistent data handling.
-  
+
   ## Examples
-  
+
       iex> normalize_attrs(%{name: "John", age: 30})
       %{"name" => "John", "age" => 30}
       
@@ -33,9 +33,9 @@ defmodule CrimeToGo.Shared do
 
   @doc """
   Broadcasts a message to a PubSub topic with consistent error handling.
-  
+
   ## Examples
-  
+
       iex> broadcast_event("game:123", {:player_joined, %Player{}})
       :ok
   """
@@ -46,9 +46,9 @@ defmodule CrimeToGo.Shared do
 
   @doc """
   Generates a random element from a list of valid options.
-  
+
   ## Examples
-  
+
       iex> random_from(~w(a b c d))
       "b"  # or any other element from the list
   """
@@ -59,9 +59,9 @@ defmodule CrimeToGo.Shared do
 
   @doc """
   Safely converts a value to string, handling nil values.
-  
+
   ## Examples
-  
+
       iex> safe_to_string(123)
       "123"
       
@@ -74,7 +74,7 @@ defmodule CrimeToGo.Shared do
 
   @doc """
   Checks if a value exists in the database for the given query.
-  
+
   This provides a consistent way to check for existence across contexts.
   """
   @spec exists?(Ecto.Query.t()) :: boolean()
