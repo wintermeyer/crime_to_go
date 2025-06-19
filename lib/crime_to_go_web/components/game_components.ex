@@ -187,6 +187,6 @@ defmodule CrimeToGoWeb.GameComponents do
     |> String.graphemes()
     |> Enum.chunk_every(4)
     |> Enum.map(&Enum.join/1)
-    |> Enum.join(" ")
+    |> Enum.join("\u2009")  # Thin space - smaller than regular space for better readability
   end
 end
