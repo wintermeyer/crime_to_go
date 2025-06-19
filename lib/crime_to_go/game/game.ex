@@ -42,17 +42,27 @@ defmodule CrimeToGo.Game.Game do
   def valid_languages, do: @valid_languages
 
   @doc """
-  Generates a unique game code using digits that avoid confusion (no 0, 1, or 7).
+  Generates a unique game code with checksum using digits that avoid confusion (no 0, 1, or 7).
 
-  Uses predefined constants for the valid digits and code length to ensure
-  consistency across the application.
+  Uses the GameCode module to generate codes with built-in checksum validation.
   """
   def generate_game_code do
-    valid_digits = Constants.game_code_digits()
-    code_length = Constants.game_code_length()
+    CrimeToGo.Shared.GameCode.generate()
+  end
 
-    1..code_length
-    |> Enum.map(fn _ -> Enum.random(valid_digits) end)
-    |> Enum.join()
+  @doc """
+  Validates a game code format and checksum without database lookup.
+  
+  ## Examples
+  
+      iex> valid_code = CrimeToGo.Game.Game.generate_game_code()
+      iex> CrimeToGo.Game.Game.valid_game_code?(valid_code)
+      true
+      
+      iex> CrimeToGo.Game.Game.valid_game_code?("invalid")
+      false
+  """
+  def valid_game_code?(game_code) do
+    CrimeToGo.Shared.GameCode.valid?(game_code)
   end
 end

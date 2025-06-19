@@ -73,18 +73,38 @@ defmodule CrimeToGoWeb.HomeLive.Index do
 
   @impl true
   def handle_event("join_game", %{"game_code" => game_code}, socket) do
-    case Game.get_game_by_code(game_code) do
-      nil ->
-        {:noreply, assign(socket, join_error: gettext("Game code not found"))}
+    # First validate the game code format and checksum
+    if CrimeToGo.Game.Game.valid_game_code?(game_code) do
+      # Only query database if checksum is valid
+      case Game.get_game_by_code(game_code) do
+        nil ->
+          {:noreply, assign(socket, join_error: gettext("Game code not found"))}
 
-      game ->
-        {:noreply, push_navigate(socket, to: ~p"/games/#{game.id}/join")}
+        game ->
+          {:noreply, push_navigate(socket, to: ~p"/games/#{game.id}/join")}
+      end
+    else
+      # Invalid format or checksum
+      {:noreply, assign(socket, join_error: gettext("Invalid game code format"))}
     end
   end
 
   @impl true
   def handle_event("validate_join", %{"game_code" => game_code}, socket) do
-    {:noreply, assign(socket, game_code: game_code, join_error: nil)}
+    # Validate the game code format and checksum during typing
+    join_error = 
+      cond do
+        String.length(game_code) == 0 ->
+          nil
+        String.length(game_code) < 12 ->
+          nil  # Don't show error while user is still typing
+        not CrimeToGo.Game.Game.valid_game_code?(game_code) ->
+          gettext("Invalid game code format")
+        true ->
+          nil
+      end
+    
+    {:noreply, assign(socket, game_code: game_code, join_error: join_error)}
   end
 
   @impl true

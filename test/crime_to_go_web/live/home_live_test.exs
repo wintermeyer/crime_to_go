@@ -66,7 +66,7 @@ defmodule CrimeToGoWeb.HomeLiveTest do
         |> form("form[phx-submit='join_game']", game_code: "999999999999")
         |> render_submit()
 
-      assert html =~ "Game code not found"
+      assert html =~ "Invalid game code format"
     end
 
     test "Home page join button is disabled initially", %{conn: conn} do
