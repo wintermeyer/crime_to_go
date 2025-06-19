@@ -225,7 +225,7 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
         changeset
 
       nickname ->
-        if Player.nickname_available?(game_id, nickname) do
+        if Player.nickname_available_case_insensitive?(game_id, nickname) do
           changeset
         else
           Ecto.Changeset.add_error(

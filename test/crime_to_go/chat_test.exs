@@ -12,7 +12,7 @@ defmodule CrimeToGo.ChatTest do
 
       {:ok, player} =
         Player.create_player(%{
-          nickname: "Test Player",
+          nickname: "TestPlayer",
           avatar_file_name: "test.png",
           game_id: game.id
         })
@@ -129,7 +129,7 @@ defmodule CrimeToGo.ChatTest do
 
       {:ok, player} =
         Player.create_player(%{
-          nickname: "Test Player",
+          nickname: "TestPlayer",
           avatar_file_name: "test.png",
           game_id: game.id
         })
@@ -228,14 +228,14 @@ defmodule CrimeToGo.ChatTest do
 
       {:ok, player1} =
         Player.create_player(%{
-          nickname: "Player 1",
+          nickname: "Player1",
           avatar_file_name: "player1.png",
           game_id: game.id
         })
 
       {:ok, player2} =
         Player.create_player(%{
-          nickname: "Player 2",
+          nickname: "Player2",
           avatar_file_name: "player2.png",
           game_id: game.id
         })
@@ -319,13 +319,13 @@ defmodule CrimeToGo.ChatTest do
       player1: player1,
       player2: player2
     } do
-      {:ok, _room1} = Chat.create_private_chat_room(game, player1, "Player 1 Room")
-      {:ok, room2} = Chat.create_private_chat_room(game, player2, "Player 2 Room")
+      {:ok, _room1} = Chat.create_private_chat_room(game, player1, "Player1 Room")
+      {:ok, room2} = Chat.create_private_chat_room(game, player2, "Player2 Room")
       {:ok, _member} = Chat.add_member_to_chat_room(room2, player1)
 
       rooms = Chat.list_private_chat_rooms_for_player(game.id, player1.id)
       room_names = Enum.map(rooms, & &1.name) |> Enum.sort()
-      assert room_names == ["Player 1 Room", "Player 2 Room"]
+      assert room_names == ["Player1 Room", "Player2 Room"]
     end
   end
 end

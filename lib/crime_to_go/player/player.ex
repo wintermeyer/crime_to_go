@@ -28,12 +28,11 @@ defmodule CrimeToGo.Player.Player do
     player
     |> cast(attrs, [:game_host, :is_robot, :nickname, :avatar_file_name, :game_id, :status, :last_seen_at])
     |> validate_required([:nickname, :avatar_file_name, :game_id])
-    |> validate_length(:nickname, max: Constants.max_length(:nickname))
     |> validate_length(:avatar_file_name, max: Constants.max_length(:avatar_file_name))
     |> validate_inclusion(:status, ["online", "offline"])
     |> Validations.validate_not_blank(:nickname)
-    |> Validations.validate_safe_text(:nickname)
-    |> unique_constraint(:nickname, name: :players_game_id_nickname_index)
+    |> Validations.validate_nickname_format(:nickname)
+    |> Validations.validate_unique_nickname_in_game()
     |> unique_constraint(:avatar_file_name, name: :players_game_id_avatar_file_name_index)
     |> foreign_key_constraint(:game_id)
   end

@@ -11,7 +11,7 @@ defmodule CrimeToGo.PlayerTest do
       %{game: game}
     end
 
-    @valid_attrs %{nickname: "Detective Smith", avatar_file_name: "detective.png"}
+    @valid_attrs %{nickname: "DetectiveSmith", avatar_file_name: "detective.png"}
     @invalid_attrs %{nickname: nil, avatar_file_name: nil}
 
     test "list_players/0 returns all players", %{game: game} do
@@ -26,7 +26,7 @@ defmodule CrimeToGo.PlayerTest do
 
       {:ok, _player2} =
         Player.create_player(
-          Map.merge(@valid_attrs, %{game_id: game2.id, nickname: "Detective Jones"})
+          Map.merge(@valid_attrs, %{game_id: game2.id, nickname: "DetectiveJones"})
         )
 
       assert Player.list_players_for_game(game.id) == [player1]
@@ -39,7 +39,7 @@ defmodule CrimeToGo.PlayerTest do
 
     test "get_player_by_nickname/2 returns player by nickname within game", %{game: game} do
       {:ok, player} = Player.create_player(Map.put(@valid_attrs, :game_id, game.id))
-      assert Player.get_player_by_nickname(game.id, "Detective Smith") == player
+      assert Player.get_player_by_nickname(game.id, "DetectiveSmith") == player
     end
 
     test "get_player_by_nickname/2 returns nil for nonexistent nickname", %{game: game} do
@@ -49,7 +49,7 @@ defmodule CrimeToGo.PlayerTest do
     test "create_player/1 with valid data creates a player", %{game: game} do
       attrs = Map.put(@valid_attrs, :game_id, game.id)
       assert {:ok, %PlayerSchema{} = player} = Player.create_player(attrs)
-      assert player.nickname == "Detective Smith"
+      assert player.nickname == "DetectiveSmith"
       assert player.avatar_file_name == "detective.png"
       assert player.game_host == false
       assert player.is_robot == false
@@ -63,24 +63,24 @@ defmodule CrimeToGo.PlayerTest do
       attrs = Map.put(@valid_attrs, :game_id, game.id)
       assert {:ok, _player1} = Player.create_player(attrs)
       assert {:error, changeset} = Player.create_player(attrs)
-      assert %{nickname: ["has already been taken"]} = errors_on(changeset)
+      assert %{nickname: ["is already taken in this game"]} = errors_on(changeset)
     end
 
     test "create_player/1 enforces unique avatar per game", %{game: game} do
       attrs = Map.put(@valid_attrs, :game_id, game.id)
       assert {:ok, _player1} = Player.create_player(attrs)
 
-      attrs2 = Map.merge(attrs, %{nickname: "Different Detective"})
+      attrs2 = Map.merge(attrs, %{nickname: "DifferentDet"})
       assert {:error, changeset} = Player.create_player(attrs2)
       assert %{avatar_file_name: ["has already been taken"]} = errors_on(changeset)
     end
 
     test "update_player/2 with valid data updates the player", %{game: game} do
       {:ok, player} = Player.create_player(Map.put(@valid_attrs, :game_id, game.id))
-      update_attrs = %{nickname: "Inspector Smith"}
+      update_attrs = %{nickname: "InspectorSmith"}
 
       assert {:ok, %PlayerSchema{} = player} = Player.update_player(player, update_attrs)
-      assert player.nickname == "Inspector Smith"
+      assert player.nickname == "InspectorSmith"
     end
 
     test "update_player/2 with invalid data returns error changeset", %{game: game} do
@@ -108,7 +108,7 @@ defmodule CrimeToGo.PlayerTest do
         Player.create_player(
           Map.merge(@valid_attrs, %{
             game_id: game.id,
-            nickname: "Regular Detective",
+            nickname: "RegularDet",
             avatar_file_name: "regular.png"
           })
         )
@@ -123,10 +123,10 @@ defmodule CrimeToGo.PlayerTest do
     end
 
     test "nickname_available?/2 checks nickname availability", %{game: game} do
-      assert Player.nickname_available?(game.id, "Available Detective") == true
+      assert Player.nickname_available?(game.id, "AvailableDetective") == true
 
       {:ok, _player} = Player.create_player(Map.put(@valid_attrs, :game_id, game.id))
-      assert Player.nickname_available?(game.id, "Detective Smith") == false
+      assert Player.nickname_available?(game.id, "DetectiveSmith") == false
     end
 
     test "avatar_available?/2 checks avatar availability", %{game: game} do
@@ -150,7 +150,7 @@ defmodule CrimeToGo.PlayerTest do
         Player.create_player(
           Map.merge(@valid_attrs, %{
             game_id: game.id,
-            nickname: "Robot Detective",
+            nickname: "RobotDetective",
             avatar_file_name: "robot.png",
             is_robot: true
           })
@@ -167,7 +167,7 @@ defmodule CrimeToGo.PlayerTest do
         Player.create_player(
           Map.merge(@valid_attrs, %{
             game_id: game.id,
-            nickname: "Robot Detective",
+            nickname: "RobotDetective",
             avatar_file_name: "robot.png",
             is_robot: true
           })
@@ -184,23 +184,70 @@ defmodule CrimeToGo.PlayerTest do
     end
 
     test "validates nickname length", %{game: game} do
-      long_nickname = String.duplicate("a", 141)
+      long_nickname = String.duplicate("a", 16)
       attrs = %{nickname: long_nickname, avatar_file_name: "test.png", game_id: game.id}
 
       assert {:error, changeset} = Player.create_player(attrs)
-      assert %{nickname: ["should be at most 140 character(s)"]} = errors_on(changeset)
+      assert %{nickname: ["must be at most 15 characters long"]} = errors_on(changeset)
     end
 
     test "validates avatar_file_name length", %{game: game} do
       long_avatar = String.duplicate("a", 256)
-      attrs = %{nickname: "Test Detective", avatar_file_name: long_avatar, game_id: game.id}
+      attrs = %{nickname: "TestDetective", avatar_file_name: long_avatar, game_id: game.id}
 
       assert {:error, changeset} = Player.create_player(attrs)
       assert %{avatar_file_name: ["should be at most 255 character(s)"]} = errors_on(changeset)
     end
 
+    test "validates nickname format rules", %{game: game} do
+      # Test minimum length
+      attrs = %{nickname: "a", avatar_file_name: "test.png", game_id: game.id}
+      assert {:error, changeset} = Player.create_player(attrs)
+      assert %{nickname: ["must be at least 2 characters long"]} = errors_on(changeset)
+
+      # Test cannot start with underscore
+      attrs = %{nickname: "_test", avatar_file_name: "test.png", game_id: game.id}
+      assert {:error, changeset} = Player.create_player(attrs)
+      assert %{nickname: ["cannot start with an underscore"]} = errors_on(changeset)
+
+      # Test invalid characters (space)
+      attrs = %{nickname: "test user", avatar_file_name: "test.png", game_id: game.id}
+      assert {:error, changeset} = Player.create_player(attrs)
+      assert %{nickname: ["can only contain letters, numbers, and underscores"]} = errors_on(changeset)
+
+      # Test invalid characters (special symbols)
+      attrs = %{nickname: "test@user", avatar_file_name: "test.png", game_id: game.id}
+      assert {:error, changeset} = Player.create_player(attrs)
+      assert %{nickname: ["can only contain letters, numbers, and underscores"]} = errors_on(changeset)
+
+      # Test valid nickname with underscore (not at start)
+      attrs = %{nickname: "test_user", avatar_file_name: "test.png", game_id: game.id}
+      assert {:ok, _player} = Player.create_player(attrs)
+
+      # Test valid nickname with numbers
+      attrs = %{nickname: "test123", avatar_file_name: "test2.png", game_id: game.id}
+      assert {:ok, _player} = Player.create_player(attrs)
+    end
+
+    test "enforces case-insensitive nickname uniqueness within game", %{game: game} do
+      {:ok, game2} = Game.create_game(%{invitation_code: "test456"})
+
+      # Create first player
+      attrs1 = %{nickname: "TestUser", avatar_file_name: "test1.png", game_id: game.id}
+      assert {:ok, _player1} = Player.create_player(attrs1)
+
+      # Try to create player with same nickname in different case in same game
+      attrs2 = %{nickname: "testuser", avatar_file_name: "test2.png", game_id: game.id}
+      assert {:error, changeset} = Player.create_player(attrs2)
+      assert %{nickname: ["is already taken in this game"]} = errors_on(changeset)
+
+      # Should allow same nickname in different game
+      attrs3 = %{nickname: "TestUser", avatar_file_name: "test3.png", game_id: game2.id}
+      assert {:ok, _player3} = Player.create_player(attrs3)
+    end
+
     test "requires game_id", %{game: _game} do
-      attrs = %{nickname: "Test Detective", avatar_file_name: "test.png"}
+      attrs = %{nickname: "TestDetective", avatar_file_name: "test.png"}
 
       assert {:error, changeset} = Player.create_player(attrs)
       assert %{game_id: ["can't be blank"]} = errors_on(changeset)

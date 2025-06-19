@@ -189,6 +189,36 @@ defmodule CrimeToGo.Player do
   end
 
   @doc """
+  Checks if a nickname is available within a game (case-insensitive).
+  Optionally excludes a specific player ID from the check (for updates).
+
+  ## Examples
+
+      iex> nickname_available_case_insensitive?("game-id", "nickname", nil)
+      true
+
+      iex> nickname_available_case_insensitive?("game-id", "TAKEN_nickname", nil)
+      false
+
+      iex> nickname_available_case_insensitive?("game-id", "nickname", "player-id")
+      true
+
+  """
+  def nickname_available_case_insensitive?(game_id, nickname, exclude_player_id \\ nil) do
+    query = Player
+    |> where([p], p.game_id == ^game_id)
+    |> where([p], fragment("LOWER(?)", p.nickname) == ^String.downcase(nickname))
+
+    query = if exclude_player_id do
+      where(query, [p], p.id != ^exclude_player_id)
+    else
+      query
+    end
+
+    is_nil(Repo.one(query))
+  end
+
+  @doc """
   Checks if an avatar filename is available within a game.
 
   ## Examples

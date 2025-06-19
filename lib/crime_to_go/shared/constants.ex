@@ -31,7 +31,7 @@ defmodule CrimeToGo.Shared.Constants do
   """
   def max_lengths do
     %{
-      nickname: 140,
+      nickname: 15,
       avatar_file_name: 255,
       chat_room_name: 100,
       chat_message: 1000,
