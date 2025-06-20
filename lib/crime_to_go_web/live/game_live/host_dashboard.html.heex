@@ -8,6 +8,57 @@
       <p class="text-sm sm:text-base md:text-lg text-base-content/70">
         {gettext("Share with friends to start playing")}
       </p>
+      
+<!-- Player Counter - Always visible -->
+      <div class="mt-4">
+        <%= if length(@players) > 0 do %>
+          <div class="inline-flex items-center gap-2 bg-base-200 rounded-full px-4 py-2">
+            <div class="flex -space-x-2">
+              <%= for player <- @players |> Enum.take(4) do %>
+                <img
+                  src={~p"/images/avatars/#{player.avatar_file_name}"}
+                  alt={gettext("Avatar")}
+                  width="24"
+                  height="24"
+                  class="w-6 h-6 rounded-full border-2 border-base-100"
+                />
+              <% end %>
+              <%= if length(@players) > 4 do %>
+                <div class="w-6 h-6 rounded-full border-2 border-base-100 bg-base-300 flex items-center justify-center">
+                  <span class="text-xs font-medium text-base-content">
+                    +{length(@players) - 4}
+                  </span>
+                </div>
+              <% end %>
+            </div>
+            <span class="text-sm font-medium text-base-content">
+              {ngettext("1 detective", "%{count} detectives", length(@players),
+                count: length(@players)
+              )}
+            </span>
+          </div>
+        <% else %>
+          <div class="inline-flex items-center gap-2 bg-base-200 rounded-full px-4 py-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 text-base-content/60"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+              />
+            </svg>
+            <span class="text-sm font-medium text-base-content/60">
+              {gettext("Waiting for detectives to join")}
+            </span>
+          </div>
+        <% end %>
+      </div>
     </div>
     
 <!-- Main Content Grid -->

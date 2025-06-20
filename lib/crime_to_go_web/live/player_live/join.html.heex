@@ -70,9 +70,13 @@
           <div class="card-body p-4 sm:p-6 md:p-8">
             <.form for={form} phx-submit="join" phx-change="validate" class="space-y-4">
               <!-- Hidden avatar field -->
-              <input type="hidden" name={form[:avatar_file_name].name} value={form[:avatar_file_name].value} />
+              <input
+                type="hidden"
+                name={form[:avatar_file_name].name}
+                value={form[:avatar_file_name].value}
+              />
               
-              <!-- Nickname Input -->
+<!-- Nickname Input -->
               <div>
                 <.input
                   field={form[:nickname]}

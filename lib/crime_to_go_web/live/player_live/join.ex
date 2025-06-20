@@ -55,6 +55,11 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
             random_avatars =
               get_random_available_avatars_optimized(taken_avatars, 12, default_avatar)
 
+            # Subscribe to game updates for real-time player list updates
+            if connected?(socket) do
+              Phoenix.PubSub.subscribe(CrimeToGo.PubSub, "game:#{game_id}")
+            end
+
             {:ok,
              assign(socket,
                game: game,
@@ -208,6 +213,22 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
        form_params: updated_params,
        random_avatars: random_avatars
      )}
+  end
+
+  @impl true
+  def handle_info({:player_joined, _player}, socket) do
+    # Refresh players list when a new player joins
+    existing_players = Player.list_players_for_game(socket.assigns.game.id)
+    taken_avatars = get_taken_avatars(existing_players)
+    {:noreply, assign(socket, existing_players: existing_players, taken_avatars: taken_avatars)}
+  end
+
+  @impl true
+  def handle_info({:player_status_changed, _player, _status}, socket) do
+    # Refresh players list when player status changes
+    existing_players = Player.list_players_for_game(socket.assigns.game.id)
+    taken_avatars = get_taken_avatars(existing_players)
+    {:noreply, assign(socket, existing_players: existing_players, taken_avatars: taken_avatars)}
   end
 
   defp available_avatars do

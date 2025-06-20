@@ -62,7 +62,7 @@ defmodule CrimeToGoWeb.GameLive.Lobby do
   def handle_info({:game_started, game}, socket) do
     # Game started - update the lobby to show game has begun
     # TODO: Replace with actual game functionality when implemented
-    {:noreply, 
+    {:noreply,
      socket
      |> put_flash(:info, gettext("Game has started! Enjoy playing together."))
      |> assign(game: game)}
