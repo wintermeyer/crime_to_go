@@ -13,8 +13,9 @@ defmodule CrimeToGoWeb.HomeLiveChecksumTest do
       {:ok, view, _html} = live(conn, "/")
 
       # Use a code with invalid checksum (12 digits, valid digits, but wrong checksum)
-      invalid_code = "234565432345"  # This will fail checksum validation
-      
+      # This will fail checksum validation
+      invalid_code = "234565432345"
+
       html =
         view
         |> form("form[phx-submit='join_game']", game_code: invalid_code)
@@ -31,7 +32,7 @@ defmodule CrimeToGoWeb.HomeLiveChecksumTest do
 
       # Generate a valid game code that doesn't exist in database
       valid_but_nonexistent_code = GameCode.generate()
-      
+
       html =
         view
         |> form("form[phx-submit='join_game']", game_code: valid_but_nonexistent_code)
@@ -72,7 +73,8 @@ defmodule CrimeToGoWeb.HomeLiveChecksumTest do
       # Type an invalid code (contains excluded digits)
       html =
         view
-        |> form("form[phx-change='validate_join']", game_code: "012345678901")  # Contains 0, 1
+        # Contains 0, 1
+        |> form("form[phx-change='validate_join']", game_code: "012345678901")
         |> render_change()
 
       assert html =~ "Invalid game code format"

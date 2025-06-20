@@ -38,11 +38,22 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
             existing_players = Player.list_players_for_game(game_id)
             default_nickname = generate_default_nickname(existing_players, game.lang)
 
+            # Find first available avatar
+            default_avatar = find_first_available_avatar(game_id)
+
             changeset =
               Player.change_player(%Player.Player{game_id: game_id}, %{
-                "nickname" => default_nickname
+                "nickname" => default_nickname,
+                "avatar_file_name" => default_avatar
               })
               |> Map.put(:action, :validate)
+
+            # Get taken avatars once to avoid multiple queries
+            taken_avatars = get_taken_avatars(existing_players)
+
+            # Get a random selection of available avatars, including the default one
+            random_avatars =
+              get_random_available_avatars_optimized(taken_avatars, 12, default_avatar)
 
             {:ok,
              assign(socket,
@@ -50,7 +61,12 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
                changeset: changeset,
                form: to_form(changeset),
                existing_players: existing_players,
-               form_params: %{"nickname" => default_nickname}
+               random_avatars: random_avatars,
+               taken_avatars: taken_avatars,
+               form_params: %{
+                 "nickname" => default_nickname,
+                 "avatar_file_name" => default_avatar
+               }
              )}
 
           error_result ->
@@ -153,24 +169,49 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
   end
 
   @impl true
+  def handle_event("shuffle_avatars", _params, socket) do
+    # Get the currently selected avatar from form params
+    current_avatar = socket.assigns.form_params["avatar_file_name"]
+
+    # Use the pre-loaded taken avatars to avoid database queries
+    random_avatars =
+      get_random_available_avatars_optimized(socket.assigns.taken_avatars, 12, current_avatar)
+
+    {:noreply, assign(socket, random_avatars: random_avatars)}
+  end
+
+  @impl true
   def handle_event("select_avatar", %{"avatar" => avatar_filename}, socket) do
+    updated_params = Map.put(socket.assigns.form_params, "avatar_file_name", avatar_filename)
+
+    # Include game_id in the changeset params
+    changeset_params = Map.put(updated_params, "game_id", socket.assigns.game.id)
+
     changeset =
-      socket.assigns.changeset
-      |> Player.Player.changeset(%{"avatar_file_name" => avatar_filename})
+      %Player.Player{}
+      |> Player.Player.changeset(changeset_params)
+      |> validate_nickname_availability(socket.assigns.game.id)
+      |> Map.put(:action, :validate)
+
+    # If the selected avatar is not in the current random list, add it
+    random_avatars =
+      if avatar_filename in socket.assigns.random_avatars do
+        socket.assigns.random_avatars
+      else
+        [avatar_filename | socket.assigns.random_avatars] |> Enum.take(12)
+      end
 
     {:noreply,
      assign(socket,
        changeset: changeset,
-       form: to_form(changeset)
+       form: to_form(changeset),
+       form_params: updated_params,
+       random_avatars: random_avatars
      )}
   end
 
   defp available_avatars do
     Constants.available_avatars()
-  end
-
-  defp avatar_available?(game_id, avatar_filename) do
-    Player.avatar_available?(game_id, avatar_filename)
   end
 
   defp format_avatar_name(avatar_filename) do
@@ -185,7 +226,7 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
     # Set the locale temporarily to generate the nickname in the correct language
     current_locale = Gettext.get_locale(CrimeToGoWeb.Gettext)
     Gettext.put_locale(CrimeToGoWeb.Gettext, game_lang)
-    
+
     # Count all existing players and add 1 for the new player
     next_number = length(existing_players) + 1
 
@@ -240,7 +281,7 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
     case get_connect_params(socket) do
       %{} = connect_params ->
         player_id = Map.get(connect_params, cookie_name)
-        
+
         if player_id do
           # Verify the player exists and belongs to this game
           players = Player.list_players_for_game(game_id)
@@ -251,6 +292,51 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
 
       _ ->
         nil
+    end
+  end
+
+  defp find_first_available_avatar(game_id) do
+    # Get all taken avatars in one query
+    taken_avatars =
+      Player.list_players_for_game(game_id)
+      |> get_taken_avatars()
+
+    available_avatars()
+    |> Enum.find(fn avatar -> avatar not in taken_avatars end)
+  end
+
+  defp get_taken_avatars(players) do
+    players
+    |> Enum.map(& &1.avatar_file_name)
+    |> Enum.reject(&is_nil/1)
+    |> MapSet.new()
+  end
+
+  defp get_random_available_avatars_optimized(taken_avatars, count, current_avatar) do
+    # Get all truly available avatars (not taken by other players)
+    available =
+      available_avatars()
+      |> Enum.filter(fn avatar -> avatar not in taken_avatars end)
+
+    if current_avatar && current_avatar not in available do
+      # If current avatar is selected but not in available list, include it
+      # This ensures the user can keep their current selection
+      ([current_avatar] ++ available)
+      |> Enum.shuffle()
+      |> Enum.take(count)
+    else
+      # Normal case: just shuffle available avatars
+      available
+      |> Enum.shuffle()
+      |> Enum.take(count)
+      |> then(fn list ->
+        # Ensure current avatar is in the list if it exists
+        if current_avatar && current_avatar not in list && current_avatar not in taken_avatars do
+          [current_avatar | Enum.take(list, count - 1)]
+        else
+          list
+        end
+      end)
     end
   end
 end

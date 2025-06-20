@@ -12,7 +12,7 @@ defmodule CrimeToGoWeb.HomeLive.Index do
     create_changeset = Game.change_game(%Game.Game{}, %{"lang" => current_locale})
 
     # Initialize with empty games - will load after connection
-    socket = 
+    socket =
       assign(socket,
         game_code: "",
         join_error: nil,
@@ -26,14 +26,15 @@ defmodule CrimeToGoWeb.HomeLive.Index do
     # Load games after LiveView connects (when cookies are available)
     if connected?(socket) do
       {my_hosted_games, my_player_games, player_cookies} = get_my_games_with_cookies(socket)
-      
-      {:ok, assign(socket, 
-        my_games: my_hosted_games, 
-        show_my_games: length(my_hosted_games) > 0,
-        my_player_games: my_player_games,
-        show_my_player_games: length(my_player_games) > 0,
-        player_cookies: player_cookies
-      )}
+
+      {:ok,
+       assign(socket,
+         my_games: my_hosted_games,
+         show_my_games: length(my_hosted_games) > 0,
+         my_player_games: my_player_games,
+         show_my_player_games: length(my_player_games) > 0,
+         player_cookies: player_cookies
+       )}
     else
       {:ok, assign(socket, player_cookies: %{}, my_player_games: [], show_my_player_games: false)}
     end
@@ -86,11 +87,13 @@ defmodule CrimeToGoWeb.HomeLive.Index do
             {:noreply, push_navigate(socket, to: ~p"/games/#{game.id}/join")}
           else
             # Game has already started or ended
-            error_message = case game.state do
-              "active" -> gettext("This game has already started")
-              "post_game" -> gettext("This game has already ended")
-              _ -> gettext("This game is not accepting new players")
-            end
+            error_message =
+              case game.state do
+                "active" -> gettext("This game has already started")
+                "post_game" -> gettext("This game has already ended")
+                _ -> gettext("This game is not accepting new players")
+              end
+
             {:noreply, assign(socket, join_error: error_message)}
           end
       end
@@ -103,18 +106,22 @@ defmodule CrimeToGoWeb.HomeLive.Index do
   @impl true
   def handle_event("validate_join", %{"game_code" => game_code}, socket) do
     # Validate the game code format and checksum during typing
-    join_error = 
+    join_error =
       cond do
         String.length(game_code) == 0 ->
           nil
+
         String.length(game_code) < 12 ->
-          nil  # Don't show error while user is still typing
+          # Don't show error while user is still typing
+          nil
+
         not CrimeToGo.Game.Game.valid_game_code?(game_code) ->
           gettext("Invalid game code format")
+
         true ->
           nil
       end
-    
+
     {:noreply, assign(socket, game_code: game_code, join_error: join_error)}
   end
 
@@ -181,7 +188,6 @@ defmodule CrimeToGoWeb.HomeLive.Index do
       {:noreply, put_flash(socket, :error, gettext("Game not found"))}
   end
 
-
   defp language_options do
     CrimeToGoWeb.LocaleHelpers.locale_names()
     |> Enum.map(fn {code, name} ->
@@ -206,27 +212,29 @@ defmodule CrimeToGoWeb.HomeLive.Index do
           |> Enum.into(%{})
 
         # For each cookie, check if the player exists in a pending game
-        {hosted_games, player_games} = player_cookies
-        |> Enum.map(fn {cookie_name, player_id} ->
-          game_id = String.replace_prefix(cookie_name, "player_", "")
-          try do
-            game = Game.get_game_with_players!(game_id)
-            player = Enum.find(game.players, &(&1.id == player_id))
+        {hosted_games, player_games} =
+          player_cookies
+          |> Enum.map(fn {cookie_name, player_id} ->
+            game_id = String.replace_prefix(cookie_name, "player_", "")
 
-            # Only include if player exists, is valid, and game is pending
-            if player && game.state == "pre_game" do
-              {game, player}
-            else
-              nil
+            try do
+              game = Game.get_game_with_players!(game_id)
+              player = Enum.find(game.players, &(&1.id == player_id))
+
+              # Only include if player exists, is valid, and game is pending
+              if player && game.state == "pre_game" do
+                {game, player}
+              else
+                nil
+              end
+            rescue
+              Ecto.NoResultsError ->
+                # Game no longer exists - stale cookie
+                nil
             end
-          rescue
-            Ecto.NoResultsError -> 
-              # Game no longer exists - stale cookie
-              nil
-          end
-        end)
-        |> Enum.filter(& &1)
-        |> Enum.split_with(fn {_game, player} -> player.game_host end)
+          end)
+          |> Enum.filter(& &1)
+          |> Enum.split_with(fn {_game, player} -> player.game_host end)
 
         # Extract just the games from the tuples
         hosted_games = hosted_games |> Enum.map(fn {game, _player} -> game end)

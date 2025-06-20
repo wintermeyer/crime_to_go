@@ -52,9 +52,9 @@ defmodule CrimeToGo.Game.Game do
 
   @doc """
   Validates a game code format and checksum without database lookup.
-  
+
   ## Examples
-  
+
       iex> valid_code = CrimeToGo.Game.Game.generate_game_code()
       iex> CrimeToGo.Game.Game.valid_game_code?(valid_code)
       true

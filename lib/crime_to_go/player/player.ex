@@ -26,7 +26,15 @@ defmodule CrimeToGo.Player.Player do
   @doc false
   def changeset(player, attrs) do
     player
-    |> cast(attrs, [:game_host, :is_robot, :nickname, :avatar_file_name, :game_id, :status, :last_seen_at])
+    |> cast(attrs, [
+      :game_host,
+      :is_robot,
+      :nickname,
+      :avatar_file_name,
+      :game_id,
+      :status,
+      :last_seen_at
+    ])
     |> validate_required([:nickname, :avatar_file_name, :game_id])
     |> validate_length(:avatar_file_name, max: Constants.max_length(:avatar_file_name))
     |> validate_inclusion(:status, ["online", "offline"])

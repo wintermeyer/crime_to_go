@@ -213,12 +213,16 @@ defmodule CrimeToGo.PlayerTest do
       # Test invalid characters (space)
       attrs = %{nickname: "test user", avatar_file_name: "test.png", game_id: game.id}
       assert {:error, changeset} = Player.create_player(attrs)
-      assert %{nickname: ["can only contain letters, numbers, and underscores"]} = errors_on(changeset)
+
+      assert %{nickname: ["can only contain letters, numbers, and underscores"]} =
+               errors_on(changeset)
 
       # Test invalid characters (special symbols)
       attrs = %{nickname: "test@user", avatar_file_name: "test.png", game_id: game.id}
       assert {:error, changeset} = Player.create_player(attrs)
-      assert %{nickname: ["can only contain letters, numbers, and underscores"]} = errors_on(changeset)
+
+      assert %{nickname: ["can only contain letters, numbers, and underscores"]} =
+               errors_on(changeset)
 
       # Test valid nickname with underscore (not at start)
       attrs = %{nickname: "test_user", avatar_file_name: "test.png", game_id: game.id}

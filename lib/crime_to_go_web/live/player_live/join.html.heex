@@ -17,13 +17,13 @@
       <div class="lg:col-span-2">
         <div class="card bg-base-100 shadow-xl border border-base-300">
           <div class="card-body p-4 sm:p-6 md:p-8">
-            <.form for={form} phx-submit="join" phx-change="validate" class="space-y-6">
+            <.form for={form} phx-submit="join" phx-change="validate" class="space-y-4">
               <!-- Nickname Input -->
               <div>
                 <.input
                   field={form[:nickname]}
                   type="text"
-                  label={gettext("Choose Your Detective Name")}
+                  label={gettext("Detective Name")}
                   placeholder={gettext("Enter your detective name")}
                   maxlength="140"
                   required
@@ -31,15 +31,67 @@
                   class="w-full"
                 />
                 <p class="text-xs sm:text-sm md:text-base text-base-content/60 mt-1">
-                  {gettext("This name will be visible to other players")}
+                  {gettext("Pre-selected for you - change if desired")}
+                </p>
+              </div>
+              
+<!-- Submit Button - Moved up for mobile visibility -->
+              <div>
+                <button
+                  type="submit"
+                  disabled={not @changeset.valid?}
+                  class="btn btn-primary btn-lg w-full disabled:btn-disabled"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6 mr-2"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                    />
+                  </svg>
+                  {gettext("Start Playing Now!")}
+                </button>
+                <p class="hidden md:block text-center text-xs md:text-sm text-base-content/60 mt-2">
+                  {gettext("Press Enter to join quickly")}
                 </p>
               </div>
               
 <!-- Avatar Selection -->
               <div>
-                <label class="block text-base sm:text-lg md:text-xl font-semibold text-base-content mb-2 md:mb-4">
-                  {gettext("Choose Your Avatar")}
-                </label>
+                <div class="flex items-center justify-between mb-2 md:mb-4">
+                  <label class="block text-base sm:text-lg md:text-xl font-semibold text-base-content">
+                    {gettext("Avatar")}
+                  </label>
+                  <button
+                    type="button"
+                    phx-click="shuffle_avatars"
+                    class="btn btn-ghost btn-sm"
+                    title={gettext("Show different avatars")}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="w-4 h-4"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
+                      />
+                    </svg>
+                    <span class="ml-1">{gettext("Shuffle")}</span>
+                  </button>
+                </div>
                 <div class="mt-2 md:mt-4">
                   <%= if form[:avatar_file_name].value do %>
                     <div class="card bg-primary/10 border-2 border-primary mb-4">
@@ -47,21 +99,18 @@
                         <div class="flex items-center gap-3 md:gap-4">
                           <img
                             src={~p"/images/avatars/#{form[:avatar_file_name].value}"}
-                            alt="selected avatar"
+                            alt={gettext("Selected avatar")}
                             width="64"
                             height="64"
                             class="rounded-lg shadow-md w-12 h-12 md:w-16 md:h-16"
                           />
                           <div class="flex-1">
                             <p class="font-medium text-base-content text-sm md:text-base">
-                              {gettext("Selected Avatar")}
+                              {gettext("Your Avatar")}
                             </p>
                             <p class="text-xs sm:text-sm md:text-base text-base-content/60">
-                              {gettext("Click another to change")}
+                              {gettext("Pre-selected - click another below to change")}
                             </p>
-                          </div>
-                          <div class="badge badge-primary badge-sm md:badge-md">
-                            {gettext("Selected")}
                           </div>
                         </div>
                       </div>
@@ -71,32 +120,31 @@
 <!-- Avatar Grid -->
                   <div class="card bg-base-200">
                     <div class="card-body p-3 sm:p-4 md:p-6">
-                      <div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2 md:gap-3 max-h-60 md:max-h-96 overflow-y-auto">
-                        <%= for avatar <- available_avatars(), avatar_available?(@game.id, avatar) do %>
-                          <label class={[
-                            "cursor-pointer p-1 sm:p-2 rounded-lg border-2 transition-all flex flex-col items-center hover:scale-105",
-                            if(form[:avatar_file_name].value == avatar,
-                              do: "border-primary bg-primary/10 scale-105",
-                              else: "border-transparent hover:border-primary/30 hover:bg-base-300"
-                            )
-                          ]}>
-                            <input
-                              type="radio"
-                              name={form[:avatar_file_name].name}
-                              value={avatar}
-                              checked={form[:avatar_file_name].value == avatar}
-                              class="hidden"
-                            />
+                      <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 md:gap-4">
+                        <%= for avatar <- @random_avatars do %>
+                          <button
+                            type="button"
+                            phx-click="select_avatar"
+                            phx-value-avatar={avatar}
+                            class={[
+                              "cursor-pointer p-2 rounded-lg border-2 transition-all flex flex-col items-center hover:scale-105",
+                              if(form[:avatar_file_name].value == avatar,
+                                do: "border-primary bg-primary/10 scale-105",
+                                else:
+                                  "border-transparent hover:border-primary/30 hover:bg-base-300"
+                              )
+                            ]}
+                          >
                             <img
                               src={~p"/images/avatars/#{avatar}"}
-                              alt={avatar}
+                              alt={gettext("Avatar")}
                               width="64"
                               height="64"
-                              class="rounded-lg shadow-md w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14"
+                              class="rounded-lg shadow-md w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16"
                             />
-                          </label>
+                          </button>
                         <% end %>
-                        <%= if Enum.all?(available_avatars(), fn a -> not avatar_available?(@game.id, a) end) do %>
+                        <%= if Enum.empty?(@random_avatars) do %>
                           <p class="col-span-full text-xs sm:text-sm md:text-base text-base-content/60 text-center py-8">
                             {gettext("All avatars have been taken.")}
                           </p>
@@ -105,31 +153,6 @@
                     </div>
                   </div>
                 </div>
-              </div>
-              
-<!-- Submit Button -->
-              <div class="pt-2 md:pt-4">
-                <button
-                  type="submit"
-                  disabled={not @changeset.valid?}
-                  class="btn btn-primary btn-md md:btn-lg w-full disabled:btn-disabled"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5 md:h-6 md:w-6 mr-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-                    />
-                  </svg>
-                  {gettext("Join Game as Detective")}
-                </button>
               </div>
             </.form>
           </div>
@@ -177,7 +200,7 @@
                       <div class="flex items-center gap-2 sm:gap-3">
                         <img
                           src={~p"/images/avatars/#{player.avatar_file_name}"}
-                          alt="avatar"
+                          alt={gettext("Avatar")}
                           width="40"
                           height="40"
                           class="rounded-full w-8 h-8 md:w-10 md:h-10"

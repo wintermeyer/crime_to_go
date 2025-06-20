@@ -34,11 +34,12 @@
                   </p>
                 </div>
                 <div class="md:ml-auto">
-                  <button 
+                  <button
                     id="lobby-copy-game-code-btn"
-                    class="btn btn-outline btn-sm md:btn-md" 
-                    phx-hook="CopyToClipboard" 
-                    data-clipboard-text={@game.game_code}>
+                    class="btn btn-outline btn-sm md:btn-md"
+                    phx-hook="CopyToClipboard"
+                    data-clipboard-text={@game.game_code}
+                  >
                     {gettext("Copy Code")}
                   </button>
                 </div>
@@ -84,11 +85,12 @@
                       value={CrimeToGoWeb.Endpoint.url() <> "/games/#{@game.id}/join"}
                       class="input input-bordered input-sm md:input-md flex-1 text-xs md:text-sm font-mono"
                     />
-                    <button 
+                    <button
                       id="lobby-copy-join-url-btn"
-                      class="btn btn-outline btn-sm md:btn-md" 
-                      phx-hook="CopyToClipboard" 
-                      data-clipboard-text={CrimeToGoWeb.Endpoint.url() <> "/games/#{@game.id}/join"}>
+                      class="btn btn-outline btn-sm md:btn-md"
+                      phx-hook="CopyToClipboard"
+                      data-clipboard-text={CrimeToGoWeb.Endpoint.url() <> "/games/#{@game.id}/join"}
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         class="h-4 w-4 md:h-5 md:w-5"
@@ -231,10 +233,16 @@
                       <div class="flex items-center gap-1">
                         <div class={[
                           "w-2 h-2 rounded-full",
-                          if(player.status == "online", do: "bg-success animate-pulse", else: "bg-error")
-                        ]}></div>
+                          if(player.status == "online",
+                            do: "bg-success animate-pulse",
+                            else: "bg-error"
+                          )
+                        ]}>
+                        </div>
                         <span class="text-xs text-base-content/60">
-                          {if player.status == "online", do: gettext("Online"), else: gettext("Offline")}
+                          {if player.status == "online",
+                            do: gettext("Online"),
+                            else: gettext("Offline")}
                         </span>
                       </div>
                     </div>

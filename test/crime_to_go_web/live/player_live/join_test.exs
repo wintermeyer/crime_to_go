@@ -9,52 +9,42 @@ defmodule CrimeToGoWeb.PlayerLive.JoinTest do
     %{game: game}
   end
 
-  test "join form disables button until valid, enables and submits when valid", %{
+  test "join form has pre-selected nickname and avatar, can be submitted immediately", %{
     conn: conn,
     game: game
   } do
-    {:ok, view, _html} = live(conn, "/games/#{game.id}/join")
+    {:ok, view, html} = live(conn, "/games/#{game.id}/join")
 
-    # Button should be disabled initially
-    assert render(view) =~ ~r/<button[^>]*disabled[^>]*>/
+    # Should have pre-selected nickname
+    assert html =~ "Detective1"
 
-    # Fill in nickname only
-    html =
-      view |> form("form[phx-submit='join']", player: %{nickname: "Sherlock"}) |> render_change()
+    # Should have pre-selected avatar shown
+    assert html =~ "Your Avatar"
+    assert html =~ "Pre-selected - click another below to change"
 
-    assert html =~ ~r/<button[^>]*disabled[^>]*>/
-
-    # Fill in avatar only
-    html =
-      view
-      |> form("form[phx-submit='join']", player: %{avatar_file_name: "adventurer_avatar_01.webp"})
-      |> render_change()
-
-    assert html =~ ~r/<button[^>]*disabled[^>]*>/
-
-    # Fill in both nickname and avatar (simulate user input)
-    html =
-      view
-      |> form("form[phx-submit='join']",
-        player: %{nickname: "Sherlock", avatar_file_name: "adventurer_avatar_01.webp"}
-      )
-      |> render_change()
-
+    # Button should be enabled (not disabled) because nickname and avatar are pre-selected
     tree = Floki.parse_document!(html)
-    # Find the button that contains "Join Game as Detective" text
     buttons = Floki.find(tree, "button[type=submit]")
 
     join_button =
       Enum.find(buttons, fn button ->
-        Floki.text(button) =~ "Join Game as Detective"
+        Floki.text(button) =~ "Start Playing Now!"
       end)
 
+    # Button should not have disabled attribute
     refute Floki.attribute(join_button, "disabled") != []
 
-    # Submit the form
+    # Can change avatar by clicking
+    view
+    |> render_click("select_avatar", %{"avatar" => "adventurer_avatar_02.webp"})
+
+    # Can change nickname
+    view |> form("form[phx-submit='join']", player: %{nickname: "Sherlock"}) |> render_change()
+
+    # Submit the form (should work with pre-selected values)
     view
     |> form("form[phx-submit='join']",
-      player: %{nickname: "Sherlock", avatar_file_name: "adventurer_avatar_01.webp"}
+      player: %{nickname: "Detective1"}
     )
     |> render_submit()
   end

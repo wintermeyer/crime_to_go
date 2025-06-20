@@ -92,6 +92,7 @@ defmodule CrimeToGoWeb.GameLive.Lobby do
       nil -> :ok
       current_player -> Player.set_player_offline(current_player)
     end
+
     :ok
   end
 end

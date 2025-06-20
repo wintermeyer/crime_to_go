@@ -27,11 +27,12 @@
               <p class="text-sm md:text-base text-base-content/60 mb-4">
                 {gettext("Share this code with your friends")}
               </p>
-              <button 
+              <button
                 id="copy-game-code-btn"
-                class="btn btn-primary btn-md md:btn-lg" 
-                phx-hook="CopyToClipboard" 
-                data-clipboard-text={@game.game_code}>
+                class="btn btn-primary btn-md md:btn-lg"
+                phx-hook="CopyToClipboard"
+                data-clipboard-text={@game.game_code}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   class="h-5 w-5 md:h-6 md:w-6 mr-2"
@@ -90,11 +91,12 @@
                     value={@join_url}
                     class="input input-bordered input-sm md:input-md flex-1 text-xs md:text-sm font-mono"
                   />
-                  <button 
+                  <button
                     id="copy-join-url-btn"
-                    class="btn btn-outline btn-sm md:btn-md" 
-                    phx-hook="CopyToClipboard" 
-                    data-clipboard-text={@join_url}>
+                    class="btn btn-outline btn-sm md:btn-md"
+                    phx-hook="CopyToClipboard"
+                    data-clipboard-text={@join_url}
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       class="h-4 w-4 md:h-5 md:w-5"
@@ -236,10 +238,16 @@
                       <div class="flex items-center gap-1">
                         <div class={[
                           "w-2 h-2 rounded-full",
-                          if(player.status == "online", do: "bg-success animate-pulse", else: "bg-error")
-                        ]}></div>
+                          if(player.status == "online",
+                            do: "bg-success animate-pulse",
+                            else: "bg-error"
+                          )
+                        ]}>
+                        </div>
                         <span class="text-xs text-base-content/60">
-                          {if player.status == "online", do: gettext("Online"), else: gettext("Offline")}
+                          {if player.status == "online",
+                            do: gettext("Online"),
+                            else: gettext("Offline")}
                         </span>
                       </div>
                     </div>

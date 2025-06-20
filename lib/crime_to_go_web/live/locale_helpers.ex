@@ -14,7 +14,7 @@ defmodule CrimeToGoWeb.LocaleHelpers do
   def on_mount(:default, params, session, socket) do
     locale = Map.get(session, "locale", Locale.default_locale())
 
-    socket = 
+    socket =
       if locale in Locale.supported_locales() do
         Gettext.put_locale(CrimeToGoWeb.Gettext, locale)
         Phoenix.Component.assign(socket, locale: locale)
@@ -36,30 +36,30 @@ defmodule CrimeToGoWeb.LocaleHelpers do
   defp assign_current_player(socket, params) do
     # Try to get game_id from params
     game_id = params["game_id"] || params["id"]
-    
+
     if game_id && Phoenix.LiveView.connected?(socket) do
       cookie_name = "player_#{game_id}"
-      
+
       case Phoenix.LiveView.get_connect_params(socket) do
         %{} = connect_params ->
           player_id = Map.get(connect_params, cookie_name)
-          
+
           if player_id do
             # Verify the player exists and belongs to this game
             players = Player.list_players_for_game(game_id)
             current_player = Enum.find(players, &(&1.id == player_id))
-            
+
             if current_player do
               # Set player as online when they connect
               {:ok, updated_player} = Player.set_player_online(current_player)
-              
+
               # Subscribe to player status updates
               Phoenix.PubSub.subscribe(CrimeToGo.PubSub, "player:#{updated_player.id}")
               Phoenix.PubSub.subscribe(CrimeToGo.PubSub, "game:#{game_id}")
-              
+
               # Track this player for cleanup on disconnect
               Process.put(:current_player_id, updated_player.id)
-              
+
               Phoenix.Component.assign(socket, current_player: updated_player)
             else
               Phoenix.Component.assign(socket, current_player: nil)
@@ -67,7 +67,7 @@ defmodule CrimeToGoWeb.LocaleHelpers do
           else
             Phoenix.Component.assign(socket, current_player: nil)
           end
-          
+
         _ ->
           Phoenix.Component.assign(socket, current_player: nil)
       end

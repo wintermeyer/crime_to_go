@@ -75,15 +75,16 @@ defmodule CrimeToGoWeb.Layouts do
               <div tabindex="0" role="button" class="btn btn-ghost btn-sm flex items-center gap-2">
                 <%= if @current_player.avatar_file_name do %>
                   <div class="relative">
-                    <img 
-                      src={~p"/images/avatars/#{@current_player.avatar_file_name}"} 
+                    <img
+                      src={~p"/images/avatars/#{@current_player.avatar_file_name}"}
                       alt={@current_player.nickname}
                       class="w-6 h-6 rounded-full"
                     />
                     <div class={[
                       "absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full border border-base-100",
                       if(@current_player.status == "online", do: "bg-success", else: "bg-error")
-                    ]}></div>
+                    ]}>
+                    </div>
                   </div>
                 <% else %>
                   <.icon name="hero-user-circle" class="w-5 h-5" />
@@ -103,7 +104,7 @@ defmodule CrimeToGoWeb.Layouts do
                   </a>
                 </li>
                 
-                <!-- Change Language -->
+    <!-- Change Language -->
                 <li>
                   <details>
                     <summary class="flex items-center gap-2">
@@ -113,7 +114,11 @@ defmodule CrimeToGoWeb.Layouts do
                     <ul class="p-2">
                       <li :for={{code, name} <- locale_names()}>
                         <form method="post" action="/set_locale" style="display: inline;">
-                          <input type="hidden" name="_csrf_token" value={Phoenix.Controller.get_csrf_token()} />
+                          <input
+                            type="hidden"
+                            name="_csrf_token"
+                            value={Phoenix.Controller.get_csrf_token()}
+                          />
                           <input type="hidden" name="locale" value={code} />
                           <button
                             type="submit"
@@ -130,10 +135,10 @@ defmodule CrimeToGoWeb.Layouts do
                     </ul>
                   </details>
                 </li>
-                
+
                 <div class="divider my-1"></div>
                 
-                <!-- Leave Game -->
+    <!-- Leave Game -->
                 <li>
                   <a href="/" class="flex items-center gap-2 text-error">
                     <.icon name="hero-arrow-left-on-rectangle" class="w-4 h-4" />
@@ -157,7 +162,11 @@ defmodule CrimeToGoWeb.Layouts do
               >
                 <li :for={{code, name} <- locale_names()}>
                   <form method="post" action="/set_locale" style="display: inline;">
-                    <input type="hidden" name="_csrf_token" value={Phoenix.Controller.get_csrf_token()} />
+                    <input
+                      type="hidden"
+                      name="_csrf_token"
+                      value={Phoenix.Controller.get_csrf_token()}
+                    />
                     <input type="hidden" name="locale" value={code} />
                     <button
                       type="submit"

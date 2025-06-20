@@ -205,15 +205,17 @@ defmodule CrimeToGo.Player do
 
   """
   def nickname_available_case_insensitive?(game_id, nickname, exclude_player_id \\ nil) do
-    query = Player
-    |> where([p], p.game_id == ^game_id)
-    |> where([p], fragment("LOWER(?)", p.nickname) == ^String.downcase(nickname))
+    query =
+      Player
+      |> where([p], p.game_id == ^game_id)
+      |> where([p], fragment("LOWER(?)", p.nickname) == ^String.downcase(nickname))
 
-    query = if exclude_player_id do
-      where(query, [p], p.id != ^exclude_player_id)
-    else
-      query
-    end
+    query =
+      if exclude_player_id do
+        where(query, [p], p.id != ^exclude_player_id)
+      else
+        query
+      end
 
     is_nil(Repo.one(query))
   end
@@ -287,9 +289,9 @@ defmodule CrimeToGo.Player do
 
   @doc """
   Updates a player's status.
-  
+
   ## Examples
-  
+
       iex> update_player_status(player, "online")
       {:ok, %Player{}}
       
@@ -301,7 +303,7 @@ defmodule CrimeToGo.Player do
       status: status,
       last_seen_at: DateTime.utc_now()
     }
-    
+
     player
     |> Player.status_changeset(attrs)
     |> Repo.update()
@@ -315,6 +317,7 @@ defmodule CrimeToGo.Player do
       {:ok, updated_player} ->
         broadcast_player_status_change(updated_player, "online")
         {:ok, updated_player}
+
       error ->
         error
     end
@@ -328,6 +331,7 @@ defmodule CrimeToGo.Player do
       {:ok, updated_player} ->
         broadcast_player_status_change(updated_player, "offline")
         {:ok, updated_player}
+
       error ->
         error
     end

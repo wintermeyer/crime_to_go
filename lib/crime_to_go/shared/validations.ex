@@ -133,10 +133,16 @@ defmodule CrimeToGo.Shared.Validations do
     validate_change(changeset, field, fn field, value ->
       cond do
         String.length(value) < 2 ->
-          [{field, {"must be at least 2 characters long", [validation: :length, kind: :min, count: 2]}}]
+          [
+            {field,
+             {"must be at least 2 characters long", [validation: :length, kind: :min, count: 2]}}
+          ]
 
         String.length(value) > 15 ->
-          [{field, {"must be at most 15 characters long", [validation: :length, kind: :max, count: 15]}}]
+          [
+            {field,
+             {"must be at most 15 characters long", [validation: :length, kind: :max, count: 15]}}
+          ]
 
         String.starts_with?(value, "_") ->
           [{field, {"cannot start with an underscore", [validation: :format]}}]
