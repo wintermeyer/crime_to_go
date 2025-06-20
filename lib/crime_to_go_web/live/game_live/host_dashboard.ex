@@ -1,4 +1,4 @@
-defmodule CrimeToGoWeb.GameLive.Show do
+defmodule CrimeToGoWeb.GameLive.HostDashboard do
   use CrimeToGoWeb, :live_view
   use CrimeToGoWeb.BaseLive
 
@@ -74,7 +74,10 @@ defmodule CrimeToGoWeb.GameLive.Show do
   def handle_event("start_game", _params, socket) do
     case Game.start_game(socket.assigns.game) do
       {:ok, _game} ->
-        {:noreply, push_navigate(socket, to: ~p"/games/#{socket.assigns.game.id}/lobby")}
+        {:noreply, 
+         socket
+         |> put_flash(:info, gettext("Game started! All players have been notified."))
+         |> push_navigate(to: ~p"/games/#{socket.assigns.game.id}/lobby")}
 
       {:error, _reason} ->
         {:noreply, put_flash(socket, :error, gettext("Unable to start game"))}

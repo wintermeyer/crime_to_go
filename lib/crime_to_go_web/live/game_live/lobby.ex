@@ -60,8 +60,12 @@ defmodule CrimeToGoWeb.GameLive.Lobby do
 
   @impl true
   def handle_info({:game_started, game}, socket) do
-    # Redirect to game page when game starts
-    {:noreply, push_navigate(socket, to: ~p"/games/#{game.id}/play")}
+    # Game started - update the lobby to show game has begun
+    # TODO: Replace with actual game functionality when implemented
+    {:noreply, 
+     socket
+     |> put_flash(:info, gettext("Game has started! Enjoy playing together."))
+     |> assign(game: game)}
   end
 
   @impl true

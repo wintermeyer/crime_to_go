@@ -142,7 +142,7 @@ defmodule CrimeToGoWeb.HomeLive.Index do
         # Redirect directly to appropriate game page (host goes to show, others to lobby)
         redirect_path =
           if current_player.game_host do
-            ~p"/games/#{game.id}"
+            ~p"/games/#{game.id}/host_dashboard"
           else
             ~p"/games/#{game.id}/lobby"
           end

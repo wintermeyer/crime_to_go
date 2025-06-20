@@ -18,7 +18,7 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
         # Player already joined this game - redirect to appropriate page
         redirect_path =
           if existing_player.game_host do
-            ~p"/games/#{game_id}"
+            ~p"/games/#{game_id}/host_dashboard"
           else
             ~p"/games/#{game_id}/lobby"
           end
@@ -138,10 +138,10 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
             cookie_name = "player_#{game.id}"
             cookie_value = player.id
 
-            # Redirect host to game show page, other players to lobby
+            # Redirect host to host dashboard, other players to lobby
             redirect_path =
               if is_host do
-                ~p"/games/#{game.id}"
+                ~p"/games/#{game.id}/host_dashboard"
               else
                 ~p"/games/#{game.id}/lobby"
               end
