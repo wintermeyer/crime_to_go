@@ -12,6 +12,8 @@ defmodule CrimeToGo.Application do
       CrimeToGo.Repo,
       {DNSCluster, query: Application.get_env(:crime_to_go, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: CrimeToGo.PubSub},
+      # Status logger for debouncing offline/online events
+      CrimeToGo.Player.StatusLogger,
       # Start a worker by calling: CrimeToGo.Worker.start_link(arg)
       # {CrimeToGo.Worker, arg},
       # Start to serve requests, typically the last entry

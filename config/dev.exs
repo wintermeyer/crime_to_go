@@ -69,6 +69,13 @@ config :crime_to_go, dev_routes: true
 # Do not include metadata nor timestamps in development logs
 config :logger, :default_formatter, format: "[$level] $message\n"
 
+# Disable Ecto SQL query logging but keep debug for our custom logs
+config :crime_to_go, CrimeToGo.Repo, log: false
+
+# Configure offline debouncing (in milliseconds)
+# Players going offline will only be logged if they stay offline for this duration
+config :crime_to_go, offline_debounce_ms: 2000
+
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20

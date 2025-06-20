@@ -35,7 +35,7 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
                gettext("This game is no longer accepting new players")
              ) do
           {:ok, socket} ->
-            existing_players = Player.list_players_for_game(game_id)
+            existing_players = Player.list_active_players_for_game(game_id)
             default_nickname = generate_default_nickname(existing_players, game.lang)
 
             # Find first available avatar
@@ -106,7 +106,7 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
     game = socket.assigns.game
 
     # Check if this is the first player (will be the host)
-    existing_players = Player.list_players_for_game(game.id)
+    existing_players = Player.list_active_players_for_game(game.id)
     is_host = Enum.empty?(existing_players)
 
     player_params =
@@ -218,7 +218,7 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
   @impl true
   def handle_info({:player_joined, _player}, socket) do
     # Refresh players list when a new player joins
-    existing_players = Player.list_players_for_game(socket.assigns.game.id)
+    existing_players = Player.list_active_players_for_game(socket.assigns.game.id)
     taken_avatars = get_taken_avatars(existing_players)
     {:noreply, assign(socket, existing_players: existing_players, taken_avatars: taken_avatars)}
   end
@@ -226,7 +226,7 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
   @impl true
   def handle_info({:player_status_changed, _player, _status}, socket) do
     # Refresh players list when player status changes
-    existing_players = Player.list_players_for_game(socket.assigns.game.id)
+    existing_players = Player.list_active_players_for_game(socket.assigns.game.id)
     taken_avatars = get_taken_avatars(existing_players)
     {:noreply, assign(socket, existing_players: existing_players, taken_avatars: taken_avatars)}
   end
@@ -305,7 +305,7 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
 
         if player_id do
           # Verify the player exists and belongs to this game
-          players = Player.list_players_for_game(game_id)
+          players = Player.list_active_players_for_game(game_id)
           Enum.find(players, &(&1.id == player_id))
         else
           nil
@@ -319,7 +319,7 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
   defp find_first_available_avatar(game_id) do
     # Get all taken avatars in one query
     taken_avatars =
-      Player.list_players_for_game(game_id)
+      Player.list_active_players_for_game(game_id)
       |> get_taken_avatars()
 
     available_avatars()

@@ -9,6 +9,25 @@
         {gettext("Share with friends to start playing")}
       </p>
       
+      <!-- Navigation -->
+      <div class="flex flex-wrap justify-center gap-2 mt-4">
+        <.link 
+          navigate={~p"/games/#{@game.id}/lobby"} 
+          class="btn btn-outline btn-sm"
+        >
+          <.icon name="hero-users" class="w-4 h-4 mr-2" />
+          {gettext("Player Lobby")}
+        </.link>
+        
+        <.link 
+          navigate={"/games/" <> @game.id <> "/history"} 
+          class="btn btn-ghost btn-sm"
+        >
+          <.icon name="hero-clock" class="w-4 h-4 mr-2" />
+          {gettext("Game History")}
+        </.link>
+      </div>
+      
 <!-- Player Counter - Always visible -->
       <div class="mt-4">
         <%= if length(@players) > 0 do %>
@@ -329,6 +348,89 @@
                             else: gettext("Offline")}
                         </span>
                       </div>
+                      
+                      <!-- Host Actions Dropdown (only show if current player is host and this is not themselves) -->
+                      <%= if @current_player.game_host and player.id != @current_player.id do %>
+                        <div class="dropdown dropdown-end dropdown-hover">
+                          <div 
+                            tabindex="0" 
+                            role="button" 
+                            class="btn btn-ghost btn-sm p-2 min-h-0 h-8 w-8 hover:bg-base-200 active:bg-base-300 transition-colors"
+                            onclick="this.focus()"
+                          >
+                            <.icon name="hero-ellipsis-vertical" class="w-5 h-5" />
+                          </div>
+                          <ul 
+                            tabindex="0" 
+                            class="dropdown-content menu bg-base-100 rounded-box z-50 w-48 sm:w-52 p-2 shadow-lg border border-base-300 max-h-96 overflow-y-auto"
+                          >
+                            <%= if player.game_host do %>
+                              <li>
+                                <button 
+                                  phx-click="revoke_host" 
+                                  phx-value-player-id={player.id} 
+                                  class="flex items-center gap-2 text-warning hover:bg-warning/10 active:bg-warning/20 transition-colors"
+                                >
+                                  <.icon name="hero-user-minus" class="w-4 h-4 flex-shrink-0" />
+                                  <span class="truncate">{gettext("Remove Host")}</span>
+                                </button>
+                              </li>
+                            <% else %>
+                              <li>
+                                <button 
+                                  phx-click="grant_host" 
+                                  phx-value-player-id={player.id} 
+                                  class="flex items-center gap-2 text-success hover:bg-success/10 active:bg-success/20 transition-colors"
+                                >
+                                  <.icon name="hero-user-plus" class="w-4 h-4 flex-shrink-0" />
+                                  <span class="truncate">{gettext("Make Host")}</span>
+                                </button>
+                              </li>
+                            <% end %>
+                            <div class="divider my-1"></div>
+                            <li class="menu-title">
+                              <span class="text-xs uppercase text-base-content/50 px-3 py-1">{gettext("Player Actions")}</span>
+                            </li>
+                            <%= if player.status == "online" do %>
+                              <li>
+                                <button 
+                                  phx-click="warn_player" 
+                                  phx-value-player-id={player.id} 
+                                  class="flex items-center gap-2 text-warning hover:bg-warning/10 active:bg-warning/20 transition-colors"
+                                >
+                                  <.icon name="hero-exclamation-triangle" class="w-4 h-4 flex-shrink-0" />
+                                  <span class="truncate">{gettext("Send Warning")}</span>
+                                </button>
+                              </li>
+                              <li>
+                                <button 
+                                  phx-click="show_kick_modal" 
+                                  phx-value-player-id={player.id} 
+                                  class="flex items-center gap-2 text-error hover:bg-error/10 active:bg-error/20 transition-colors"
+                                >
+                                  <.icon name="hero-user-minus" class="w-4 h-4 flex-shrink-0" />
+                                  <span class="truncate">{gettext("Kick Player")}</span>
+                                </button>
+                              </li>
+                            <% else %>
+                              <li>
+                                <div class="flex items-center gap-2 text-base-content/40 cursor-not-allowed px-3 py-2">
+                                  <.icon name="hero-exclamation-triangle" class="w-4 h-4 flex-shrink-0" />
+                                  <span class="truncate">{gettext("Send Warning")}</span>
+                                  <span class="text-xs ml-auto">{gettext("(Offline)")}</span>
+                                </div>
+                              </li>
+                              <li>
+                                <div class="flex items-center gap-2 text-base-content/40 cursor-not-allowed px-3 py-2">
+                                  <.icon name="hero-user-minus" class="w-4 h-4 flex-shrink-0" />
+                                  <span class="truncate">{gettext("Kick Player")}</span>
+                                  <span class="text-xs ml-auto">{gettext("(Offline)")}</span>
+                                </div>
+                              </li>
+                            <% end %>
+                          </ul>
+                        </div>
+                      <% end %>
                     </div>
                   </div>
                 </div>
@@ -407,3 +509,44 @@
     <% end %>
   </div>
 </div>
+
+<!-- Kick Player Confirmation Modal -->
+<%= if assigns[:show_kick_modal] && assigns[:player_to_kick] do %>
+  <div class="modal modal-open">
+    <div class="modal-box max-w-md">
+      <h3 class="font-bold text-lg text-warning flex items-center gap-2">
+        <.icon name="hero-exclamation-triangle" class="w-6 h-6" />
+        {gettext("Kick Player")}
+      </h3>
+      
+      <div class="py-4">
+        <p class="mb-4">
+          {gettext("Are you sure you want to kick %{player_name} from the game?", player_name: @player_to_kick.nickname)}
+        </p>
+        
+        <div class="alert alert-warning">
+          <.icon name="hero-information-circle" class="w-5 h-5" />
+          <div class="text-sm">
+            <p class="font-semibold mb-1">{gettext("This action will:")}</p>
+            <ul class="list-disc list-inside space-y-1">
+              <li>{gettext("Immediately remove the player from the game")}</li>
+              <li>{gettext("Disconnect them from all chat rooms")}</li>
+              <li>{gettext("They can rejoin using the game code if they want")}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-action">
+        <button phx-click="hide_kick_modal" class="btn btn-ghost" autofocus>
+          {gettext("Cancel")}
+        </button>
+        <button phx-click="confirm_kick_player" class="btn btn-error">
+          <.icon name="hero-user-minus" class="w-4 h-4 mr-2" />
+          {gettext("Yes, Kick Player")}
+        </button>
+      </div>
+    </div>
+    <div class="modal-backdrop" phx-click="hide_kick_modal"></div>
+  </div>
+<% end %>

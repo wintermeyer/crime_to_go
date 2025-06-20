@@ -17,5 +17,10 @@ config :swoosh, local: false
 # Do not print debug messages in production
 config :logger, level: :info
 
+# Configure offline debouncing (in milliseconds)
+# Players going offline will only be logged if they stay offline for this duration
+# Slightly higher in production to account for network latency
+config :crime_to_go, offline_debounce_ms: 2000
+
 # Runtime production configuration, including reading
 # of environment variables, is done on config/runtime.exs.

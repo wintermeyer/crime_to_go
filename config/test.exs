@@ -29,6 +29,9 @@ config :swoosh, :api_client, false
 # Print only warnings and errors during test
 config :logger, level: :warning
 
+# Configure offline debouncing for tests (shorter for faster tests)
+config :crime_to_go, offline_debounce_ms: 100
+
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime
 

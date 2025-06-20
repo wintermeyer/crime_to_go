@@ -34,6 +34,7 @@ defmodule CrimeToGoWeb.Router do
       live "/games/new", GameLive.Index, :new
       live "/games/:id/host_dashboard", GameLive.HostDashboard, :host_dashboard
       live "/games/:id/lobby", GameLive.Lobby, :lobby
+      live "/games/:id/history", GameLive.History, :history
 
       # Player routes
       live "/games/:game_id/join", PlayerLive.Join, :join

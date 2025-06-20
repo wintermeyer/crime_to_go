@@ -11,6 +11,7 @@ defmodule CrimeToGo.Game do
   alias CrimeToGo.Shared
 
   alias CrimeToGo.Game.Game
+  alias CrimeToGo.Game.LogEntry
 
   @doc """
   Returns the list of games.
@@ -177,6 +178,128 @@ defmodule CrimeToGo.Game do
     Game
     |> preload(:players)
     |> Repo.get!(id)
+  end
+
+  # Log Entry Functions
+
+  @doc """
+  Creates a log entry for a game event.
+
+  ## Examples
+
+      iex> create_log_entry("player_joined", game, player, %{details: "Player joined the game"})
+      {:ok, %LogEntry{}}
+
+  """
+  def create_log_entry(event, game, player \\ nil, opts \\ %{}) do
+    attrs = %{
+      event: event,
+      game_id: game.id,
+      player_id: player && player.id,
+      player_nickname: player && player.nickname,
+      actor_id: opts[:actor] && opts[:actor].id,
+      actor_nickname: opts[:actor] && opts[:actor].nickname,
+      details: opts[:details]
+    }
+
+    case %LogEntry{}
+         |> LogEntry.changeset(attrs)
+         |> Repo.insert() do
+      {:ok, log_entry} = result ->
+        # Broadcast log entry update to game subscribers
+        Phoenix.PubSub.broadcast(
+          CrimeToGo.PubSub,
+          "game:#{game.id}",
+          {:log_entry_created, log_entry}
+        )
+        result
+
+      error ->
+        error
+    end
+  end
+
+  @doc """
+  Gets all log entries for a game, ordered by newest first.
+
+  ## Examples
+
+      iex> list_log_entries_for_game("game-id")
+      [%LogEntry{}, ...]
+
+  """
+  def list_log_entries_for_game(game_id) do
+    LogEntry
+    |> where([l], l.game_id == ^game_id)
+    |> order_by([l], desc: l.inserted_at)
+    |> Repo.all()
+  end
+
+  @doc """
+  Logs a player joining the game.
+  """
+  def log_player_joined(game, player) do
+    create_log_entry("player_joined", game, player, %{
+      details: "#{player.nickname} joined the game"
+    })
+  end
+
+  @doc """
+  Logs a player going offline.
+  """
+  def log_player_offline(game, player) do
+    create_log_entry("player_offline", game, player, %{
+      details: "#{player.nickname} went offline"
+    })
+  end
+
+  @doc """
+  Logs a player coming online.
+  """
+  def log_player_online(game, player) do
+    create_log_entry("player_online", game, player, %{
+      details: "#{player.nickname} came online"
+    })
+  end
+
+  @doc """
+  Logs a player being warned by a host.
+  """
+  def log_player_warned(game, player, host) do
+    create_log_entry("player_warned", game, player, %{
+      actor: host,
+      details: "#{player.nickname} was warned by host #{host.nickname}"
+    })
+  end
+
+  @doc """
+  Logs a player being kicked from the game.
+  """
+  def log_player_kicked(game, player, host) do
+    create_log_entry("player_kicked", game, player, %{
+      actor: host,
+      details: "#{player.nickname} was kicked by host #{host.nickname}"
+    })
+  end
+
+  @doc """
+  Logs a player being promoted to host.
+  """
+  def log_player_promoted_to_host(game, player, promoting_host) do
+    create_log_entry("player_promoted_to_host", game, player, %{
+      actor: promoting_host,
+      details: "#{player.nickname} was promoted to host by #{promoting_host.nickname}"
+    })
+  end
+
+  @doc """
+  Logs a player being demoted from host.
+  """
+  def log_player_demoted_from_host(game, player, demoting_host) do
+    create_log_entry("player_demoted_from_host", game, player, %{
+      actor: demoting_host,
+      details: "#{player.nickname} was demoted from host by #{demoting_host.nickname}"
+    })
   end
 
   defp generate_unique_game_code do

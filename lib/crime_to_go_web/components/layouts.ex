@@ -146,12 +146,26 @@ defmodule CrimeToGoWeb.Layouts do
                   </a>
                 </li>
                 
-                <!-- End Game (Host Only) - Separated with visual distinction -->
+                <!-- Host Actions - Separated with visual distinction -->
                 <%= if @current_player.game_host do %>
                   <div class="divider my-1"></div>
                   <li class="menu-title">
                     <span class="text-xs uppercase text-base-content/50">{gettext("Host Actions")}</span>
                   </li>
+                  
+                  <!-- Game History -->
+                  <li>
+                    <a
+                      href={"/games/" <> @current_player.game_id <> "/history"}
+                      class="flex items-center gap-2"
+                    >
+                      <.icon name="hero-clock" class="w-4 h-4" />
+                      {gettext("Game History")}
+                      <span class="badge badge-neutral badge-xs ml-auto">{gettext("Host")}</span>
+                    </a>
+                  </li>
+                  
+                  <!-- End Game -->
                   <li>
                     <button
                       phx-click="show_end_game_modal"

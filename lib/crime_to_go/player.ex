@@ -59,6 +59,22 @@ defmodule CrimeToGo.Player do
   def get_player!(id), do: Repo.get!(Player, id)
 
   @doc """
+  Gets a single player.
+
+  Returns nil if the Player does not exist.
+
+  ## Examples
+
+      iex> get_player(123)
+      %Player{}
+
+      iex> get_player("nonexistent")
+      nil
+
+  """
+  def get_player(id), do: Repo.get(Player, id)
+
+  @doc """
   Gets a player by nickname within a game.
 
   ## Examples
@@ -89,9 +105,21 @@ defmodule CrimeToGo.Player do
 
   """
   def create_player(attrs \\ %{}) do
-    %Player{}
-    |> Player.changeset(attrs)
-    |> Repo.insert()
+    case %Player{}
+         |> Player.changeset(attrs)
+         |> Repo.insert() do
+      {:ok, player} ->
+        # Log the player joining
+        if player.game_id do
+          game = CrimeToGo.Game.get_game!(player.game_id)
+          CrimeToGo.Game.log_player_joined(game, player)
+        end
+        
+        {:ok, player}
+      
+      error ->
+        error
+    end
   end
 
   @doc """
@@ -298,7 +326,7 @@ defmodule CrimeToGo.Player do
       iex> update_player_status(player, "offline")
       {:ok, %Player{}}
   """
-  def update_player_status(%Player{} = player, status) when status in ["online", "offline"] do
+  def update_player_status(%Player{} = player, status) when status in ["online", "offline", "kicked"] do
     attrs = %{
       status: status,
       last_seen_at: DateTime.utc_now()
@@ -316,6 +344,17 @@ defmodule CrimeToGo.Player do
     case update_player_status(player, "online") do
       {:ok, updated_player} ->
         broadcast_player_status_change(updated_player, "online")
+        
+        # Cancel any pending offline log (with error handling)
+        was_scheduled_for_offline = safe_cancel_offline_log(updated_player.id)
+        
+        # Only log if player was actually offline and not just a quick reconnect
+        # If there was a scheduled offline log, it means this is a quick reconnect
+        if player.status == "offline" and not was_scheduled_for_offline do
+          game = CrimeToGo.Game.get_game!(updated_player.game_id)
+          CrimeToGo.Game.log_player_online(game, updated_player)
+        end
+        
         {:ok, updated_player}
 
       error ->
@@ -330,6 +369,10 @@ defmodule CrimeToGo.Player do
     case update_player_status(player, "offline") do
       {:ok, updated_player} ->
         broadcast_player_status_change(updated_player, "offline")
+        
+        # Schedule delayed offline logging (can be cancelled if player comes back online)
+        safe_schedule_offline_log(updated_player)
+        
         {:ok, updated_player}
 
       error ->
@@ -357,6 +400,131 @@ defmodule CrimeToGo.Player do
     |> Repo.all()
   end
 
+  @doc """
+  Sets a player as host by player ID.
+
+  ## Examples
+
+      iex> set_player_as_host("player-id", promoting_host)
+      {:ok, %Player{}}
+
+  """
+  def set_player_as_host(player_id, promoting_host \\ nil) do
+    case get_player(player_id) do
+      nil ->
+        {:error, :not_found}
+
+      player ->
+        case update_player(player, %{game_host: true}) do
+          {:ok, updated_player} ->
+            # Log the promotion
+            if promoting_host do
+              game = CrimeToGo.Game.get_game!(updated_player.game_id)
+              CrimeToGo.Game.log_player_promoted_to_host(game, updated_player, promoting_host)
+            end
+            
+            {:ok, updated_player}
+          
+          error ->
+            error
+        end
+    end
+  end
+
+  @doc """
+  Removes host privileges from a player by player ID.
+
+  ## Examples
+
+      iex> remove_player_as_host("player-id", demoting_host)
+      {:ok, %Player{}}
+
+  """
+  def remove_player_as_host(player_id, demoting_host \\ nil) do
+    case get_player(player_id) do
+      nil ->
+        {:error, :not_found}
+
+      player ->
+        case update_player(player, %{game_host: false}) do
+          {:ok, updated_player} ->
+            # Log the demotion
+            if demoting_host do
+              game = CrimeToGo.Game.get_game!(updated_player.game_id)
+              CrimeToGo.Game.log_player_demoted_from_host(game, updated_player, demoting_host)
+            end
+            
+            {:ok, updated_player}
+          
+          error ->
+            error
+        end
+    end
+  end
+
+  @doc """
+  Kicks a player from the game by setting their status to "kicked".
+
+  ## Examples
+
+      iex> kick_player_from_game(player, host)
+      {:ok, %Player{}}
+
+  """
+  def kick_player_from_game(%Player{} = player, host \\ nil) do
+    case update_player_status(player, "kicked") do
+      {:ok, updated_player} ->
+        broadcast_player_status_change(updated_player, "kicked")
+        
+        # Log the player being kicked
+        if host do
+          game = CrimeToGo.Game.get_game!(updated_player.game_id)
+          CrimeToGo.Game.log_player_kicked(game, updated_player, host)
+        end
+        
+        {:ok, updated_player}
+
+      error ->
+        error
+    end
+  end
+
+  @doc """
+  Gets all kicked players for a game.
+  """
+  def list_kicked_players_for_game(game_id) do
+    Player
+    |> where([p], p.game_id == ^game_id and p.status == "kicked")
+    |> order_by([p], p.inserted_at)
+    |> Repo.all()
+  end
+
+  @doc """
+  Gets all active (non-kicked) players for a game.
+  """
+  def list_active_players_for_game(game_id) do
+    Player
+    |> where([p], p.game_id == ^game_id and p.status != "kicked")
+    |> order_by([p], p.inserted_at)
+    |> Repo.all()
+  end
+
+  @doc """
+  Gets all host players for a game.
+
+  ## Examples
+
+      iex> list_hosts_for_game("game-id")
+      [%Player{}, ...]
+
+  """
+  def list_hosts_for_game(game_id) do
+    Player
+    |> where([p], p.game_id == ^game_id and p.game_host == true and p.status != "kicked")
+    |> order_by([p], p.inserted_at)
+    |> Repo.all()
+  end
+
   # Broadcasts player status changes to the game topic and player-specific topic.
   defp broadcast_player_status_change(%Player{} = player, status) do
     # Broadcast to game topic for all players in the game
@@ -372,5 +540,53 @@ defmodule CrimeToGo.Player do
       "player:#{player.id}",
       {:status_changed, player, status}
     )
+  end
+
+  # Safe wrapper for StatusLogger calls with error handling
+  defp safe_cancel_offline_log(player_id) do
+    if CrimeToGo.Player.StatusLogger.alive? do
+      try do
+        CrimeToGo.Player.StatusLogger.cancel_offline_log(player_id)
+      rescue
+        error ->
+          require Logger
+          Logger.warning("StatusLogger error for cancel_offline_log: #{inspect(error)}")
+          false
+      catch
+        :exit, reason ->
+          require Logger
+          Logger.warning("StatusLogger exit for cancel_offline_log: #{inspect(reason)}")
+          false
+      end
+    else
+      # StatusLogger not available, assume no scheduled log
+      false
+    end
+  end
+
+  defp safe_schedule_offline_log(player) do
+    if CrimeToGo.Player.StatusLogger.alive? do
+      try do
+        CrimeToGo.Player.StatusLogger.schedule_offline_log(player)
+      rescue
+        error ->
+          require Logger
+          Logger.warning("StatusLogger error for schedule_offline_log: #{inspect(error)}")
+          fallback_log_offline(player)
+      catch
+        :exit, reason ->
+          require Logger
+          Logger.warning("StatusLogger exit for schedule_offline_log: #{inspect(reason)}")
+          fallback_log_offline(player)
+      end
+    else
+      # StatusLogger not available, log immediately
+      fallback_log_offline(player)
+    end
+  end
+
+  defp fallback_log_offline(player) do
+    game = CrimeToGo.Game.get_game!(player.game_id)
+    CrimeToGo.Game.log_player_offline(game, player)
   end
 end

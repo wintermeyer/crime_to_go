@@ -101,3 +101,55 @@
 
 /* This file is for your main application CSS */
 
+/* Improved dropdown styles for better reliability */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-content {
+  position: absolute;
+  top: 100%;
+  z-index: 50;
+  min-width: max-content;
+}
+
+/* Better focus and hover states for dropdown triggers */
+.dropdown [role="button"]:focus + .dropdown-content,
+.dropdown:hover .dropdown-content,
+.dropdown-content:hover {
+  display: block !important;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Smooth transitions for dropdown appearance */
+.dropdown-content {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.15s ease-out, transform 0.15s ease-out;
+  pointer-events: none;
+}
+
+/* Ensure dropdown stays open when interacting with menu items */
+.dropdown-content:focus-within {
+  display: block !important;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Better click targets for dropdown buttons */
+.dropdown [role="button"] {
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Prevent dropdown from being cut off on small screens */
+@media (max-width: 640px) {
+  .dropdown-end .dropdown-content {
+    right: 0;
+    left: auto;
+  }
+}
+

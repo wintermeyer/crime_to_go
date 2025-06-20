@@ -7,7 +7,7 @@ defmodule CrimeToGoWeb.GameLive.Lobby do
   @impl true
   def mount(%{"id" => game_id}, _session, socket) do
     game = Game.get_game!(game_id)
-    players = Player.list_players_for_game(game_id)
+    players = Player.list_active_players_for_game(game_id)
 
     # Check if this user has a player cookie for this game
     cookie_name = "player_#{game_id}"
@@ -23,6 +23,8 @@ defmodule CrimeToGoWeb.GameLive.Lobby do
       if connected?(socket) do
         # Subscribe to game updates
         Phoenix.PubSub.subscribe(CrimeToGo.PubSub, "game:#{game_id}")
+        # Subscribe to player-specific updates
+        Phoenix.PubSub.subscribe(CrimeToGo.PubSub, "player:#{current_player.id}")
       end
 
       # Get the public chat room for this game
@@ -100,21 +102,21 @@ defmodule CrimeToGoWeb.GameLive.Lobby do
   @impl true
   def handle_info({:player_joined, _player}, socket) do
     # Refresh players list when a new player joins
-    players = Player.list_players_for_game(socket.assigns.game.id)
+    players = Player.list_active_players_for_game(socket.assigns.game.id)
     {:noreply, assign(socket, players: players)}
   end
 
   @impl true
   def handle_info({:player_status_changed, _player, _status}, socket) do
     # Refresh players list when player status changes
-    players = Player.list_players_for_game(socket.assigns.game.id)
+    players = Player.list_active_players_for_game(socket.assigns.game.id)
     {:noreply, assign(socket, players: players)}
   end
 
   @impl true
   def handle_info({:status_changed, _player, _status}, socket) do
     # Handle player-specific status changes (same as above)
-    players = Player.list_players_for_game(socket.assigns.game.id)
+    players = Player.list_active_players_for_game(socket.assigns.game.id)
     {:noreply, assign(socket, players: players)}
   end
 
@@ -133,6 +135,45 @@ defmodule CrimeToGoWeb.GameLive.Lobby do
      |> push_event("clear_player_cookies", %{})
      |> put_flash(:info, gettext("The game has been ended by the host."))
      |> push_navigate(to: ~p"/")}
+  end
+
+  @impl true
+  def handle_info({:warning_from_host, host_name}, socket) do
+    # Player received a warning from a host
+    {:noreply,
+     socket
+     |> put_flash(:error, gettext("⚠️ WARNING from host %{host_name}: Please follow the game rules or you may be kicked!", host_name: host_name))}
+  end
+
+  @impl true
+  def handle_info({:kicked_from_game, host_name}, socket) do
+    # Player was kicked from the game
+    {:noreply,
+     socket
+     |> push_event("clear_player_cookies", %{})
+     |> put_flash(:error, gettext("You have been kicked from the game by host %{host_name}.", host_name: host_name))
+     |> push_navigate(to: ~p"/")}
+  end
+
+  @impl true
+  def handle_info({:player_promoted_to_host, _player}, socket) do
+    # Refresh players list when someone becomes a host
+    players = Player.list_active_players_for_game(socket.assigns.game.id)
+    {:noreply, assign(socket, players: players)}
+  end
+
+  @impl true
+  def handle_info({:player_demoted_from_host, _player}, socket) do
+    # Refresh players list when someone loses host privileges
+    players = Player.list_active_players_for_game(socket.assigns.game.id)
+    {:noreply, assign(socket, players: players)}
+  end
+
+  @impl true
+  def handle_info({:player_kicked, _player}, socket) do
+    # Refresh players list when someone else is kicked
+    players = Player.list_active_players_for_game(socket.assigns.game.id)
+    {:noreply, assign(socket, players: players)}
   end
 
   @impl true

@@ -37,7 +37,7 @@ defmodule CrimeToGo.Player.Player do
     ])
     |> validate_required([:nickname, :avatar_file_name, :game_id])
     |> validate_length(:avatar_file_name, max: Constants.max_length(:avatar_file_name))
-    |> validate_inclusion(:status, ["online", "offline"])
+    |> validate_inclusion(:status, ["online", "offline", "kicked"])
     |> Validations.validate_not_blank(:nickname)
     |> Validations.validate_nickname_format(:nickname)
     |> Validations.validate_unique_nickname_in_game()
@@ -51,6 +51,6 @@ defmodule CrimeToGo.Player.Player do
   def status_changeset(player, attrs) do
     player
     |> cast(attrs, [:status, :last_seen_at])
-    |> validate_inclusion(:status, ["online", "offline"])
+    |> validate_inclusion(:status, ["online", "offline", "kicked"])
   end
 end

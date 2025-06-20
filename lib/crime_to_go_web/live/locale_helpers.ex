@@ -46,7 +46,7 @@ defmodule CrimeToGoWeb.LocaleHelpers do
 
           if player_id do
             # Verify the player exists and belongs to this game
-            players = Player.list_players_for_game(game_id)
+            players = Player.list_active_players_for_game(game_id)
             current_player = Enum.find(players, &(&1.id == player_id))
 
             if current_player do

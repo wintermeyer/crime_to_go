@@ -42,6 +42,8 @@ defmodule CrimeToGoWeb.ChatLive.Room do
           Phoenix.PubSub.subscribe(CrimeToGo.PubSub, "chat_room:#{chat_room.id}")
           # Subscribe to game updates for player status
           Phoenix.PubSub.subscribe(CrimeToGo.PubSub, "game:#{game_id}")
+          # Subscribe to player-specific updates
+          Phoenix.PubSub.subscribe(CrimeToGo.PubSub, "player:#{current_player.id}")
         end
 
         # Load messages and members
@@ -152,6 +154,24 @@ defmodule CrimeToGoWeb.ChatLive.Room do
      |> push_navigate(to: ~p"/")}
   end
 
+  @impl true
+  def handle_info({:warning_from_host, host_name}, socket) do
+    # Player received a warning from a host
+    {:noreply,
+     socket
+     |> put_flash(:error, gettext("⚠️ WARNING from host %{host_name}: Please follow the game rules or you may be kicked!", host_name: host_name))}
+  end
+
+  @impl true
+  def handle_info({:kicked_from_game, host_name}, socket) do
+    # Player was kicked from the game
+    {:noreply,
+     socket
+     |> push_event("clear_player_cookies", %{})
+     |> put_flash(:error, gettext("You have been kicked from the game by host %{host_name}.", host_name: host_name))
+     |> push_navigate(to: ~p"/")}
+  end
+
   # Helper function to get player from cookies
   defp get_player_from_cookies(socket, cookie_name, game_id) do
     case get_connect_params(socket) do
@@ -160,7 +180,7 @@ defmodule CrimeToGoWeb.ChatLive.Room do
         
         if player_id do
           # Verify the player exists and belongs to this game
-          players = Player.list_players_for_game(game_id)
+          players = Player.list_active_players_for_game(game_id)
           Enum.find(players, &(&1.id == player_id))
         else
           nil
