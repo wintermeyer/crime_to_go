@@ -1,0 +1,306 @@
+<div class="min-h-screen bg-gradient-to-br from-base-50 to-base-100 flex flex-col">
+  <!-- Header -->
+  <div class="bg-base-100 border-b border-base-300 px-4 py-3 flex-shrink-0">
+    <div class="flex items-center justify-between">
+      <!-- Back button and room title -->
+      <div class="flex items-center gap-3">
+        <.link
+          navigate={~p"/games/#{@game.id}/lobby"}
+          class="btn btn-ghost btn-sm btn-circle"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+        </.link>
+        <div>
+          <h1 class="text-lg font-semibold text-base-content">
+            <%= if @room_type == :all do %>
+              {gettext("All Detectives")}
+            <% else %>
+              {@chat_room.name}
+            <% end %>
+          </h1>
+          <p class="text-xs text-base-content/60">
+            {ngettext("1 member", "%{count} members", length(@members), count: length(@members))}
+          </p>
+        </div>
+      </div>
+      
+      <!-- Members toggle (mobile) -->
+      <button
+        class="btn btn-ghost btn-sm btn-circle lg:hidden"
+        onclick="document.getElementById('members-drawer').checked = true"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+          />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main chat area with sidebar -->
+  <div class="flex-1 flex overflow-hidden">
+    <!-- Chat messages area -->
+    <div class="flex-1 flex flex-col">
+      <!-- Messages container -->
+      <div
+        id="messages-container"
+        class="flex-1 overflow-y-auto p-4 space-y-4"
+        phx-update="stream"
+      >
+        <div id="messages" phx-update="stream">
+          <%= for {id, message} <- @streams.messages do %>
+            <div
+              id={id}
+              class={[
+                "chat",
+                if(message.player_id == @current_player.id, do: "chat-end", else: "chat-start")
+              ]}
+            >
+              <div class="chat-image avatar">
+                <div class="w-8 h-8 rounded-full">
+                  <img
+                    src={~p"/images/avatars/#{message.player.avatar_file_name}"}
+                    alt={message.player.nickname}
+                    class="rounded-full"
+                  />
+                </div>
+              </div>
+              <div class="chat-header text-xs opacity-60 mb-1">
+                {message.player.nickname}
+                <time class="text-xs opacity-50 ml-1">
+                  {format_message_time(message.inserted_at)}
+                </time>
+              </div>
+              <div class={[
+                "chat-bubble text-sm",
+                if(message.player_id == @current_player.id,
+                  do: "chat-bubble-primary",
+                  else: "chat-bubble-secondary"
+                )
+              ]}>
+                {message.content}
+              </div>
+            </div>
+          <% end %>
+        </div>
+        
+        <%= if map_size(@streams.messages) == 0 do %>
+          <div class="text-center py-8">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-12 w-12 mx-auto text-base-300 mb-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+              />
+            </svg>
+            <p class="text-base-content/60 text-sm">
+              {gettext("Start the conversation!")}
+            </p>
+            <p class="text-base-content/40 text-xs mt-1">
+              {gettext("Send the first message to get everyone talking")}
+            </p>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Message input -->
+      <div class="border-t border-base-300 p-4 bg-base-100 flex-shrink-0">
+        <.form
+          for={@form}
+          phx-submit="send_message"
+          phx-change="validate_message"
+          class="flex gap-2"
+        >
+          <.input
+            field={@form[:content]}
+            type="text"
+            placeholder={gettext("Type your message...")}
+            class="flex-1"
+            maxlength="1000"
+            autocomplete="off"
+          />
+          <button
+            type="submit"
+            disabled={not @message_changeset.valid?}
+            class="btn btn-primary btn-square disabled:btn-disabled"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+              />
+            </svg>
+          </button>
+        </.form>
+      </div>
+    </div>
+
+    <!-- Desktop sidebar -->
+    <div class="hidden lg:flex lg:w-80 lg:border-l lg:border-base-300 lg:bg-base-50">
+      <div class="flex-1 p-4">
+        <h3 class="text-lg font-semibold mb-4 text-base-content">
+          {gettext("Members")}
+        </h3>
+        <div class="space-y-2">
+          <%= for member <- @members do %>
+            <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-base-200 transition-colors">
+              <img
+                src={~p"/images/avatars/#{member.player.avatar_file_name}"}
+                alt={member.player.nickname}
+                class="w-8 h-8 rounded-full"
+              />
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-base-content truncate">
+                  {member.player.nickname}
+                  <%= if member.player.id == @current_player.id do %>
+                    <span class="text-xs text-primary ml-1">{gettext("(You)")}</span>
+                  <% end %>
+                </p>
+                <%= if member.player.game_host do %>
+                  <p class="text-xs text-warning">{gettext("Host")}</p>
+                <% end %>
+              </div>
+              <!-- Online/Offline indicator -->
+              <div class={[
+                "w-2 h-2 rounded-full",
+                if(member.player.status == "online",
+                  do: "bg-success animate-pulse",
+                  else: "bg-error"
+                )
+              ]}>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile drawer for members list -->
+  <div class="drawer drawer-end lg:hidden">
+    <input id="members-drawer" type="checkbox" class="drawer-toggle" />
+    <div class="drawer-side z-50">
+      <label for="members-drawer" class="drawer-overlay"></label>
+      <div class="w-80 min-h-full bg-base-100 p-4">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-semibold text-base-content">
+            {gettext("Members")}
+          </h3>
+          <button
+            class="btn btn-ghost btn-sm btn-circle"
+            onclick="document.getElementById('members-drawer').checked = false"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+        <div class="space-y-2">
+          <%= for member <- @members do %>
+            <div class="flex items-center gap-3 p-3 rounded-lg hover:bg-base-200 transition-colors">
+              <img
+                src={~p"/images/avatars/#{member.player.avatar_file_name}"}
+                alt={member.player.nickname}
+                class="w-10 h-10 rounded-full"
+              />
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-base-content truncate">
+                  {member.player.nickname}
+                  <%= if member.player.id == @current_player.id do %>
+                    <span class="text-xs text-primary ml-1">{gettext("(You)")}</span>
+                  <% end %>
+                </p>
+                <%= if member.player.game_host do %>
+                  <p class="text-xs text-warning">{gettext("Host")}</p>
+                <% end %>
+                <p class="text-xs text-base-content/60">
+                  {if member.player.status == "online",
+                    do: gettext("Online"),
+                    else: gettext("Offline")}
+                </p>
+              </div>
+              <!-- Online/Offline indicator -->
+              <div class={[
+                "w-3 h-3 rounded-full",
+                if(member.player.status == "online",
+                  do: "bg-success animate-pulse",
+                  else: "bg-error"
+                )
+              ]}>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Auto-scroll to bottom when new messages arrive
+  document.addEventListener("DOMContentLoaded", function() {
+    const container = document.getElementById("messages-container");
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
+  });
+
+  // Auto-scroll on new messages (for real-time updates)
+  document.addEventListener("phx:update", function() {
+    const container = document.getElementById("messages-container");
+    if (container) {
+      setTimeout(() => {
+        container.scrollTop = container.scrollHeight;
+      }, 100);
+    }
+  });
+</script>

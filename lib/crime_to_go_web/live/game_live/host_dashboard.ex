@@ -2,8 +2,7 @@ defmodule CrimeToGoWeb.GameLive.HostDashboard do
   use CrimeToGoWeb, :live_view
   use CrimeToGoWeb.BaseLive
 
-  alias CrimeToGo.Game
-  alias CrimeToGo.Player
+  alias CrimeToGo.{Game, Player, Chat}
 
   @impl true
   def mount(%{"id" => game_id}, _session, socket) do
@@ -36,12 +35,27 @@ defmodule CrimeToGoWeb.GameLive.HostDashboard do
         # Generate the join URL for the QR code
         join_url = CrimeToGoWeb.Endpoint.url() <> "/games/#{game_id}/join"
 
+        # Get the public chat room for this game
+        public_chat_room = Chat.get_public_chat_room(game_id)
+
+        # Ensure player is a member of the public chat room
+        if public_chat_room && current_player && 
+           not Chat.member_of_chat_room?(public_chat_room.id, current_player.id) do
+          Chat.add_member_to_chat_room(public_chat_room, current_player)
+        end
+
+        # Subscribe to chat room updates if connected
+        if connected?(socket) && public_chat_room do
+          Phoenix.PubSub.subscribe(CrimeToGo.PubSub, "chat_room:#{public_chat_room.id}")
+        end
+
         {:ok,
          assign(socket,
            game: game,
            join_url: join_url,
            players: players,
-           current_player: current_player
+           current_player: current_player,
+           public_chat_room: public_chat_room
          )}
       end
     end
@@ -103,6 +117,13 @@ defmodule CrimeToGoWeb.GameLive.HostDashboard do
     # Handle player-specific status changes (same as above)
     players = Player.list_players_for_game(socket.assigns.game.id)
     {:noreply, assign(socket, players: players)}
+  end
+
+  @impl true
+  def handle_info({:new_message, message}, socket) do
+    # Forward chat messages to the chat component
+    send_update(CrimeToGoWeb.ChatComponent, id: "dashboard-chat", new_message: message)
+    {:noreply, socket}
   end
 
   @impl true

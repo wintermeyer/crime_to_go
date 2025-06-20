@@ -41,8 +41,7 @@ defmodule CrimeToGoWeb.Router do
       live "/games/:game_id/players/new", PlayerLive.Index, :new
       live "/games/:game_id/players/:id", PlayerLive.Show, :show
 
-      # Chat routes
-      live "/games/:game_id/chat", ChatLive.Index, :index
+      # Chat routes (for future private rooms)
       live "/games/:game_id/chat_rooms/:id", ChatLive.Room, :show
     end
   end

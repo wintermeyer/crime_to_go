@@ -103,6 +103,24 @@ Hooks.CopyToClipboard = {
   }
 }
 
+// Hook for auto-scrolling chat to bottom
+Hooks.ChatAutoScroll = {
+  mounted() {
+    this.scrollToBottom()
+  },
+  updated() {
+    this.scrollToBottom()
+  },
+  scrollToBottom() {
+    const container = this.el.querySelector('[id$="-messages-container"]')
+    if (container) {
+      setTimeout(() => {
+        container.scrollTop = container.scrollHeight
+      }, 50)
+    }
+  }
+}
+
 
 // Helper function to get all cookies
 function getCookies() {

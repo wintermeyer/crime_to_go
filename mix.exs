@@ -61,7 +61,8 @@ defmodule CrimeToGo.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
-      {:eqrcode, "~> 0.2.1"}
+      {:eqrcode, "~> 0.2.1"},
+      {:mdex, "~> 0.7.0"}
     ]
   end
 
