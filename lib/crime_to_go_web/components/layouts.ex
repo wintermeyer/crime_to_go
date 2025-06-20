@@ -89,7 +89,7 @@ defmodule CrimeToGoWeb.Layouts do
                 <% else %>
                   <.icon name="hero-user-circle" class="w-5 h-5" />
                 <% end %>
-                <span class="hidden sm:inline">{@current_player.nickname}</span>
+                <span class="text-sm font-medium">{@current_player.nickname}</span>
                 <.icon name="hero-chevron-down" class="w-3 h-3" />
               </div>
               <ul
