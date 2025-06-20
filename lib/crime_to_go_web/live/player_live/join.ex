@@ -3,7 +3,7 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
   use CrimeToGoWeb.BaseLive
 
   alias CrimeToGo.{Game, Player, Chat}
-  alias CrimeToGo.Shared.Constants
+  alias CrimeToGo.Shared.AvatarManager
 
   @impl true
   def mount(%{"game_id" => game_id}, _session, socket) do
@@ -231,9 +231,6 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
     {:noreply, assign(socket, existing_players: existing_players, taken_avatars: taken_avatars)}
   end
 
-  defp available_avatars do
-    Constants.available_avatars()
-  end
 
   defp format_avatar_name(avatar_filename) do
     avatar_filename
@@ -317,47 +314,15 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
   end
 
   defp find_first_available_avatar(game_id) do
-    # Get all taken avatars in one query
-    taken_avatars =
-      Player.list_active_players_for_game(game_id)
-      |> get_taken_avatars()
-
-    available_avatars()
-    |> Enum.find(fn avatar -> avatar not in taken_avatars end)
+    players = Player.list_active_players_for_game(game_id)
+    AvatarManager.get_first_available_avatar(players)
   end
 
   defp get_taken_avatars(players) do
-    players
-    |> Enum.map(& &1.avatar_file_name)
-    |> Enum.reject(&is_nil/1)
-    |> MapSet.new()
+    AvatarManager.get_taken_avatars(players)
   end
 
   defp get_random_available_avatars_optimized(taken_avatars, count, current_avatar) do
-    # Get all truly available avatars (not taken by other players)
-    available =
-      available_avatars()
-      |> Enum.filter(fn avatar -> avatar not in taken_avatars end)
-
-    if current_avatar && current_avatar not in available do
-      # If current avatar is selected but not in available list, include it
-      # This ensures the user can keep their current selection
-      ([current_avatar] ++ available)
-      |> Enum.shuffle()
-      |> Enum.take(count)
-    else
-      # Normal case: just shuffle available avatars
-      available
-      |> Enum.shuffle()
-      |> Enum.take(count)
-      |> then(fn list ->
-        # Ensure current avatar is in the list if it exists
-        if current_avatar && current_avatar not in list && current_avatar not in taken_avatars do
-          [current_avatar | Enum.take(list, count - 1)]
-        else
-          list
-        end
-      end)
-    end
+    AvatarManager.get_random_available_avatars_optimized(taken_avatars, count, current_avatar)
   end
 end

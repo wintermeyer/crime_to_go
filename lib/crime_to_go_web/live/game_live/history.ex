@@ -2,77 +2,31 @@ defmodule CrimeToGoWeb.GameLive.History do
   use CrimeToGoWeb, :live_view
   use CrimeToGoWeb.BaseLive
 
-  alias CrimeToGo.{Game, Player}
+  alias CrimeToGo.Game
   require Logger
+
+  # Use BaseLive macros for common patterns
+  handle_game_ending_events()
+  handle_player_offline_on_terminate()
 
   @impl true
   def mount(%{"id" => game_id}, _session, socket) do
-    game = Game.get_game!(game_id)
-    
-    # During initial HTTP mount, defer player resolution until WebSocket connection
-    if connected?(socket) do
-      # WebSocket connected - player cookies are available
-      players = Player.list_active_players_for_game(game_id)
-      cookie_name = "player_#{game_id}"
-      current_player = get_player_from_cookies(socket, cookie_name, players)
+    case mount_game_liveview(socket, game_id, require_host: true) do
+      {:ok, %{assigns: %{current_player: _current_player}} = socket} ->
+        # Successfully mounted with host permissions
+        # Get log entries for this game
+        log_entries = Game.list_log_entries_for_game(game_id)
 
-      # If no valid player found, redirect to join page
-      if is_nil(current_player) do
         {:ok,
-         socket
-         |> put_flash(:info, gettext("Please join the game first"))
-         |> push_navigate(to: "/games/#{game_id}/join")}
-      else
-        # If current player is not a host, redirect to lobby
-        if not current_player.game_host do
-          {:ok,
-           socket
-           |> put_flash(:error, gettext("Only hosts can view game history"))
-           |> push_navigate(to: "/games/#{game_id}/lobby")}
-        else
-          # Host can access this page
-          # Subscribe to game updates for real-time log entries
-          Phoenix.PubSub.subscribe(CrimeToGo.PubSub, "game:#{game_id}")
-
-          # Get log entries for this game
-          log_entries = Game.list_log_entries_for_game(game_id)
-
-          {:ok,
-           assign(socket,
-             game: game,
-             current_player: current_player,
-             log_entries: log_entries,
-             show_end_game_modal: false,
-             new_entry_ids: MapSet.new()
-           )}
-        end
-      end
-    else
-      # Initial HTTP mount - just load the page skeleton
-      {:ok,
-       assign(socket,
-         game: game,
-         log_entries: [],
-         show_end_game_modal: false,
-         new_entry_ids: MapSet.new()
-       )}
-    end
-  rescue
-    Ecto.NoResultsError ->
-      {:ok,
-       socket
-       |> put_flash(:error, gettext("Game not found"))
-       |> push_navigate(to: "/")}
-  end
-
-  # Helper function to get player from cookies
-  defp get_player_from_cookies(socket, cookie_name, players) do
-    case get_connect_params(socket) do
-      %{} = connect_params ->
-        player_id = Map.get(connect_params, cookie_name)
-        if player_id, do: Enum.find(players, &(&1.id == player_id))
-      _ ->
-        nil
+         assign(socket,
+           log_entries: log_entries,
+           show_end_game_modal: false,
+           new_entry_ids: MapSet.new()
+         )}
+      
+      {:ok, redirect_socket} ->
+        # Redirected due to auth/permission issues
+        {:ok, redirect_socket}
     end
   end
 
@@ -99,65 +53,19 @@ defmodule CrimeToGoWeb.GameLive.History do
   end
 
 
-  @impl true
-  def handle_info({:player_joined, _player}, socket) do
-    # Player joins are logged automatically and will trigger :log_entry_created
-    # No need to manually refresh here
-    {:noreply, socket}
-  end
+  # All standard player status events are logged automatically and will trigger :log_entry_created
+  # No need to manually handle them here since we only care about log entries, not player lists
 
   @impl true
-  def handle_info({:player_status_changed, _player, _status}, socket) do
-    # Status changes are logged automatically and will trigger :log_entry_created
-    # No need to manually refresh here
-    {:noreply, socket}
-  end
-
+  def handle_info({:player_joined, _player}, socket), do: {:noreply, socket}
+  @impl true  
+  def handle_info({:player_status_changed, _player, _status}, socket), do: {:noreply, socket}
   @impl true
-  def handle_info({:game_ended, _game}, socket) do
-    # Game was ended, redirect to home page and clear cookies
-    {:noreply,
-     socket
-     |> push_event("clear_player_cookies", %{})
-     |> put_flash(:info, gettext("The game has been ended by the host."))
-     |> push_navigate(to: ~p"/")}
-  end
-
+  def handle_info({:player_promoted_to_host, _player}, socket), do: {:noreply, socket}
   @impl true
-  def handle_info({:player_promoted_to_host, _player}, socket) do
-    # Promotions are logged automatically and will trigger :log_entry_created
-    {:noreply, socket}
-  end
-
+  def handle_info({:player_demoted_from_host, _player}, socket), do: {:noreply, socket}
   @impl true
-  def handle_info({:player_demoted_from_host, _player}, socket) do
-    # Demotions are logged automatically and will trigger :log_entry_created
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_info({:player_kicked, _player}, socket) do
-    # Kicks are logged automatically and will trigger :log_entry_created
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_info({:warning_from_host, host_name}, socket) do
-    # This host received a warning from another host (shouldn't happen but handle it)
-    {:noreply,
-     socket
-     |> put_flash(:error, gettext("⚠️ WARNING from host %{host_name}: Please follow the game rules or you may be kicked!", host_name: host_name))}
-  end
-
-  @impl true
-  def handle_info({:kicked_from_game, host_name}, socket) do
-    # This host was kicked from the game by another host
-    {:noreply,
-     socket
-     |> push_event("clear_player_cookies", %{})
-     |> put_flash(:error, gettext("You have been kicked from the game by host %{host_name}.", host_name: host_name))
-     |> push_navigate(to: ~p"/")}
-  end
+  def handle_info({:player_kicked, _player}, socket), do: {:noreply, socket}
 
   @impl true
   def handle_info({:log_entry_created, log_entry}, socket) do
@@ -225,16 +133,6 @@ defmodule CrimeToGoWeb.GameLive.History do
     end
   end
 
-  @impl true
-  def terminate(_reason, socket) do
-    # Set player as offline when LiveView terminates
-    case socket.assigns[:current_player] do
-      nil -> :ok
-      current_player -> Player.set_player_offline(current_player)
-    end
-
-    :ok
-  end
 
 
 
