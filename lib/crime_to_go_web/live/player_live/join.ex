@@ -156,7 +156,7 @@ defmodule CrimeToGoWeb.PlayerLive.Join do
              |> push_event("set_cookie", %{
                name: cookie_name,
                value: cookie_value,
-               max_age: 24 * 60 * 60
+               max_age: Application.get_env(:crime_to_go, :player_cookie_max_age, 3 * 60 * 60)
              })
              |> put_flash(
                :info,

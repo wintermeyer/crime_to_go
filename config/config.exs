@@ -9,7 +9,9 @@ import Config
 
 config :crime_to_go,
   ecto_repos: [CrimeToGo.Repo],
-  generators: [timestamp_type: :utc_datetime]
+  generators: [timestamp_type: :utc_datetime],
+  # Player cookie expiration in seconds (default: 3 hours)
+  player_cookie_max_age: 3 * 60 * 60
 
 # Configures the endpoint
 config :crime_to_go, CrimeToGoWeb.Endpoint,
