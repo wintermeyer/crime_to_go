@@ -89,4 +89,66 @@ defmodule CrimeToGoWeb.BaseLive do
        form_params: params
      )}
   end
+
+  @doc """
+  Shows the end game confirmation modal.
+  Only available to game hosts.
+  """
+  def handle_show_end_game_modal(socket) do
+    current_player = socket.assigns[:current_player]
+    
+    if current_player && current_player.game_host do
+      {:noreply, Phoenix.Component.assign(socket, show_end_game_modal: true)}
+    else
+      {:noreply, 
+       socket
+       |> Phoenix.LiveView.put_flash(:error, "Only the game host can end the game")
+      }
+    end
+  end
+
+  @doc """
+  Hides the end game confirmation modal.
+  """
+  def handle_hide_end_game_modal(socket) do
+    {:noreply, Phoenix.Component.assign(socket, show_end_game_modal: false)}
+  end
+
+  @doc """
+  Confirms ending the game and performs all necessary cleanup.
+  """
+  def handle_confirm_end_game(socket) do
+    current_player = socket.assigns[:current_player]
+    game = socket.assigns[:game]
+    
+    if current_player && current_player.game_host && game do
+      case CrimeToGo.Game.end_game(game) do
+        {:ok, updated_game} ->
+          # Broadcast to all players that the game has ended
+          safe_broadcast("game:#{game.id}", {:game_ended, updated_game})
+          
+          # Clear all player cookies via JavaScript
+          socket_with_cleanup = 
+            socket
+            |> Phoenix.LiveView.push_event("clear_player_cookies", %{})
+            |> Phoenix.LiveView.put_flash(:info, "Game ended successfully. All players have been notified.")
+            |> Phoenix.LiveView.push_navigate(to: ~p"/")
+          
+          {:noreply, socket_with_cleanup}
+          
+        {:error, _changeset} ->
+          {:noreply,
+           socket
+           |> Phoenix.Component.assign(show_end_game_modal: false)
+           |> Phoenix.LiveView.put_flash(:error, "Unable to end game. Please try again.")
+          }
+      end
+    else
+      {:noreply,
+       socket
+       |> Phoenix.Component.assign(show_end_game_modal: false)
+       |> Phoenix.LiveView.put_flash(:error, "Only the game host can end the game")
+      }
+    end
+  end
 end

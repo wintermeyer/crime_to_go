@@ -138,13 +138,31 @@ defmodule CrimeToGoWeb.Layouts do
 
                 <div class="divider my-1"></div>
                 
-    <!-- Leave Game -->
+                <!-- Leave Game -->
                 <li>
-                  <a href="/" class="flex items-center gap-2 text-error">
+                  <a href="/" class="flex items-center gap-2">
                     <.icon name="hero-arrow-left-on-rectangle" class="w-4 h-4" />
                     {gettext("Leave Game")}
                   </a>
                 </li>
+                
+                <!-- End Game (Host Only) - Separated with visual distinction -->
+                <%= if @current_player.game_host do %>
+                  <div class="divider my-1"></div>
+                  <li class="menu-title">
+                    <span class="text-xs uppercase text-base-content/50">{gettext("Host Actions")}</span>
+                  </li>
+                  <li>
+                    <button
+                      phx-click="show_end_game_modal"
+                      class="flex items-center gap-2 bg-error/10 text-error hover:bg-error/20 w-full text-left"
+                    >
+                      <.icon name="hero-x-circle" class="w-4 h-4" />
+                      {gettext("End Game for Everyone")}
+                      <span class="badge badge-error badge-xs ml-auto">{gettext("Host")}</span>
+                    </button>
+                  </li>
+                <% end %>
               </ul>
             </div>
           <% else %>
@@ -192,6 +210,50 @@ defmodule CrimeToGoWeb.Layouts do
         </div>
       </div>
     </header>
+
+    <!-- End Game Confirmation Modal -->
+    <%= if assigns[:show_end_game_modal] do %>
+      <div class="modal modal-open">
+        <div class="modal-box max-w-md">
+          <h3 class="font-bold text-lg text-error flex items-center gap-2">
+            <.icon name="hero-exclamation-triangle" class="w-6 h-6" />
+            {gettext("End Game for All Players")}
+          </h3>
+          
+          <div class="alert alert-error mt-4">
+            <.icon name="hero-information-circle" class="w-5 h-5" />
+            <span class="text-sm">{gettext("This is different from leaving the game!")}</span>
+          </div>
+          
+          <div class="py-4 space-y-3">
+            <p class="font-semibold">{gettext("As the host, ending the game will:")}</p>
+            <ul class="list-disc list-inside space-y-2 text-sm">
+              <li>{gettext("Immediately end the game for ALL players")}</li>
+              <li>{gettext("Remove everyone from the game")}</li>
+              <li>{gettext("Mark the game as finished")}</li>
+              <li>{gettext("This action CANNOT be undone")}</li>
+            </ul>
+            
+            <div class="divider"></div>
+            
+            <p class="text-sm text-base-content/70">
+              {gettext("If you just want to leave but let others continue playing, use 'Leave Game' instead.")}
+            </p>
+          </div>
+          
+          <div class="modal-action">
+            <button phx-click="hide_end_game_modal" class="btn btn-success" autofocus>
+              {gettext("Cancel")}
+            </button>
+            <button phx-click="confirm_end_game" class="btn btn-outline btn-error">
+              <.icon name="hero-x-circle" class="w-4 h-4 mr-2" />
+              {gettext("Yes, End Game for Everyone")}
+            </button>
+          </div>
+        </div>
+        <div class="modal-backdrop" phx-click="hide_end_game_modal"></div>
+      </div>
+    <% end %>
 
     <!-- Flash Messages Area -->
     <div class="sticky top-0 z-40">

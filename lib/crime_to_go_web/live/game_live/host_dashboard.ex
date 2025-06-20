@@ -99,6 +99,21 @@ defmodule CrimeToGoWeb.GameLive.HostDashboard do
   end
 
   @impl true
+  def handle_event("show_end_game_modal", _params, socket) do
+    handle_show_end_game_modal(socket)
+  end
+
+  @impl true
+  def handle_event("hide_end_game_modal", _params, socket) do
+    handle_hide_end_game_modal(socket)
+  end
+
+  @impl true
+  def handle_event("confirm_end_game", _params, socket) do
+    handle_confirm_end_game(socket)
+  end
+
+  @impl true
   def handle_info({:player_joined, _player}, socket) do
     # Refresh players list when a new player joins
     players = Player.list_players_for_game(socket.assigns.game.id)
@@ -124,6 +139,16 @@ defmodule CrimeToGoWeb.GameLive.HostDashboard do
     # Forward chat messages to the chat component
     send_update(CrimeToGoWeb.ChatComponent, id: "dashboard-chat", new_message: message)
     {:noreply, socket}
+  end
+
+  @impl true
+  def handle_info({:game_ended, _game}, socket) do
+    # Game was ended, redirect to home page and clear cookies
+    {:noreply,
+     socket
+     |> push_event("clear_player_cookies", %{})
+     |> put_flash(:info, gettext("The game has been ended by the host."))
+     |> push_navigate(to: ~p"/")}
   end
 
   @impl true

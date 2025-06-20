@@ -152,6 +152,22 @@ window.addEventListener("phx:set_cookie", (e) => {
   console.log("Cookie set:", name, value)
 })
 
+// Handle clearing player cookies when game ends
+window.addEventListener("phx:clear_player_cookies", (e) => {
+  const cookies = getCookies()
+  
+  // Clear all cookies that start with "player_"
+  Object.keys(cookies).forEach(cookieName => {
+    if (cookieName.startsWith("player_")) {
+      // Set cookie to expire in the past to delete it
+      document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
+      console.log("Cookie cleared:", cookieName)
+    }
+  })
+  
+  console.log("All player cookies cleared")
+})
+
 // connect if there are any LiveViews on the page
 liveSocket.connect()
 

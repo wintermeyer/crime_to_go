@@ -73,6 +73,21 @@ defmodule CrimeToGoWeb.ChatLive.Room do
   end
 
   @impl true
+  def handle_event("show_end_game_modal", _params, socket) do
+    handle_show_end_game_modal(socket)
+  end
+
+  @impl true
+  def handle_event("hide_end_game_modal", _params, socket) do
+    handle_hide_end_game_modal(socket)
+  end
+
+  @impl true
+  def handle_event("confirm_end_game", _params, socket) do
+    handle_confirm_end_game(socket)
+  end
+
+  @impl true
   def handle_event("send_message", %{"chat_message" => message_params}, socket) do
     message_params = 
       message_params
@@ -125,6 +140,16 @@ defmodule CrimeToGoWeb.ChatLive.Room do
     # Refresh members list when player status changes
     members = Chat.list_chat_room_members(socket.assigns.chat_room.id)
     {:noreply, assign(socket, members: members)}
+  end
+
+  @impl true
+  def handle_info({:game_ended, _game}, socket) do
+    # Game was ended, redirect to home page and clear cookies
+    {:noreply,
+     socket
+     |> push_event("clear_player_cookies", %{})
+     |> put_flash(:info, gettext("The game has been ended by the host."))
+     |> push_navigate(to: ~p"/")}
   end
 
   # Helper function to get player from cookies
