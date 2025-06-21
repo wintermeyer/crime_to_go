@@ -9,7 +9,7 @@ defmodule CrimeToGo.Shared.Constants do
   @doc """
   Valid game states.
   """
-  def game_states, do: ~w(pre_game active post_game)
+  def game_states, do: ~w(pre_game preparing active post_game)
 
   @doc """
   Valid chat room types.

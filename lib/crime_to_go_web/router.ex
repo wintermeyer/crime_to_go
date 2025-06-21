@@ -32,6 +32,7 @@ defmodule CrimeToGoWeb.Router do
       # Game management routes
       live "/games", GameLive.Index, :index
       live "/games/new", GameLive.Index, :new
+      live "/games/:id", GameLive.Show, :show
       live "/games/:id/host_dashboard", GameLive.HostDashboard, :host_dashboard
       live "/games/:id/lobby", GameLive.Lobby, :lobby
       live "/games/:id/history", GameLive.History, :history

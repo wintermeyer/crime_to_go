@@ -139,9 +139,30 @@ defmodule CrimeToGo.Game do
   end
 
   @doc """
-  Starts a game by changing its state from pre_game to active.
+  Starts game preparation by changing its state from pre_game to preparing.
+  This begins the preparation phase before the actual game starts.
   """
   def start_game(%Game{} = game) do
+    game
+    |> Game.changeset(%{state: "preparing"})
+    |> Repo.update()
+    |> case do
+      {:ok, updated_game} = result ->
+        Shared.broadcast_event("game:#{game.id}", {:game_preparing, updated_game})
+        # Schedule the actual game start after preparation
+        schedule_game_activation(updated_game)
+        result
+
+      error ->
+        error
+    end
+  end
+
+  @doc """
+  Activates a game after preparation is complete.
+  Changes state from preparing to active and sets the start time.
+  """
+  def activate_game(%Game{} = game) do
     game
     |> Game.changeset(%{state: "active", start_at: DateTime.utc_now()})
     |> Repo.update()
@@ -153,6 +174,25 @@ defmodule CrimeToGo.Game do
       error ->
         error
     end
+  end
+
+  @doc """
+  Prepares a game for activation.
+  This simulates game preparation with a 10-second delay.
+  """
+  def prepare_game(%Game{} = game) do
+    # Simulate game preparation work
+    Process.sleep(10_000)
+    
+    # After preparation, activate the game
+    activate_game(game)
+  end
+
+  defp schedule_game_activation(%Game{} = game) do
+    # Start preparation in a separate process to avoid blocking
+    Task.start(fn ->
+      prepare_game(game)
+    end)
   end
 
   @doc """
@@ -299,6 +339,16 @@ defmodule CrimeToGo.Game do
     create_log_entry("player_demoted_from_host", game, player, %{
       actor: demoting_host,
       details: "#{player.nickname} was demoted from host by #{demoting_host.nickname}"
+    })
+  end
+
+  @doc """
+  Logs game starting.
+  """
+  def log_game_started(game, host) do
+    create_log_entry("game_started", game, nil, %{
+      actor: host,
+      details: "Game started by #{host.nickname}"
     })
   end
 

@@ -89,10 +89,13 @@ defmodule CrimeToGoWeb.GameLive.HostDashboard do
   @impl true
   def handle_event("start_game", _params, socket) do
     case Game.start_game(socket.assigns.game) do
-      {:ok, _game} ->
+      {:ok, updated_game} ->
+        # Log the game start
+        Game.log_game_started(updated_game, socket.assigns.current_player)
+        
         {:noreply,
          socket
-         |> put_flash(:info, gettext("Game started! All players have been notified."))
+         |> put_flash(:info, gettext("Game is preparing! All players have been notified."))
          |> push_navigate(to: ~p"/games/#{socket.assigns.game.id}/lobby")}
 
       {:error, _reason} ->

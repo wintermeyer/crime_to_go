@@ -1,0 +1,130 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Top Navigation Bar with Countdown -->
+  <div class="bg-indigo-600 text-white px-4 py-3 shadow-lg">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <h1 class="text-xl font-bold"><%= @game.invitation_code %></h1>
+      
+      <%= if @game.state == "active" && @countdown_seconds do %>
+        <div class="text-center">
+          <div class="text-sm opacity-90"><%= gettext("Time Remaining") %></div>
+          <div class="text-2xl font-mono font-bold <%= if @countdown_seconds <= 60, do: "text-red-300 animate-pulse" %>">
+            <%= format_countdown(@countdown_seconds) %>
+          </div>
+        </div>
+      <% end %>
+      
+      <div class="text-sm">
+        <%= gettext("Players: %{count}", count: length(@game.players)) %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game State Messages -->
+  <%= if @game.state == "preparing" do %>
+    <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4">
+      <div class="flex items-center">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-700 mr-3"></div>
+        <p class="font-medium"><%= gettext("Game is about to start... get ready for it!") %></p>
+      </div>
+    </div>
+  <% end %>
+
+  <%= if @game.state == "post_game" do %>
+    <div class="bg-gray-100 border-l-4 border-gray-500 text-gray-700 p-4">
+      <p class="font-medium"><%= gettext("Game has ended") %></p>
+    </div>
+  <% end %>
+
+  <!-- Main Content Area -->
+  <div class="max-w-7xl mx-auto p-4">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <!-- Chat Section (2/3 width on large screens) -->
+      <div class="lg:col-span-2">
+        <div class="bg-white rounded-lg shadow-md h-[600px] flex flex-col">
+          <div class="bg-gray-100 px-4 py-3 border-b">
+            <h2 class="font-semibold text-gray-800"><%= gettext("All Chat") %></h2>
+          </div>
+          
+          <!-- Messages -->
+          <div class="flex-1 overflow-y-auto p-4 space-y-2" id="chat-messages" phx-hook="ScrollToBottom">
+            <%= for message <- Enum.reverse(@messages) do %>
+              <div class="flex items-start space-x-2">
+                <img 
+                  src={"/images/avatars/#{message.player.avatar_file_name}"} 
+                  alt={message.player.nickname}
+                  class="w-8 h-8 rounded-full"
+                />
+                <div class="flex-1">
+                  <div class="flex items-baseline space-x-2">
+                    <span class="font-semibold text-sm"><%= message.player.nickname %></span>
+                    <span class="text-xs text-gray-500">
+                      <%= Calendar.strftime(message.inserted_at, "%H:%M") %>
+                    </span>
+                  </div>
+                  <p class="text-gray-800"><%= message.content %></p>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          
+          <!-- Message Input -->
+          <%= if @game.state in ["active", "preparing"] && @current_player do %>
+            <div class="border-t p-4">
+              <.form for={@message_form} phx-submit="send_message" class="flex space-x-2">
+                <.input 
+                  field={@message_form[:content]} 
+                  type="text" 
+                  placeholder={gettext("Type a message...")}
+                  class="flex-1"
+                  autocomplete="off"
+                />
+                <.button type="submit" class="px-4">
+                  <%= gettext("Send") %>
+                </.button>
+              </.form>
+            </div>
+          <% end %>
+        </div>
+      </div>
+      
+      <!-- Players Section (1/3 width on large screens) -->
+      <div class="lg:col-span-1">
+        <div class="bg-white rounded-lg shadow-md">
+          <div class="bg-gray-100 px-4 py-3 border-b">
+            <h2 class="font-semibold text-gray-800">
+              <%= gettext("Players") %> (<%= length(@game.players) %>)
+            </h2>
+          </div>
+          
+          <div class="p-4 space-y-3 max-h-[600px] overflow-y-auto">
+            <%= for player <- @game.players do %>
+              <div class="flex items-center space-x-3">
+                <img 
+                  src={"/images/avatars/#{player.avatar_file_name}"} 
+                  alt={player.nickname}
+                  class="w-10 h-10 rounded-full"
+                />
+                <div class="flex-1">
+                  <div class="font-medium"><%= player.nickname %></div>
+                  <div class="text-xs text-gray-500">
+                    <%= if player.is_host do %>
+                      <span class="text-indigo-600"><%= gettext("Host") %></span>
+                    <% end %>
+                    <%= case player.status do %>
+                      <% "online" -> %>
+                        <span class="text-green-600">● <%= gettext("Online") %></span>
+                      <% "offline" -> %>
+                        <span class="text-gray-400">● <%= gettext("Offline") %></span>
+                      <% _ -> %>
+                        <span class="text-gray-400">● <%= gettext("Unknown") %></span>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

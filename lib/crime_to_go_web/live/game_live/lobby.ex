@@ -128,6 +128,24 @@ defmodule CrimeToGoWeb.GameLive.Lobby do
   end
 
   @impl true
+  def handle_info({:game_preparing, game}, socket) do
+    # Game is preparing to start
+    {:noreply,
+     socket
+     |> assign(:game, game)
+     |> put_flash(:info, gettext("Game is preparing... Get ready!"))}
+  end
+
+  @impl true
+  def handle_info({:game_started, game}, socket) do
+    # Game has started, redirect to the game show page
+    {:noreply,
+     socket
+     |> put_flash(:info, gettext("Game has started!"))
+     |> push_navigate(to: ~p"/games/#{game.id}")}
+  end
+
+  @impl true
   def handle_info({:game_ended, _game}, socket) do
     # Game was ended, redirect to home page and clear cookies
     {:noreply,

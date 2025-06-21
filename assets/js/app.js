@@ -121,6 +121,21 @@ Hooks.ChatAutoScroll = {
   }
 }
 
+// Hook for scrolling to bottom of a container
+Hooks.ScrollToBottom = {
+  mounted() {
+    this.scrollToBottom()
+  },
+  updated() {
+    this.scrollToBottom()
+  },
+  scrollToBottom() {
+    setTimeout(() => {
+      this.el.scrollTop = this.el.scrollHeight
+    }, 50)
+  }
+}
+
 
 // Helper function to get all cookies
 function getCookies() {

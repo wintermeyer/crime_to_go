@@ -6,7 +6,11 @@
         {gettext("Game Lobby")}
       </h1>
       <p class="text-sm sm:text-base md:text-lg text-base-content/70">
-        {gettext("Waiting for host to start")}
+        <%= if @game.state == "preparing" do %>
+          <span class="text-warning animate-pulse">{gettext("Game is about to start... get ready for it!")}</span>
+        <% else %>
+          {gettext("Waiting for host to start")}
+        <% end %>
       </p>
     </div>
     
@@ -119,19 +123,33 @@
 <!-- Waiting Message Card -->
         <div class="card bg-base-100 shadow-xl border border-base-300">
           <div class="card-body p-4 sm:p-6 md:p-8 text-center">
-            <div class="flex items-center justify-center gap-3 mb-4">
-              <div class="loading loading-dots loading-md"></div>
-              <span class="text-base md:text-lg text-base-content/70">
-                <%= if @current_player && @current_player.game_host do %>
-                  {gettext("You can start when ready")}
-                <% else %>
-                  {gettext("Host will start soon...")}
-                <% end %>
-              </span>
-            </div>
-            <p class="text-sm md:text-base text-base-content/60">
-              {gettext("Get ready for an exciting detective game!")}
-            </p>
+            <%= if @game.state == "preparing" do %>
+              <div class="flex flex-col items-center justify-center gap-4">
+                <div class="loading loading-spinner loading-lg text-warning"></div>
+                <div>
+                  <p class="text-lg md:text-xl font-semibold text-warning animate-pulse mb-2">
+                    {gettext("Game is about to start!")}
+                  </p>
+                  <p class="text-sm md:text-base text-base-content/60">
+                    {gettext("Preparing the game... Get ready for it!")}
+                  </p>
+                </div>
+              </div>
+            <% else %>
+              <div class="flex items-center justify-center gap-3 mb-4">
+                <div class="loading loading-dots loading-md"></div>
+                <span class="text-base md:text-lg text-base-content/70">
+                  <%= if @current_player && @current_player.game_host do %>
+                    {gettext("You can start when ready")}
+                  <% else %>
+                    {gettext("Host will start soon...")}
+                  <% end %>
+                </span>
+              </div>
+              <p class="text-sm md:text-base text-base-content/60">
+                {gettext("Get ready for an exciting detective game!")}
+              </p>
+            <% end %>
           </div>
         </div>
         

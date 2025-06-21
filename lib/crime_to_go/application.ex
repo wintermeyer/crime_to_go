@@ -14,6 +14,8 @@ defmodule CrimeToGo.Application do
       {Phoenix.PubSub, name: CrimeToGo.PubSub},
       # Status logger for debouncing offline/online events
       CrimeToGo.Player.StatusLogger,
+      # Game countdown timer server
+      CrimeToGo.Game.CountdownServer,
       # Start a worker by calling: CrimeToGo.Worker.start_link(arg)
       # {CrimeToGo.Worker, arg},
       # Start to serve requests, typically the last entry
