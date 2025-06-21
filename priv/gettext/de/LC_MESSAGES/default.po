@@ -453,17 +453,17 @@ msgstr "Alle Spieler sind bereit!"
 #: lib/crime_to_go_web/live/player_live/join.html.heex:250
 #, elixir-autogen, elixir-format
 msgid "Be the first detective to join!"
-msgstr ""
+msgstr "Sei der erste Detektiv, der beitritt!"
 
 #: lib/crime_to_go_web/live/home_live/index.html.heex:116
 #, elixir-autogen, elixir-format
 msgid "Games I'm Playing"
-msgstr ""
+msgstr "Meine Spiele"
 
 #: lib/crime_to_go_web/live/player_live/join.html.heex:10
 #, elixir-autogen, elixir-format
 msgid "Get ready to solve mysteries with other detectives"
-msgstr ""
+msgstr "Mach dich bereit, mit anderen Detektiven Rätsel zu lösen"
 
 #: lib/crime_to_go_web/live/home_live/index.html.heex:37
 #, elixir-autogen, elixir-format, fuzzy
@@ -490,12 +490,12 @@ msgstr "Spieler"
 #: lib/crime_to_go_web/live/game_live/lobby.ex:20
 #, elixir-autogen, elixir-format
 msgid "Please join the game first"
-msgstr ""
+msgstr "Bitte trete zuerst dem Spiel bei"
 
 #: lib/crime_to_go_web/live/game_live/host_dashboard.html.heex:193
 #, elixir-autogen, elixir-format
 msgid "Quick Share"
-msgstr ""
+msgstr "Schnell teilen"
 
 #: lib/crime_to_go_web/live/home_live/index.html.heex:97
 #: lib/crime_to_go_web/live/home_live/index.html.heex:176
@@ -506,12 +506,12 @@ msgstr "Spiel beitreten"
 #: lib/crime_to_go_web/live/game_live/lobby.html.heex:33
 #, elixir-autogen, elixir-format
 msgid "Share this code with players"
-msgstr ""
+msgstr "Teile diesen Code mit Spielern"
 
 #: lib/crime_to_go_web/live/game_live/host_dashboard.html.heex:98
 #, elixir-autogen, elixir-format
 msgid "Share this code with your friends"
-msgstr ""
+msgstr "Teile diesen Code mit deinen Freunden"
 
 #: lib/crime_to_go_web/live/home_live/index.html.heex:201
 #, elixir-autogen, elixir-format, fuzzy
@@ -521,17 +521,17 @@ msgstr "Starte ein neues Detektivspiel und lade Freunde ein, gemeinsam Rätsel z
 #: lib/crime_to_go_web/live/home_live/index.html.heex:123
 #, elixir-autogen, elixir-format
 msgid "These are games where you are currently a player. Click to continue playing."
-msgstr ""
+msgstr "Dies sind Spiele, in denen du aktuell Spieler bist. Klicke, um weiterzuspielen."
 
 #: lib/crime_to_go_web/live/home_live/index.html.heex:44
 #, elixir-autogen, elixir-format
 msgid "These are games you created that are still waiting for players. Rejoin to continue hosting or create a new game."
-msgstr ""
+msgstr "Dies sind von dir erstellte Spiele, die noch auf Spieler warten. Tritt wieder bei, um das Hosting fortzusetzen oder erstelle ein neues Spiel."
 
 #: lib/crime_to_go_web/live/game_live/host_dashboard.html.heex:456
 #, elixir-autogen, elixir-format
 msgid "Waiting for detectives to join..."
-msgstr ""
+msgstr "Warte auf weitere Detektive..."
 
 #: lib/crime_to_go_web/live/game_live/host_dashboard.html.heex:467
 #, elixir-autogen, elixir-format, fuzzy
@@ -541,12 +541,12 @@ msgstr "Warten auf Spieler..."
 #: lib/crime_to_go_web/live/home_live/index.ex:184
 #, elixir-autogen, elixir-format
 msgid "You can only rejoin games you are part of"
-msgstr ""
+msgstr "Du kannst nur Spielen wieder beitreten, an denen du teilnimmst"
 
 #: lib/crime_to_go_web/live/home_live/index.ex:156
 #, elixir-autogen, elixir-format
 msgid "You can only rejoin games you created"
-msgstr ""
+msgstr "Du kannst nur Spielen wieder beitreten, die du erstellt hast"
 
 #: lib/crime_to_go_web/live/player_live/join.ex:28
 #, elixir-autogen, elixir-format
@@ -556,12 +556,12 @@ msgstr "Sie sind diesem Spiel bereits beigetreten"
 #: lib/crime_to_go_web/live/home_live/index.html.heex:40
 #, elixir-autogen, elixir-format
 msgid "Your games"
-msgstr ""
+msgstr "Deine Spiele"
 
 #: lib/crime_to_go_web/live/home_live/index.ex:256
 #, elixir-autogen, elixir-format
 msgid "just now"
-msgstr ""
+msgstr "gerade eben"
 
 #: lib/crime_to_go_web/live/home_live/index.html.heex:81
 #: lib/crime_to_go_web/live/home_live/index.html.heex:160
@@ -607,12 +607,12 @@ msgstr "Ungültiges Spielecode-Format"
 #: lib/crime_to_go_web/live/home_live/index.ex:93
 #, elixir-autogen, elixir-format
 msgid "This game has already ended"
-msgstr ""
+msgstr "Dieses Spiel ist bereits beendet"
 
 #: lib/crime_to_go_web/live/home_live/index.ex:92
 #, elixir-autogen, elixir-format
 msgid "This game has already started"
-msgstr ""
+msgstr "Dieses Spiel hat bereits begonnen"
 
 #: lib/crime_to_go_web/live/home_live/index.ex:94
 #, elixir-autogen, elixir-format, fuzzy
@@ -630,19 +630,19 @@ msgstr "Detektiv%{number}"
 #: lib/crime_to_go_web/live/components/chat_component.ex:209
 #, elixir-autogen, elixir-format
 msgid "%{hours}h"
-msgstr ""
+msgstr "%{hours}h"
 
 #: lib/crime_to_go_web/live/chat_live/room.ex:218
 #: lib/crime_to_go_web/live/components/chat_component.ex:208
 #, elixir-autogen, elixir-format
 msgid "%{minutes}m"
-msgstr ""
+msgstr "%{minutes}m"
 
 #: lib/crime_to_go_web/live/chat_live/room.html.heex:194
 #: lib/crime_to_go_web/live/chat_live/room.html.heex:259
 #, elixir-autogen, elixir-format
 msgid "(You)"
-msgstr ""
+msgstr "(Du)"
 
 #: lib/crime_to_go_web/live/game_live/host_dashboard.html.heex:54
 #: lib/crime_to_go_web/live/player_live/join.html.heex:36
@@ -664,7 +664,7 @@ msgstr[1] ""
 #: lib/crime_to_go_web/live/game_live/lobby.html.heex:146
 #, elixir-autogen, elixir-format
 msgid "All Detectives"
-msgstr ""
+msgstr "Alle Detektive"
 
 #: lib/crime_to_go_web/live/components/chat_component.ex:117
 #, elixir-autogen, elixir-format
@@ -678,26 +678,26 @@ msgstr ""
 #: lib/crime_to_go_web/live/player_live/join.html.heex:261
 #, elixir-autogen, elixir-format
 msgid "Avatar"
-msgstr ""
+msgstr "Avatar"
 
 #: lib/crime_to_go_web/components/layouts.ex:260
 #: lib/crime_to_go_web/live/game_live/history.html.heex:131
 #: lib/crime_to_go_web/live/game_live/host_dashboard.html.heex:542
 #, elixir-autogen, elixir-format
 msgid "Cancel"
-msgstr ""
+msgstr "Abbrechen"
 
 #: lib/crime_to_go_web/live/game_live/host_dashboard.html.heex:242
 #: lib/crime_to_go_web/live/game_live/lobby.html.heex:143
 #, elixir-autogen, elixir-format
 msgid "Chat"
-msgstr ""
+msgstr "Chat"
 
 #: lib/crime_to_go_web/live/game_live/host_dashboard.html.heex:258
 #: lib/crime_to_go_web/live/game_live/lobby.html.heex:159
 #, elixir-autogen, elixir-format
 msgid "Chat not available"
-msgstr ""
+msgstr "Chat nicht verfügbar"
 
 #: lib/crime_to_go_web/live/player_live/join.html.heex:84
 #, elixir-autogen, elixir-format, fuzzy
@@ -707,38 +707,38 @@ msgstr "Detektivarbeit"
 #: lib/crime_to_go_web/live/game_live/lobby.ex:98
 #, elixir-autogen, elixir-format
 msgid "Game has started! Enjoy playing together."
-msgstr ""
+msgstr "Spiel hat begonnen! Viel Spaß beim Zusammenspielen."
 
 #: lib/crime_to_go_web/live/game_live/host_dashboard.ex:95
 #, elixir-autogen, elixir-format
 msgid "Game started! All players have been notified."
-msgstr ""
+msgstr "Spiel gestartet! Alle Spieler wurden benachrichtigt."
 
 #: lib/crime_to_go_web/live/chat_live/room.html.heex:180
 #: lib/crime_to_go_web/live/chat_live/room.html.heex:225
 #, elixir-autogen, elixir-format
 msgid "Members"
-msgstr ""
+msgstr "Mitglieder"
 
 #: lib/crime_to_go_web/live/components/chat_component.ex:71
 #, elixir-autogen, elixir-format
 msgid "No messages yet"
-msgstr ""
+msgstr "Noch keine Nachrichten"
 
 #: lib/crime_to_go_web/live/player_live/join.html.heex:170
 #, elixir-autogen, elixir-format
 msgid "Pre-selected - click another below to change"
-msgstr ""
+msgstr "Vorausgewählt - klicke unten auf ein anderes zum Ändern"
 
 #: lib/crime_to_go_web/live/player_live/join.html.heex:92
 #, elixir-autogen, elixir-format
 msgid "Pre-selected for you - change if desired"
-msgstr ""
+msgstr "Für dich vorausgewählt - bei Bedarf ändern"
 
 #: lib/crime_to_go_web/live/player_live/join.html.heex:120
 #, elixir-autogen, elixir-format
 msgid "Press Enter to join quickly"
-msgstr ""
+msgstr "Drücke Enter zum schnellen Beitreten"
 
 #: lib/crime_to_go_web/live/player_live/join.html.heex:160
 #, elixir-autogen, elixir-format, fuzzy
@@ -748,27 +748,27 @@ msgstr "Ausgewählter Avatar"
 #: lib/crime_to_go_web/live/chat_live/room.html.heex:130
 #, elixir-autogen, elixir-format
 msgid "Send the first message to get everyone talking"
-msgstr ""
+msgstr "Sende die erste Nachricht, um das Gespräch zu beginnen"
 
 #: lib/crime_to_go_web/live/player_live/join.html.heex:134
 #, elixir-autogen, elixir-format
 msgid "Show different avatars"
-msgstr ""
+msgstr "Andere Avatare anzeigen"
 
 #: lib/crime_to_go_web/live/player_live/join.html.heex:150
 #, elixir-autogen, elixir-format
 msgid "Shuffle"
-msgstr ""
+msgstr "Mischen"
 
 #: lib/crime_to_go_web/live/player_live/join.html.heex:117
 #, elixir-autogen, elixir-format
 msgid "Start Playing Now!"
-msgstr ""
+msgstr "Jetzt spielen!"
 
 #: lib/crime_to_go_web/live/chat_live/room.html.heex:127
 #, elixir-autogen, elixir-format
 msgid "Start the conversation!"
-msgstr ""
+msgstr "Starte das Gespräch!"
 
 #: lib/crime_to_go_web/live/chat_live/room.ex:153
 #: lib/crime_to_go_web/live/game_live/history.ex:107
@@ -781,12 +781,12 @@ msgstr "Das Spiel wurde vom Gastgeber beendet."
 #: lib/crime_to_go_web/live/components/chat_component.ex:90
 #, elixir-autogen, elixir-format
 msgid "Type a message..."
-msgstr ""
+msgstr "Nachricht eingeben..."
 
 #: lib/crime_to_go_web/live/chat_live/room.html.heex:147
 #, elixir-autogen, elixir-format
 msgid "Type your message..."
-msgstr ""
+msgstr "Deine Nachricht eingeben..."
 
 #: lib/crime_to_go_web/live/game_live/host_dashboard.html.heex:76
 #, elixir-autogen, elixir-format, fuzzy
@@ -796,117 +796,117 @@ msgstr ""
 #: lib/crime_to_go_web/live/chat_live/room.ex:35
 #, elixir-autogen, elixir-format
 msgid "You don't have access to this chat room"
-msgstr ""
+msgstr "Du hast keinen Zugriff auf diesen Chatraum"
 
 #: lib/crime_to_go_web/live/player_live/join.html.heex:167
 #, elixir-autogen, elixir-format
 msgid "Your Avatar"
-msgstr ""
+msgstr "Dein Avatar"
 
 #: lib/crime_to_go_web/live/chat_live/room.ex:217
 #: lib/crime_to_go_web/live/components/chat_component.ex:207
 #, elixir-autogen, elixir-format
 msgid "now"
-msgstr ""
+msgstr "jetzt"
 
 #: lib/crime_to_go_web/components/layouts.ex:243
 #, elixir-autogen, elixir-format
 msgid "As the host, ending the game will:"
-msgstr ""
+msgstr "Als Host wird das Beenden des Spiels:"
 
 #: lib/crime_to_go_web/components/layouts.ex:234
 #, elixir-autogen, elixir-format
 msgid "End Game for All Players"
-msgstr ""
+msgstr "Spiel für alle Spieler beenden"
 
 #: lib/crime_to_go_web/components/layouts.ex:175
 #, elixir-autogen, elixir-format
 msgid "End Game for Everyone"
-msgstr ""
+msgstr "Spiel für alle beenden"
 
 #: lib/crime_to_go_web/components/layouts.ex:153
 #: lib/crime_to_go_web/live/game_live/history.html.heex:38
 #, elixir-autogen, elixir-format
 msgid "Host Actions"
-msgstr ""
+msgstr "Host-Aktionen"
 
 #: lib/crime_to_go_web/components/layouts.ex:254
 #, elixir-autogen, elixir-format
 msgid "If you just want to leave but let others continue playing, use 'Leave Game' instead."
-msgstr ""
+msgstr "Wenn du nur gehen möchtest, aber andere weiterspielen lassen willst, verwende stattdessen 'Spiel verlassen'."
 
 #: lib/crime_to_go_web/components/layouts.ex:245
 #, elixir-autogen, elixir-format
 msgid "Immediately end the game for ALL players"
-msgstr ""
+msgstr "Das Spiel sofort für ALLE Spieler beenden"
 
 #: lib/crime_to_go_web/components/layouts.ex:247
 #, elixir-autogen, elixir-format
 msgid "Mark the game as finished"
-msgstr ""
+msgstr "Das Spiel als beendet markieren"
 
 #: lib/crime_to_go_web/components/layouts.ex:246
 #, elixir-autogen, elixir-format
 msgid "Remove everyone from the game"
-msgstr ""
+msgstr "Alle aus dem Spiel entfernen"
 
 #: lib/crime_to_go_web/components/layouts.ex:248
 #, elixir-autogen, elixir-format
 msgid "This action CANNOT be undone"
-msgstr ""
+msgstr "Diese Aktion kann NICHT rückgängig gemacht werden"
 
 #: lib/crime_to_go_web/components/layouts.ex:239
 #, elixir-autogen, elixir-format
 msgid "This is different from leaving the game!"
-msgstr ""
+msgstr "Dies ist anders als das Verlassen des Spiels!"
 
 #: lib/crime_to_go_web/components/layouts.ex:264
 #: lib/crime_to_go_web/live/game_live/history.html.heex:135
 #, elixir-autogen, elixir-format
 msgid "Yes, End Game for Everyone"
-msgstr ""
+msgstr "Ja, Spiel für alle beenden"
 
 #: lib/crime_to_go_web/live/game_live/host_dashboard.html.heex:524
 #, elixir-autogen, elixir-format
 msgid "Are you sure you want to kick %{player_name} from the game?"
-msgstr ""
+msgstr "Bist du sicher, dass du %{player_name} aus dem Spiel werfen möchtest?"
 
 #: lib/crime_to_go_web/live/game_live/host_dashboard.html.heex:533
 #, elixir-autogen, elixir-format
 msgid "Disconnect them from all chat rooms"
-msgstr ""
+msgstr "Sie von allen Chaträumen trennen"
 
 #: lib/crime_to_go_web/live/game_live/host_dashboard.html.heex:532
 #, elixir-autogen, elixir-format
 msgid "Immediately remove the player from the game"
-msgstr ""
+msgstr "Den Spieler sofort aus dem Spiel entfernen"
 
 #: lib/crime_to_go_web/live/game_live/host_dashboard.html.heex:412
 #: lib/crime_to_go_web/live/game_live/host_dashboard.html.heex:426
 #: lib/crime_to_go_web/live/game_live/host_dashboard.html.heex:519
 #, elixir-autogen, elixir-format
 msgid "Kick Player"
-msgstr ""
+msgstr "Spieler rauswerfen"
 
 #: lib/crime_to_go_web/live/game_live/host_dashboard.html.heex:386
 #, elixir-autogen, elixir-format
 msgid "Make Host"
-msgstr ""
+msgstr "Zum Host machen"
 
 #: lib/crime_to_go_web/live/game_live/host_dashboard.ex:234
 #, elixir-autogen, elixir-format
 msgid "Player %{name} has been kicked from the game"
-msgstr ""
+msgstr "Spieler %{name} wurde aus dem Spiel geworfen"
 
 #: lib/crime_to_go_web/live/game_live/host_dashboard.ex:159
 #, elixir-autogen, elixir-format
 msgid "Player %{name} is no longer a host"
-msgstr ""
+msgstr "Spieler %{name} ist kein Host mehr"
 
 #: lib/crime_to_go_web/live/game_live/host_dashboard.ex:135
 #, elixir-autogen, elixir-format
 msgid "Player %{name} is now a host"
-msgstr ""
+msgstr "Spieler %{name} ist jetzt ein Host"
 
 #: lib/crime_to_go_web/live/game_live/host_dashboard.html.heex:392
 #, elixir-autogen, elixir-format, fuzzy
@@ -922,48 +922,48 @@ msgstr "Spielcode nicht gefunden"
 #: lib/crime_to_go_web/live/game_live/host_dashboard.html.heex:375
 #, elixir-autogen, elixir-format
 msgid "Remove Host"
-msgstr ""
+msgstr "Host-Rechte entziehen"
 
 #: lib/crime_to_go_web/live/game_live/host_dashboard.html.heex:402
 #: lib/crime_to_go_web/live/game_live/host_dashboard.html.heex:419
 #, elixir-autogen, elixir-format
 msgid "Send Warning"
-msgstr ""
+msgstr "Warnung senden"
 
 #: lib/crime_to_go_web/live/game_live/host_dashboard.html.heex:534
 #, elixir-autogen, elixir-format
 msgid "They can rejoin using the game code if they want"
-msgstr ""
+msgstr "Sie können mit dem Spielcode wieder beitreten, wenn sie möchten"
 
 #: lib/crime_to_go_web/live/game_live/host_dashboard.html.heex:530
 #, elixir-autogen, elixir-format
 msgid "This action will:"
-msgstr ""
+msgstr "Diese Aktion wird:"
 
 #: lib/crime_to_go_web/live/game_live/host_dashboard.ex:138
 #, elixir-autogen, elixir-format
 msgid "Unable to grant host privileges"
-msgstr ""
+msgstr "Host-Berechtigungen konnten nicht vergeben werden"
 
 #: lib/crime_to_go_web/live/game_live/host_dashboard.ex:237
 #, elixir-autogen, elixir-format
 msgid "Unable to kick player"
-msgstr ""
+msgstr "Spieler konnte nicht rausgeworfen werden"
 
 #: lib/crime_to_go_web/live/game_live/host_dashboard.ex:162
 #, elixir-autogen, elixir-format
 msgid "Unable to revoke host privileges"
-msgstr ""
+msgstr "Host-Berechtigungen konnten nicht entzogen werden"
 
 #: lib/crime_to_go_web/live/game_live/host_dashboard.ex:185
 #, elixir-autogen, elixir-format
 msgid "Warning sent to %{name}"
-msgstr ""
+msgstr "Warnung an %{name} gesendet"
 
 #: lib/crime_to_go_web/live/game_live/host_dashboard.html.heex:546
 #, elixir-autogen, elixir-format
 msgid "Yes, Kick Player"
-msgstr ""
+msgstr "Ja, Spieler rauswerfen"
 
 #: lib/crime_to_go_web/live/chat_live/room.ex:171
 #: lib/crime_to_go_web/live/game_live/history.ex:146
@@ -971,7 +971,7 @@ msgstr ""
 #: lib/crime_to_go_web/live/game_live/lobby.ex:154
 #, elixir-autogen, elixir-format
 msgid "You have been kicked from the game by host %{host_name}."
-msgstr ""
+msgstr "Du wurdest vom Host %{host_name} aus dem Spiel geworfen."
 
 #: lib/crime_to_go_web/live/chat_live/room.ex:162
 #: lib/crime_to_go_web/live/game_live/history.ex:137
@@ -979,7 +979,7 @@ msgstr ""
 #: lib/crime_to_go_web/live/game_live/lobby.ex:145
 #, elixir-autogen, elixir-format, fuzzy
 msgid "⚠️ WARNING from host %{host_name}: Please follow the game rules or you may be kicked!"
-msgstr ""
+msgstr "⚠️ WARNUNG von Host %{host_name}: Bitte befolge die Spielregeln oder du könntest rausgeworfen werden!"
 
 #: lib/crime_to_go_web/live/game_live/host_dashboard.html.heex:420
 #: lib/crime_to_go_web/live/game_live/host_dashboard.html.heex:427
@@ -990,22 +990,22 @@ msgstr "Offline"
 #: lib/crime_to_go_web/live/game_live/history.html.heex:57
 #, elixir-autogen, elixir-format
 msgid "Activity Log"
-msgstr ""
+msgstr "Aktivitätsprotokoll"
 
 #: lib/crime_to_go_web/live/game_live/history.html.heex:125
 #, elixir-autogen, elixir-format
 msgid "All players will be disconnected and the game will be permanently ended."
-msgstr ""
+msgstr "Alle Spieler werden getrennt und das Spiel wird dauerhaft beendet."
 
 #: lib/crime_to_go_web/live/game_live/history.html.heex:20
 #, elixir-autogen, elixir-format
 msgid "Back to Lobby"
-msgstr ""
+msgstr "Zurück zur Lobby"
 
 #: lib/crime_to_go_web/live/game_live/history.ex:159
 #, elixir-autogen, elixir-format
 msgid "Demoted from Host"
-msgstr ""
+msgstr "Host-Rechte entzogen"
 
 #: lib/crime_to_go_web/live/game_live/history.html.heex:44
 #, elixir-autogen, elixir-format, fuzzy
@@ -1015,7 +1015,7 @@ msgstr "Spiel beitreten"
 #: lib/crime_to_go_web/live/game_live/history.html.heex:118
 #, elixir-autogen, elixir-format, fuzzy
 msgid "End Game for Everyone?"
-msgstr ""
+msgstr "Spiel für alle beenden?"
 
 #: lib/crime_to_go_web/live/game_live/history.html.heex:9
 #, elixir-autogen, elixir-format, fuzzy
@@ -1032,22 +1032,22 @@ msgstr "Spiele"
 #: lib/crime_to_go_web/live/game_live/history.html.heex:65
 #, elixir-autogen, elixir-format
 msgid "Game events will appear here as they happen"
-msgstr ""
+msgstr "Spielereignisse werden hier angezeigt, sobald sie auftreten"
 
 #: lib/crime_to_go_web/live/game_live/history.html.heex:28
 #, elixir-autogen, elixir-format
 msgid "Host Dashboard"
-msgstr ""
+msgstr "Host-Dashboard"
 
 #: lib/crime_to_go_web/live/game_live/history.html.heex:64
 #, elixir-autogen, elixir-format
 msgid "No events recorded yet"
-msgstr ""
+msgstr "Noch keine Ereignisse aufgezeichnet"
 
 #: lib/crime_to_go_web/live/game_live/history.ex:27
 #, elixir-autogen, elixir-format
 msgid "Only hosts can view game history"
-msgstr ""
+msgstr "Nur Hosts können die Spielhistorie einsehen"
 
 #: lib/crime_to_go_web/live/game_live/history.ex:153
 #, elixir-autogen, elixir-format, fuzzy
@@ -1082,9 +1082,9 @@ msgstr "Spieler"
 #: lib/crime_to_go_web/live/game_live/history.ex:158
 #, elixir-autogen, elixir-format
 msgid "Promoted to Host"
-msgstr ""
+msgstr "Zum Host befördert"
 
 #: lib/crime_to_go_web/live/game_live/history.html.heex:124
 #, elixir-autogen, elixir-format
 msgid "This action cannot be undone!"
-msgstr ""
+msgstr "Diese Aktion kann nicht rückgängig gemacht werden!"
