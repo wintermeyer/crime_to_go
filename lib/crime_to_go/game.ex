@@ -169,6 +169,8 @@ defmodule CrimeToGo.Game do
     |> case do
       {:ok, updated_game} = result ->
         Shared.broadcast_event("game:#{game.id}", {:game_started, updated_game})
+        # Start the countdown timer
+        CrimeToGo.Game.CountdownServer.start_countdown(updated_game.id, updated_game.start_at)
         result
 
       error ->
