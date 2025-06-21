@@ -1,37 +1,39 @@
-<div class="min-h-screen bg-gray-50">
+<div class="min-h-screen bg-gradient-to-br from-base-50 to-base-100">
   <!-- Top Navigation Bar with Countdown -->
-  <div class="bg-indigo-600 text-white px-4 py-3 shadow-lg">
-    <div class="max-w-7xl mx-auto flex justify-between items-center">
-      <h1 class="text-xl font-bold"><%= @game.invitation_code %></h1>
-      
+  <div class="navbar bg-primary text-primary-content shadow-lg">
+    <div class="navbar-start">
+      <h1 class="text-xl font-bold">{@game.invitation_code}</h1>
+    </div>
+    <div class="navbar-center">
       <%= if @game.state == "active" && @countdown_seconds do %>
         <div class="text-center">
-          <div class="text-sm opacity-90"><%= gettext("Time Remaining") %></div>
-          <div class="text-2xl font-mono font-bold <%= if @countdown_seconds <= 60, do: "text-red-300 animate-pulse" %>">
-            <%= format_countdown(@countdown_seconds) %>
+          <div class="text-sm opacity-90">{gettext("Time Remaining")}</div>
+          <div class="text-2xl font-mono font-bold <%= if @countdown_seconds <= 60, do: "text-warning animate-pulse" %>">
+            {format_countdown(@countdown_seconds)}
           </div>
         </div>
       <% end %>
-      
+    </div>
+    <div class="navbar-end">
       <div class="text-sm">
-        <%= gettext("Players: %{count}", count: length(@game.players)) %>
+        {gettext("Players: %{count}", count: length(@game.players))}
       </div>
     </div>
   </div>
 
   <!-- Game State Messages -->
   <%= if @game.state == "preparing" do %>
-    <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4">
-      <div class="flex items-center">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-700 mr-3"></div>
-        <p class="font-medium"><%= gettext("Game is about to start... get ready for it!") %></p>
+    <div class="alert alert-warning shadow-lg">
+      <div class="flex items-center gap-3">
+        <span class="loading loading-spinner loading-md"></span>
+        <span class="font-medium">{gettext("Game is about to start... get ready for it!")}</span>
       </div>
     </div>
   <% end %>
 
   <%= if @game.state == "post_game" do %>
-    <div class="bg-gray-100 border-l-4 border-gray-500 text-gray-700 p-4">
-      <p class="font-medium"><%= gettext("Game has ended") %></p>
+    <div class="alert alert-info shadow-lg">
+      <span class="font-medium">{gettext("Game has ended")}</span>
     </div>
   <% end %>
 
@@ -40,47 +42,48 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
       <!-- Chat Section (2/3 width on large screens) -->
       <div class="lg:col-span-2">
-        <div class="bg-white rounded-lg shadow-md h-[600px] flex flex-col">
-          <div class="bg-gray-100 px-4 py-3 border-b">
-            <h2 class="font-semibold text-gray-800"><%= gettext("All Chat") %></h2>
+        <div class="card bg-base-100 shadow-xl h-[600px] flex flex-col">
+          <div class="card-header bg-base-200 px-4 py-3 border-b border-base-300">
+            <h2 class="font-semibold text-base-content">{gettext("All Chat")}</h2>
           </div>
           
           <!-- Messages -->
           <div class="flex-1 overflow-y-auto p-4 space-y-2" id="chat-messages" phx-hook="ScrollToBottom">
             <%= for message <- Enum.reverse(@messages) do %>
-              <div class="flex items-start space-x-2">
-                <img 
-                  src={"/images/avatars/#{message.player.avatar_file_name}"} 
-                  alt={message.player.nickname}
-                  class="w-8 h-8 rounded-full"
-                />
-                <div class="flex-1">
-                  <div class="flex items-baseline space-x-2">
-                    <span class="font-semibold text-sm"><%= message.player.nickname %></span>
-                    <span class="text-xs text-gray-500">
-                      <%= Calendar.strftime(message.inserted_at, "%H:%M") %>
-                    </span>
+              <div class="chat chat-start">
+                <div class="chat-image avatar">
+                  <div class="w-10 rounded-full">
+                    <img 
+                      src={"/images/avatars/#{message.player.avatar_file_name}"} 
+                      alt={message.player.nickname}
+                    />
                   </div>
-                  <p class="text-gray-800"><%= message.content %></p>
                 </div>
+                <div class="chat-header">
+                  {message.player.nickname}
+                  <time class="text-xs opacity-50">
+                    {Calendar.strftime(message.inserted_at, "%H:%M")}
+                  </time>
+                </div>
+                <div class="chat-bubble">{message.content}</div>
               </div>
             <% end %>
           </div>
           
           <!-- Message Input -->
           <%= if @game.state in ["active", "preparing"] && @current_player do %>
-            <div class="border-t p-4">
-              <.form for={@message_form} phx-submit="send_message" class="flex space-x-2">
-                <.input 
-                  field={@message_form[:content]} 
+            <div class="card-footer border-t border-base-300 p-4">
+              <.form for={@message_form} phx-submit="send_message" class="flex gap-2">
+                <input 
+                  name={@message_form[:content].name}
                   type="text" 
                   placeholder={gettext("Type a message...")}
-                  class="flex-1"
+                  class="input input-bordered flex-1"
                   autocomplete="off"
                 />
-                <.button type="submit" class="px-4">
-                  <%= gettext("Send") %>
-                </.button>
+                <button type="submit" class="btn btn-primary">
+                  {gettext("Send")}
+                </button>
               </.form>
             </div>
           <% end %>
@@ -89,34 +92,37 @@
       
       <!-- Players Section (1/3 width on large screens) -->
       <div class="lg:col-span-1">
-        <div class="bg-white rounded-lg shadow-md">
-          <div class="bg-gray-100 px-4 py-3 border-b">
-            <h2 class="font-semibold text-gray-800">
-              <%= gettext("Players") %> (<%= length(@game.players) %>)
+        <div class="card bg-base-100 shadow-xl">
+          <div class="card-header bg-base-200 px-4 py-3 border-b border-base-300">
+            <h2 class="font-semibold text-base-content">
+              {gettext("Players")} ({length(@game.players)})
             </h2>
           </div>
           
-          <div class="p-4 space-y-3 max-h-[600px] overflow-y-auto">
+          <div class="card-body p-4 space-y-3 max-h-[600px] overflow-y-auto">
             <%= for player <- @game.players do %>
-              <div class="flex items-center space-x-3">
-                <img 
-                  src={"/images/avatars/#{player.avatar_file_name}"} 
-                  alt={player.nickname}
-                  class="w-10 h-10 rounded-full"
-                />
+              <div class="flex items-center gap-3">
+                <div class="avatar">
+                  <div class="w-10 rounded-full">
+                    <img 
+                      src={"/images/avatars/#{player.avatar_file_name}"} 
+                      alt={player.nickname}
+                    />
+                  </div>
+                </div>
                 <div class="flex-1">
-                  <div class="font-medium"><%= player.nickname %></div>
-                  <div class="text-xs text-gray-500">
+                  <div class="font-medium">{player.nickname}</div>
+                  <div class="text-xs opacity-60">
                     <%= if player.is_host do %>
-                      <span class="text-indigo-600"><%= gettext("Host") %></span>
+                      <span class="badge badge-primary badge-xs">{gettext("Host")}</span>
                     <% end %>
                     <%= case player.status do %>
                       <% "online" -> %>
-                        <span class="text-green-600">● <%= gettext("Online") %></span>
+                        <span class="text-success">● {gettext("Online")}</span>
                       <% "offline" -> %>
-                        <span class="text-gray-400">● <%= gettext("Offline") %></span>
+                        <span class="text-base-content/40">● {gettext("Offline")}</span>
                       <% _ -> %>
-                        <span class="text-gray-400">● <%= gettext("Unknown") %></span>
+                        <span class="text-base-content/40">● {gettext("Unknown")}</span>
                     <% end %>
                   </div>
                 </div>

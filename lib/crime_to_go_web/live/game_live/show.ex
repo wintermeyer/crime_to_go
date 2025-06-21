@@ -111,7 +111,8 @@ defmodule CrimeToGoWeb.GameLive.Show do
      socket
      |> assign(:game, game)
      |> assign(:countdown_seconds, 0)
-     |> put_flash(:info, gettext("Game has ended!"))}
+     |> put_flash(:info, gettext("Game has ended!"))
+     |> push_navigate(to: ~p"/games/#{game.id}/history")}
   end
 
   def handle_info({:new_message, message}, socket) do
